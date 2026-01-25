@@ -7,7 +7,8 @@ exports.handler = async function (event) {
       };
     }
 
-    const { onboarding } = JSON.parse(event.body);
+    const body = JSON.parse(event.body || "{}");
+    const onboarding = body.onboarding;
 
     if (!onboarding) {
       return {
@@ -16,39 +17,34 @@ exports.handler = async function (event) {
       };
     }
 
-    const systemPrompt = `
-You are CoreHabit, a beginner-focused habit, nutrition, and fitness coach.
+    const systemPrompt =
+      "You are CoreHabit, a beginner-focused fitness and nutrition coach. " +
+      "Your goal is to create simple, realistic plans. " +
+      "Avoid extremes. Focus on consistency. " +
+      "Use a calm, practical tone.";
 
-Rules:
-- Consistency over intensity
-- Beginner-friendly
-- No extreme dieting or training
-- Clear structure
-- Calm, supportive tone
+    const userPrompt =
+      "User onboarding data:\n" +
+      JSON.stringify(onboarding, null, 2);
 
-Create a personalized fitness and nutrition plan.
-`;
-
-    const userPrompt = `
-User onboarding data:
-${JSON.stringify(onboarding, null, 2)}
-`;
-
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": \`Bearer \${process.env.OPENAI_API_KEY}\`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        temperature: 0.4,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ]
-      })
-    });
+    const response = await fetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + process.env.OPENAI_API_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          temperature: 0.4,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
 
@@ -66,7 +62,9 @@ ${JSON.stringify(onboarding, null, 2)}
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({
+        error: error.message
+      })
     };
   }
 };
