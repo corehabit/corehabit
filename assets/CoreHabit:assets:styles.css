@@ -1,5 +1,18 @@
 /* ===== CoreHabit Global Styles ===== */
 
+/* GLOBAL BACKGROUND + TEXT */
+body {
+  background: radial-gradient(
+    80% 80% at 20% 10%,
+    #1a1f35 0%,
+    #0b0f19 60%
+  );
+  color: #ffffff;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* CARD INTERACTIONS */
 .card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -9,13 +22,17 @@
   box-shadow: 0 20px 40px rgba(124,92,255,0.25);
 }
 
+/* TYPOGRAPHY */
 h1, h2 {
   letter-spacing: -0.5px;
 }
 
 p {
   max-width: 680px;
+  color: #e5e7eb;
 }
+
+/* RESULTS PAGE PLAN STYLES */
 #result section {
   margin-bottom: 28px;
 }
