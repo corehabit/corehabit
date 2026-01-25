@@ -8,11 +8,12 @@
 </head>
 
 <body>
+  <!-- SAME WRAPPER STYLE AS OTHER PAGES -->
   <div style="max-width:720px;margin:60px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
-    <p>
-      We’ve built a plan based on your answers. Click below to generate it.
+    <p style="color:#9ca3af;">
+      Based on your answers, here’s your CoreHabit plan.
     </p>
 
     <!-- Status message -->
@@ -33,21 +34,20 @@
       Generate My Plan
     </button>
 
-    <!-- Result output -->
-    <pre id="result" style="
+    <!-- PLAN CARD (NOT <pre>) -->
+    <div id="result" style="
+      margin-top:32px;
+      padding:28px;
       background:#111827;
-      color:#e9eef5;
-      padding:16px;
-      border-radius:12px;
-      white-space:pre-wrap;
-      margin-top:24px;
-      font-size:14px;
+      color:#e5e7eb;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
       display:none;
-    "></pre>
+    "></div>
 
   </div>
 
- <script>
+<script>
 async function generatePlan() {
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
@@ -77,44 +77,44 @@ async function generatePlan() {
     statusEl.textContent = "";
     resultEl.style.display = "block";
 
-    // ---- CLEAN RENDER ----
+    // ---- CLEAN, PRODUCT-STYLE RENDER ----
     resultEl.innerHTML = `
-      <section>
-        <h2>Overview</h2>
-        <p>${data.overview}</p>
+      <section style="margin-bottom:28px;">
+        <h2 style="font-size:20px;margin-bottom:8px;">Overview</h2>
+        <p style="line-height:1.6;">${data.overview}</p>
       </section>
 
-      <section>
-        <h2>Weekly Workout Split</h2>
-        <ul>
-          ${data.weekly_workout_split.map(item => `<li>${item}</li>`).join("")}
+      <section style="margin-bottom:28px;">
+        <h2 style="font-size:20px;margin-bottom:8px;">Weekly Workout Split</h2>
+        <ul style="padding-left:20px;">
+          ${data.weekly_workout_split.map(item => `<li style="margin-bottom:6px;">${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section style="margin-bottom:28px;">
+        <h2 style="font-size:20px;margin-bottom:8px;">Sample Workout</h2>
+        <ul style="padding-left:20px;">
+          ${data.sample_workout.map(item => `<li style="margin-bottom:6px;">${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section style="margin-bottom:28px;">
+        <h2 style="font-size:20px;margin-bottom:8px;">Daily Nutrition Guidelines</h2>
+        <ul style="padding-left:20px;">
+          ${data.daily_nutrition_guidelines.map(item => `<li style="margin-bottom:6px;">${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section style="margin-bottom:28px;">
+        <h2 style="font-size:20px;margin-bottom:8px;">Sample Day of Eating</h2>
+        <ul style="padding-left:20px;">
+          ${data.sample_day_of_eating.map(item => `<li style="margin-bottom:6px;">${item}</li>`).join("")}
         </ul>
       </section>
 
       <section>
-        <h2>Sample Workout</h2>
-        <ul>
-          ${data.sample_workout.map(item => `<li>${item}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Daily Nutrition Guidelines</h2>
-        <ul>
-          ${data.daily_nutrition_guidelines.map(item => `<li>${item}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Sample Day of Eating</h2>
-        <ul>
-          ${data.sample_day_of_eating.map(item => `<li>${item}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Weekly Focus</h2>
-        <p>${data.weekly_focus_tip}</p>
+        <h2 style="font-size:20px;margin-bottom:8px;">Weekly Focus</h2>
+        <p style="line-height:1.6;">${data.weekly_focus_tip}</p>
       </section>
     `;
 
