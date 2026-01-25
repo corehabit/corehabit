@@ -16,3 +16,23 @@ h1, h2 {
 p {
   max-width: 680px;
 }
+#result section {
+  margin-bottom: 28px;
+}
+
+#result h2 {
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+#result ul {
+  padding-left: 20px;
+}
+
+#result li {
+  margin-bottom: 6px;
+}
+
+#result p {
+  line-height: 1.6;
+}
