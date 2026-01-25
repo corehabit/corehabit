@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/assets/styles.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CoreHabit — Personalized Nutrition & Beginner Fitness</title>
+  <meta name="description" content="CoreHabit creates personalized nutrition and beginner-friendly workout plans for people starting or restarting fitness." />
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111827;
+      --text: #e9eef5;
+      --muted: #a9b6c6;
+      --purple: #7c5cff;
+      --purple-soft: rgba(124,92,255,0.15);
+      --border: rgba(255,255,255,0.08);
+    }
+
+    /* ===== Fade-in animation ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade { opacity: 0; animation: fadeUp 0.9s ease forwards; }
+    .delay-1 { animation-delay: 0.15s; }
+    .delay-2 { animation-delay: 0.3s; }
+    .delay-3 { animation-delay: 0.45s; }
+    .delay-4 { animation-delay: 0.6s; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(800px 400px at 15% -10%, rgba(124,92,255,0.25), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 72px;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c5cff, #9b8cff);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 12px 35px rgba(124,92,255,0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 45px rgba(124,92,255,0.5);
+    }
+
+    h1 {
+      font-size: 50px;
+      line-height: 1.08;
+      margin-bottom: 20px;
+      letter-spacing: -0.6px;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .hero {
+      margin-bottom: 96px;
+    }
+
+    /* ===== Pills ===== */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 28px 0;
+    }
+
+    .pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--purple-soft);
+      color: #d9d3ff;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid rgba(124,92,255,0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(124,92,255,0.35);
+    }
+
+    .section {
+      margin-bottom: 96px;
+    }
+
+    /* ===== Cards ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(124,92,255,0.08), transparent 60%),
+        var(--panel);
+      border-radius: 18px;
+      padding: 26px;
+      border: 1px solid var(--border);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+
+    /* ===== Reassurance ===== */
+    .reassurance {
+      background: linear-gradient(
+        180deg,
+        rgba(124,92,255,0.18),
+        rgba(124,92,255,0.05)
+      );
+      border-radius: 16px;
+      padding: 18px;
+      margin: 36px 0;
+      max-width: 720px;
+      border: 1px solid rgba(124,92,255,0.35);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      color: #7b8794;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="fade">
+      <div class="logo">CoreHabit</div>
+      <a href="plan.html"
+
+ class="btn">See My Plan</a>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero fade delay-1">
+      <h1>Stop guessing what to eat or how to train — we’ll guide you.</h1>
+
+      <p>
+        CoreHabit creates <strong>personalized nutrition and beginner-friendly workout plans</strong>
+        using quick onboarding questions — so you can build real habits without confusion,
+        extremes, or influencer hype.
+      </p>
+
+      <p>
+        Built for beginners. Simple, realistic, and designed to fit your life.
+      </p>
+
+      <div class="reassurance">
+        <strong>You don’t need to be fit to start.</strong><br />
+        <span style="color:#d1cbff;">
+          CoreHabit is designed for people who are new, restarting, or unsure where to begin.
+        </span>
+      </div>
+
+      <div class="pill-row">
+        <div class="pill">Beginner-first plans</div>
+        <div class="pill">Simple meals</div>
+        <div class="pill">Gym & home workouts</div>
+        <div class="pill">Weekly adjustments</div>
+      </div>
+
+      <a href="plan.html" class="btn">See My Personalized Plan</a>
+
+
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section fade delay-2">
+      <h2>How CoreHabit works</h2>
+      <p>
+        Most fitness plans fail because they’re too complicated. CoreHabit focuses on
+        consistency over perfection.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>1. Answer a few questions</h3>
+          <p>Tell us your goals, schedule, experience level, and food preferences.</p>
+        </div>
+        <div class="card">
+          <h3>2. Get your personalized plan</h3>
+          <p>We create a meal plan and workout routine built around your life.</p>
+        </div>
+        <div class="card">
+          <h3>3. Adjust weekly</h3>
+          <p>Check in each week and CoreHabit adapts your plan to keep it realistic.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IT IS / ISN'T -->
+    <section class="section fade delay-3">
+      <h2>What CoreHabit is (and isn’t)</h2>
+
+      <div class="grid">
+        <div class="card">
+          <h3>✔ What it is</h3>
+          <p>
+            Simple plans for beginners, built around your schedule, preferences,
+            and experience level.
+          </p>
+        </div>
+        <div class="card">
+          <h3>✖ What it isn’t</h3>
+          <p>
+            Extreme dieting, influencer workouts, or one-size-fits-all programs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HUMAN SIGNAL -->
+    <section class="section fade delay-4">
+      <h2>Built with beginners in mind</h2>
+      <p>
+        <strong>Built by someone who remembers what starting felt like.</strong><br />
+        CoreHabit was created to make fitness feel clear, realistic, and achievable — not overwhelming.
+      </p>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="section fade delay-4">
+      <h2>Ready to stop guessing?</h2>
+      <p>Build habits, gain confidence, and follow a plan designed for you.</p>
+      <a href="plan.html" class="btn">See My Personalized Plan</a>
+
+      <p style="font-size:13px; color:#9f98ff; margin-top:8px;">
+        Takes about 2 minutes • No commitment to preview
+      </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="fade delay-4">
+      <p><strong>CoreHabit</strong> — Habits first. Results follow.</p>
+      <p>
+        Disclaimer: CoreHabit provides educational wellness information only and is not a
+        substitute for professional medical advice.
+      </p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
+
+
+

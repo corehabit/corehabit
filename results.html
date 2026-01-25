@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Your Plan — CoreHabit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+
+<body>
+  <div style="max-width:720px;margin:60px auto;padding:20px;font-family:system-ui;">
+
+    <h1>Your Personalized Plan</h1>
+    <p>
+      We’ve built a plan based on your answers. Click below to generate it.
+    </p>
+
+    <!-- Status message -->
+    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+
+    <!-- Button -->
+    <button onclick="generatePlan()" style="
+      margin-top:20px;
+      padding:14px 22px;
+      border-radius:999px;
+      border:none;
+      background:#7c5cff;
+      color:white;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+    ">
+      Generate My Plan
+    </button>
+
+    <!-- Result output -->
+    <pre id="result" style="
+      background:#111827;
+      color:#e9eef5;
+      padding:16px;
+      border-radius:12px;
+      white-space:pre-wrap;
+      margin-top:24px;
+      font-size:14px;
+      display:none;
+    "></pre>
+
+  </div>
+
+  <script>
+    async function generatePlan() {
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+
+      statusEl.textContent = "Building your plan...";
+      resultEl.style.display = "none";
+      resultEl.textContent = "";
+
+      const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+
+      if (!onboardingRaw) {
+        statusEl.textContent =
+          "No onboarding data found. Please restart the process.";
+        return;
+      }
+
+      const onboarding = JSON.parse(onboardingRaw);
+
+      try {
+        const response = await fetch(
+          "/.netlify/functions/generatePlan",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ onboarding })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Backend error");
+        }
+
+        const data = await response.json();
+
+        statusEl.textContent = "";
+        resultEl.style.display = "block";
+
+        // For now, show raw response (we’ll format later)
+        resultEl.textContent = JSON.stringify(data, null, 2);
+
+      } catch (error) {
+        statusEl.textContent =
+          "Something went wrong while generating your plan.";
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/assets/styles.css">
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Your Plan — CoreHabit</title>
+
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#111827; --text:#e9eef5; --muted:#a9b6c6;
+    --purple:#7c5cff; --border:rgba(255,255,255,.08);
+  }
+  body{
+    margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background: radial-gradient(800px 400px at 20% -10%, rgba(124,92,255,0.25), transparent 60%), var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  .container{max-width:980px;margin:auto;padding:48px 20px;}
+  h1{margin:0 0 8px;}
+  .muted{color:var(--muted);}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:900px){.row{grid-template-columns:1fr;}}
+  .card{
+    background: linear-gradient(180deg, rgba(124,92,255,0.08), transparent 60%), var(--panel);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:24px;
+    margin-top:18px;
+  }
+  .btn{
+    display:inline-block;
+    padding:12px 18px;
+    border-radius:999px;
+    background: linear-gradient(135deg,#7c5cff,#9b8cff);
+    color:white;
+    font-weight:800;
+    text-decoration:none;
+    margin-right:10px;
+  }
+  .chips{margin-top:10px;}
+  .chip{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:999px;
+    background: rgba(124,92,255,.15);
+    border:1px solid rgba(124,92,255,.35);
+    color:#d9d3ff;
+    font-size:13px;
+    margin:4px 6px 0 0;
+  }
+  ul{margin:10px 0 0;padding-left:18px;color:var(--muted);}
+  table{width:100%;border-collapse:collapse;margin-top:10px;}
+  th,td{border-bottom:1px solid var(--border);padding:10px 8px;text-align:left;}
+  th{color:#d9d3ff;font-size:13px;}
+  td{color:var(--muted);font-size:14px;}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Your personalized plan</h1>
+  <div class="muted" id="subtitle">Based on your onboarding answers.</div>
+
+  <div class="row">
+    <div class="card" id="targetsCard"></div>
+    <div class="card" id="adjustmentsCard"></div>
+  </div>
+
+  <div class="card" id="mealCard"></div>
+  <div class="card" id="groceryCard"></div>
+  <div class="card" id="workoutCard"></div>
+
+  <div class="card" id="trendsCard"></div>
+
+  <div style="margin-top:18px;">
+    <a class="btn" href="/app/checkin.html">Weekly Check-In</a>
+    <a class="btn" href="/app/coach.html">Coach Feedback</a>
+  </div>
+</div>
+
+<script>
+const onboarding = JSON.parse(localStorage.getItem("corehabit_onboarding"));
+const checkins = JSON.parse(localStorage.getItem("corehabit_checkins")) || [];
+
+if(!onboarding){
+  document.body.innerHTML = "<div style='padding:40px;color:#e9eef5;font-family:system-ui'>No onboarding data found. Go back and complete onboarding.</div>";
+}
+
+// ---------- helpers ----------
+function toNumber(x){
+  const n = parseFloat(String(x||"").replace(/[^0-9.]/g,""));
+  return Number.isFinite(n) ? n : null;
+}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+
+// ---------- base targets ----------
+const weight = toNumber(onboarding.weight) ?? 170;
+let baseCalories = Math.round(weight * 14);
+if(onboarding.goal === "Lose fat") baseCalories -= 300;
+if(onboarding.goal === "Build muscle") baseCalories += 250;
+baseCalories = clamp(baseCalories, 1600, 3200);
+
+let protein = Math.round(weight * 0.8);
+protein = clamp(protein, 110, 220);
+
+// ---------- apply latest check-in adjustments ----------
+const latest = checkins[checkins.length - 1] || null;
+let calAdjust = 0;
+let trainingAdjust = [];
+
+if(latest){
+  // Calories adjust
+  if(latest.energy === "Low") calAdjust += 150;
+  if(latest.hunger === "Hungry often") calAdjust += 150;
+  if(latest.hunger === "Too full") calAdjust -= 100;
+
+  // Training adjust
+  if(latest.stress === "High") trainingAdjust.push("Lower intensity this week (focus on showing up).");
+  if(latest.recovery === "Very sore") trainingAdjust.push("Reduce sets by ~20% and keep form clean.");
+  if(latest.workouts === "None" || latest.workouts === "Some"){
+    trainingAdjust.push("Simplify: shorter workouts + easier exercises to rebuild momentum.");
+  }
+  if(latest.workouts === "All of them" && latest.energy !== "Low"){
+    trainingAdjust.push("Nice work — keep the plan steady and add small weight when reps feel strong.");
+  }
+}
+
+const finalCalories = clamp(baseCalories + calAdjust, 1500, 3400);
+
+// ---------- render targets ----------
+document.getElementById("targetsCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">Targets</h2>
+  <div class="muted">Simple, realistic targets designed for beginners.</div>
+  <div style="margin-top:12px;">
+    <div><strong>Calories:</strong> ${finalCalories} <span class="muted">(est.)</span></div>
+    <div><strong>Protein:</strong> ${protein}g/day</div>
+    <div><strong>Meals/day:</strong> ${onboarding.meals_per_day}</div>
+  </div>
+  <div class="chips">
+    <span class="chip">Goal: ${onboarding.goal}</span>
+    <span class="chip">Days/week: ${onboarding.days_per_week}</span>
+    <span class="chip">Diet: ${onboarding.diet}</span>
+  </div>
+`;
+
+// ---------- render adjustments ----------
+document.getElementById("adjustmentsCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">This week’s focus</h2>
+  <div class="muted">${latest ? "Adjusted from your latest check-in." : "Do your first check-in to unlock weekly adjustments."}</div>
+  <div style="margin-top:12px;">
+    <div><strong>Calories change:</strong> ${calAdjust === 0 ? "No change" : (calAdjust>0?`+${calAdjust}`:`${calAdjust}`)} </div>
+    <div style="margin-top:8px;"><strong>Training guidance:</strong></div>
+    ${trainingAdjust.length ? `<ul>${trainingAdjust.map(x=>`<li>${x}</li>`).join("")}</ul>` :
+      `<div class="muted" style="margin-top:6px;">Keep it simple: show up, do the basics, and leave 1–2 reps in the tank.</div>`
+    }
+  </div>
+`;
+
+// ---------- allergy-aware sample meal day + grocery ----------
+const allergies = Array.isArray(onboarding.allergies) ? onboarding.allergies.map(a=>String(a).toLowerCase()) : [];
+function allowed(meal){
+  const m = meal.toLowerCase();
+  if(allergies.includes("eggs") && m.includes("egg")) return false;
+  if(allergies.includes("dairy") && (m.includes("yogurt") || m.includes("cheese") || m.includes("milk"))) return false;
+  if(allergies.includes("gluten") && (m.includes("bread") || m.includes("pasta") || m.includes("wrap"))) return false;
+  if(allergies.includes("peanuts") && m.includes("peanut")) return false;
+  if(allergies.includes("tree nuts") && (m.includes("almond") || m.includes("walnut") || m.includes("cashew"))) return false;
+  if(allergies.includes("shellfish") && (m.includes("shrimp") || m.includes("crab") || m.includes("lobster"))) return false;
+  if(allergies.includes("none")) return true;
+  return true;
+}
+
+const candidateMeals = [
+  "Greek yogurt + berries",
+  "Eggs + toast",
+  "Chicken rice bowl",
+  "Turkey wrap + fruit",
+  "Tofu stir-fry + rice",
+  "Salmon + potatoes",
+  "Protein smoothie (banana + protein powder)"
+].filter(allowed);
+
+const dayMeals = candidateMeals.slice(0,3);
+
+document.getElementById("mealCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">Meal plan preview</h2>
+  <div class="muted">A simple example day. We keep meals repeatable and beginner-friendly.</div>
+  <ul>${dayMeals.map(m=>`<li>${m}</li>`).join("")}</ul>
+  <div class="muted" style="margin-top:10px;">
+    Allergies/restrictions: ${ (onboarding.allergies && onboarding.allergies.length) ? onboarding.allergies.join(", ") : "None" }
+  </div>
+`;
+
+const grocery = {
+  Proteins: ["Chicken", "Turkey (optional)", "Tofu (swap option)", "Protein powder (optional)"],
+  Carbs: ["Rice", "Potatoes", "Oats (optional)", "Fruit"],
+  Produce: ["Frozen veggies", "Salad mix", "Berries", "Bananas"],
+  Extras: ["Salsa", "Seasoning", "Olive oil"]
+};
+
+// quick grocery filter examples (basic)
+if(allergies.includes("dairy")) grocery.Extras = grocery.Extras.filter(x=>!x.toLowerCase().includes("cheese"));
+if(allergies.includes("gluten")) grocery.Carbs = grocery.Carbs.filter(x=>!x.toLowerCase().includes("oats"));
+
+document.getElementById("groceryCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">Grocery list</h2>
+  <div class="muted">Built for simple meals (and easy swaps).</div>
+  ${Object.entries(grocery).map(([k,items]) => `
+    <div style="margin-top:12px;"><strong>${k}</strong></div>
+    <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
+  `).join("")}
+`;
+
+// ---------- workout plan (adjust volume suggestion) ----------
+let days = parseInt(onboarding.days_per_week || "3", 10);
+if(latest && (latest.workouts === "None" || latest.workouts === "Some")) days = Math.max(2, Math.min(days, 3));
+
+const workoutLines = [
+  "Squat or Leg Press — 3×8",
+  "Push movement (push-ups or bench) — 3×8",
+  "Row (machine row or dumbbell row) — 3×10",
+  "Core (plank/dead bug) — 3 sets"
+];
+
+document.getElementById("workoutCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">Workout plan</h2>
+  <div class="muted">Beginner routine focused on consistency and confidence.</div>
+  <div style="margin-top:10px;"><strong>${days}-day plan</strong></div>
+  <ul>${workoutLines.map(x=>`<li>${x}</li>`).join("")}</ul>
+  <div class="muted" style="margin-top:10px;">Progression: if you hit the top reps with good form, add a little weight next time.</div>
+`;
+
+// ---------- trends ----------
+function scoreEnergy(v){ return v==="High"?3 : v==="Okay"?2 : v==="Low"?1 : null; }
+function scoreStress(v){ return v==="Low"?3 : v==="Moderate"?2 : v==="High"?1 : null; }
+function scoreConf(v){ return v==="Very confident"?3 : v==="Somewhat confident"?2 : v==="Not confident"?1 : null; }
+function scoreWorkouts(v){ return v==="All of them"?3 : v==="Most of them"?2 : v==="Some"?1 : v==="None"?0 : null; }
+
+const last4 = checkins.slice(-4);
+const avg = (arr)=> arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+
+const avgEnergy = avg(last4.map(c=>scoreEnergy(c.energy)).filter(n=>n!==null));
+const avgStress = avg(last4.map(c=>scoreStress(c.stress)).filter(n=>n!==null));
+const avgConf   = avg(last4.map(c=>scoreConf(c.confidence)).filter(n=>n!==null));
+const avgWork   = avg(last4.map(c=>scoreWorkouts(c.workouts)).filter(n=>n!==null));
+
+function bar(v){
+  if(v===null) return "—";
+  if(v>=2.6) return "↑ Strong";
+  if(v>=1.8) return "→ Steady";
+  return "↓ Needs support";
+}
+
+document.getElementById("trendsCard").innerHTML = `
+  <h2 style="margin:0 0 8px;">Trends</h2>
+  <div class="muted">Based on your last ${last4.length} check-in(s).</div>
+
+  ${last4.length ? `
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Consistency</td><td>${bar(avgWork)}</td></tr>
+        <tr><td>Energy</td><td>${bar(avgEnergy)}</td></tr>
+        <tr><td>Stress</td><td>${bar(avgStress)}</td></tr>
+        <tr><td>Confidence</td><td>${bar(avgConf)}</td></tr>
+      </tbody>
+    </table>
+  ` : `<div class="muted" style="margin-top:10px;">Do your first check-in to start tracking trends.</div>`}
+`;
+</script>
+</body>
+</html>

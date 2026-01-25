@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/assets/styles.css">
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Coach Feedback — CoreHabit</title>
+
+<style>
+  body{margin:0;font-family:system-ui;background:#0b0f14;color:#e9eef5}
+  .container{max-width:700px;margin:auto;padding:40px 20px}
+  .card{background:#111827;border-radius:18px;padding:28px}
+  h1{margin-bottom:8px}
+  p{color:#a9b6c6}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Your coach feedback</h1>
+  <p>This is based on your latest check-in.</p>
+
+  <div class="card" id="feedback"></div>
+</div>
+
+<script>
+const checkins = JSON.parse(localStorage.getItem("corehabit_checkins")) || [];
+const last = checkins[checkins.length - 1];
+
+let message = "You showed up — and that matters.\n\n";
+
+if (last.workouts === "None") {
+  message += "This week looked busy. We’ll simplify your workouts next week.\n\n";
+}
+if (last.energy === "Low") {
+  message += "Low energy tells us recovery or fuel needs attention.\n\n";
+}
+if (last.confidence === "Not confident") {
+  message += "We’ll lower the bar and rebuild momentum.\n\n";
+}
+if (last.notes) {
+  message += `You mentioned: "${last.notes}"\n\nWe’ve taken that into account.`;
+}
+
+document.getElementById("feedback").innerText = message;
+</script>
+</body>
+</html>

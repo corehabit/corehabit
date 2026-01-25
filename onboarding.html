@@ -1,0 +1,284 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/assets/styles.css">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding — CoreHabit</title>
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111827;
+      --text: #e9eef5;
+      --muted: #a9b6c6;
+      --purple: #7c5cff;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(800px 400px at 20% -10%, rgba(124,92,255,0.25), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .step {
+      background: var(--panel);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .checkbox-group {
+      margin-bottom: 16px;
+    }
+
+    .checkbox-group label {
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-group input {
+      width: auto;
+      margin-right: 10px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c5cff, #9b8cff);
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      opacity: 0.95;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 13px;
+      color: #9f98ff;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #7b8794;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Tell us a bit about you</h1>
+    <p>This helps us build a plan that fits your life. No right or wrong answers.</p>
+
+    <!-- STEP 1: GOAL -->
+    <div class="step">
+      <h2>Your goal</h2>
+      <label for="goal">What’s your main goal right now?</label>
+      <select id="goal">
+        <option>Lose fat</option>
+        <option>Build muscle</option>
+        <option>Recomposition</option>
+        <option>General health</option>
+        <option>Build consistency</option>
+      </select>
+    </div>
+
+    <!-- STEP 2: EXPERIENCE -->
+    <div class="step">
+      <h2>Your experience</h2>
+      <label for="experience">How would you describe your experience?</label>
+      <select id="experience">
+        <option>True beginner</option>
+        <option>Returning beginner</option>
+        <option>Some experience (still want simple)</option>
+      </select>
+    </div>
+
+    <!-- STEP 3: BODY -->
+    <div class="step">
+      <h2>Your body</h2>
+
+      <label for="sex">Sex</label>
+      <select id="sex">
+        <option>Male</option>
+        <option>Female</option>
+        <option>Prefer not to say</option>
+      </select>
+
+      <label for="age">Age</label>
+      <input id="age" type="number" placeholder="e.g. 22" />
+
+      <label for="height">Height</label>
+      <input id="height" placeholder="e.g. 5'10 or 178 cm" />
+
+      <label for="weight">Weight</label>
+      <input id="weight" placeholder="e.g. 170 lbs or 77 kg" />
+    </div>
+
+    <!-- STEP 4: ROUTINE -->
+    <div class="step">
+      <h2>Your routine</h2>
+
+      <label for="location">Where will you train most?</label>
+      <select id="location">
+        <option>Gym</option>
+        <option>Home</option>
+        <option>Both</option>
+      </select>
+
+      <label for="days">How many days per week can you realistically train?</label>
+      <select id="days">
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+      </select>
+    </div>
+
+    <!-- STEP 5: NUTRITION -->
+    <div class="step">
+      <h2>Your nutrition</h2>
+
+      <label for="diet">Diet preference</label>
+      <select id="diet">
+        <option>No preference</option>
+        <option>High-protein</option>
+        <option>Vegetarian</option>
+        <option>Vegan</option>
+        <option>Pescatarian</option>
+      </select>
+
+      <label>Allergies or food restrictions (select all that apply)</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" value="Dairy" class="allergy"> Dairy</label>
+        <label><input type="checkbox" value="Gluten" class="allergy"> Gluten</label>
+        <label><input type="checkbox" value="Tree nuts" class="allergy"> Tree nuts</label>
+        <label><input type="checkbox" value="Peanuts" class="allergy"> Peanuts</label>
+        <label><input type="checkbox" value="Eggs" class="allergy"> Eggs</label>
+        <label><input type="checkbox" value="Shellfish" class="allergy"> Shellfish</label>
+        <label><input type="checkbox" value="None" class="allergy"> None</label>
+      </div>
+
+      <label for="otherAllergy">Other (optional)</label>
+      <input id="otherAllergy" placeholder="e.g. soy, sesame, lactose intolerance" />
+
+      <label for="meals">Meals per day</label>
+      <select id="meals">
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+    </div>
+
+    <!-- SUBMIT -->
+    <button class="btn" onclick="submitOnboarding()">
+      Generate My Plan
+    </button>
+
+    <div class="note">
+      Takes about 2 minutes • Built for beginners • No pressure
+    </div>
+
+    <footer>
+      CoreHabit provides educational wellness guidance only.<br />
+      Not medical advice.
+    </footer>
+
+  </div>
+
+  <script>
+    function submitOnboarding() {
+      const allergyNodes = document.querySelectorAll(".allergy:checked");
+      let allergies = Array.from(allergyNodes).map(a => a.value);
+
+      const otherAllergy = document.getElementById("otherAllergy").value.trim();
+      if (otherAllergy) {
+        allergies.push(otherAllergy);
+      }
+
+      const data = {
+        goal: document.getElementById("goal").value,
+        experience: document.getElementById("experience").value,
+        sex: document.getElementById("sex").value,
+        age: document.getElementById("age").value,
+        height: document.getElementById("height").value,
+        weight: document.getElementById("weight").value,
+        location: document.getElementById("location").value,
+        days_per_week: document.getElementById("days").value,
+        diet: document.getElementById("diet").value,
+        allergies: allergies,
+        meals_per_day: document.getElementById("meals").value
+      };
+
+      localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
+      window.location.href = "results.html";
+    }
+  </script>
+
+</body>
+</html>

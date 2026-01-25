@@ -1,0 +1,18 @@
+/* ===== CoreHabit Global Styles ===== */
+
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(124,92,255,0.25);
+}
+
+h1, h2 {
+  letter-spacing: -0.5px;
+}
+
+p {
+  max-width: 680px;
+}
