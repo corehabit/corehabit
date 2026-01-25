@@ -4,22 +4,15 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
 </head>
 
 <body style="
   min-height:100vh;
-  background: radial-gradient(
-    80% 80% at 20% 10%,
-    #1a1f35 0%,
-    #0b0f19 60%
-  ) !important;
+  background: radial-gradient(80% 80% at 20% 10%, #1a1f35 0%, #0b0f19 60%) !important;
   color:#ffffff;
 ">
 
-  <!-- PAGE CONTAINER -->
   <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
@@ -27,11 +20,22 @@
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" id="tab-plan" onclick="showTab('plan')">Plan</div>
+      <div class="tab locked" id="tab-grocery" onclick="openUpgradeModal('grocery')">
+        Grocery List <span class="lock-pill">🔒 Premium</span>
+      </div>
+      <div class="tab locked" id="tab-budget" onclick="openUpgradeModal('budget')">
+        Budget <span class="lock-pill">🔒 Premium</span>
+      </div>
+    </div>
+
     <!-- STATUS -->
-    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+    <p id="status" style="margin-top:10px;font-weight:600;"></p>
 
     <!-- BUTTONS -->
-    <div style="margin-top:20px;">
+    <div style="margin-top:14px;">
       <button id="generateBtn" onclick="generatePlan()" style="
         padding:14px 22px;
         border-radius:999px;
@@ -74,7 +78,81 @@
 
   </div>
 
+  <!-- Premium Upgrade Modal -->
+  <div class="modal-overlay" id="premiumModalOverlay" onclick="overlayClickClose(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="premiumTitle">
+      <div class="modal-header">
+        <div>
+          <p class="modal-title" id="premiumTitle">Upgrade to CoreHabit Premium</p>
+          <p class="modal-subtitle"><strong>$14.99/month</strong> · Cancel anytime</p>
+        </div>
+        <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="color:#cbd5e1;font-weight:700;">
+          Free: “Here’s what to do.”<br/>
+          Premium: “Here’s how to actually do it — affordably.”
+        </div>
+
+        <ul class="modal-bullets">
+          <li>🛒 Get a weekly <strong>grocery list</strong> from your plan</li>
+          <li>💵 Choose a <strong>budget mode</strong> (low-cost, balanced, flexible)</li>
+          <li>💪 Optionally <strong>focus a muscle group</strong> (glutes, arms, chest, etc.)</li>
+          <li>🔁 <strong>Unlimited</strong> plan regenerations</li>
+        </ul>
+
+        <div id="premiumContext" style="margin-top:14px;color:#cbd5e1;font-weight:700;"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-primary" onclick="upgradeClicked()">Upgrade to Premium</button>
+        <button class="modal-secondary" onclick="closeUpgradeModal()">Keep Free Plan</button>
+      </div>
+    </div>
+  </div>
+
 <script>
+/* ---------- Tabs (free users only get Plan; locked tabs open modal) ---------- */
+function showTab(tabName) {
+  // Only Plan is available in free right now.
+  document.getElementById("tab-plan").classList.add("active");
+  // If you later implement premium tabs, this is where you’d switch content.
+}
+
+/* ---------- Premium Modal ---------- */
+function openUpgradeModal(source) {
+  const overlay = document.getElementById("premiumModalOverlay");
+  const ctx = document.getElementById("premiumContext");
+
+  if (source === "grocery") {
+    ctx.textContent = "Unlock Grocery List: turn your plan into a ready-to-shop list each week.";
+  } else if (source === "budget") {
+    ctx.textContent = "Unlock Budget: get low-cost swaps and budget modes that fit your lifestyle.";
+  } else if (source === "focus") {
+    ctx.textContent = "Unlock Muscle Focus: emphasize one area (glutes, arms, chest, etc.) while staying balanced.";
+  } else {
+    ctx.textContent = "";
+  }
+
+  overlay.style.display = "flex";
+}
+
+function closeUpgradeModal() {
+  document.getElementById("premiumModalOverlay").style.display = "none";
+}
+
+function overlayClickClose(e) {
+  if (e.target.id === "premiumModalOverlay") closeUpgradeModal();
+}
+
+function upgradeClicked() {
+  // Placeholder for Stripe/checkout later
+  alert("Premium checkout is coming next. This button will take users to payment.");
+  closeUpgradeModal();
+}
+
+/* ---------- Plan Generation ---------- */
 async function generatePlan() {
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
@@ -88,7 +166,6 @@ async function generatePlan() {
   resultEl.innerHTML = "";
 
   const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-
   if (!onboardingRaw) {
     statusEl.textContent = "No onboarding data found.";
     generateBtn.disabled = false;
