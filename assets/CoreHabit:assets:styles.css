@@ -58,3 +58,151 @@ p {
 #result p {
   line-height: 1.6;
 }
+/* ===== Premium UI (Tabs + Modal + Locks) ===== */
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  border: 1px solid rgba(124,92,255,0.45);
+  background: rgba(124,92,255,0.08);
+  color: #e5e7eb;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tab.active {
+  background: rgba(124,92,255,0.22);
+  border-color: rgba(124,92,255,0.9);
+  color: #ffffff;
+}
+
+.tab.locked {
+  opacity: 0.95;
+}
+
+.lock-pill {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #7c5cff;
+  background: rgba(124,92,255,0.18);
+  border: 1px solid rgba(124,92,255,0.45);
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 18px 18px 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+}
+
+.modal-subtitle {
+  margin: 6px 0 0 0;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.modal-body {
+  padding: 0 18px 16px 18px;
+  color: #e5e7eb;
+}
+
+.modal-bullets {
+  margin: 14px 0 0 0;
+  padding-left: 18px;
+}
+
+.modal-bullets li {
+  margin-bottom: 8px;
+  color: #e5e7eb;
+}
+
+.modal-footer {
+  padding: 14px 18px 18px 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-primary {
+  background: #7c5cff;
+  border: none;
+  color: #ffffff;
+  font-weight: 800;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.modal-secondary {
+  background: transparent;
+  border: 1px solid rgba(124,92,255,0.75);
+  color: #7c5cff;
+  font-weight: 800;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.premium-lock {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.premium-lock input,
+.premium-lock select {
+  pointer-events: none; /* keep disabled feel */
+}
