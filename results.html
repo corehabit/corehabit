@@ -47,14 +47,14 @@
 
   </div>
 
-  <script>
+ <script>
 async function generatePlan() {
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
 
   statusEl.textContent = "Building your CoreHabit plan...";
-  resultEl.style.display = "block";
-  resultEl.textContent = "Waiting for response...";
+  resultEl.style.display = "none";
+  resultEl.innerHTML = "";
 
   const onboardingRaw = localStorage.getItem("corehabit_onboarding");
 
@@ -72,13 +72,55 @@ async function generatePlan() {
       body: JSON.stringify({ onboarding })
     });
 
-    const text = await response.text();
+    const data = await response.json();
 
-    statusEl.textContent = `Response status: ${response.status}`;
-    resultEl.textContent = text;
+    statusEl.textContent = "";
+    resultEl.style.display = "block";
+
+    // ---- CLEAN RENDER ----
+    resultEl.innerHTML = `
+      <section>
+        <h2>Overview</h2>
+        <p>${data.overview}</p>
+      </section>
+
+      <section>
+        <h2>Weekly Workout Split</h2>
+        <ul>
+          ${data.weekly_workout_split.map(item => `<li>${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Sample Workout</h2>
+        <ul>
+          ${data.sample_workout.map(item => `<li>${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Daily Nutrition Guidelines</h2>
+        <ul>
+          ${data.daily_nutrition_guidelines.map(item => `<li>${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Sample Day of Eating</h2>
+        <ul>
+          ${data.sample_day_of_eating.map(item => `<li>${item}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Weekly Focus</h2>
+        <p>${data.weekly_focus_tip}</p>
+      </section>
+    `;
 
   } catch (err) {
-    statusEl.textContent = "Fetch failed";
+    statusEl.textContent = "Something went wrong.";
+    resultEl.style.display = "block";
     resultEl.textContent = err.message;
   }
 }
