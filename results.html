@@ -48,52 +48,40 @@
   </div>
 
   <script>
-    async function generatePlan() {
-      const statusEl = document.getElementById("status");
-      const resultEl = document.getElementById("result");
+async function generatePlan() {
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
 
-      statusEl.textContent = "Building your plan...";
-      resultEl.style.display = "none";
-      resultEl.textContent = "";
+  statusEl.textContent = "Building your CoreHabit plan...";
+  resultEl.style.display = "block";
+  resultEl.textContent = "Waiting for response...";
 
-      const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
 
-      if (!onboardingRaw) {
-        statusEl.textContent =
-          "No onboarding data found. Please restart the process.";
-        return;
-      }
+  if (!onboardingRaw) {
+    statusEl.textContent = "No onboarding data found.";
+    return;
+  }
 
-      const onboarding = JSON.parse(onboardingRaw);
+  const onboarding = JSON.parse(onboardingRaw);
 
-      try {
-        const response = await fetch(
-          "/.netlify/functions/generatePlan",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ onboarding })
-          }
-        );
+  try {
+    const response = await fetch("/.netlify/functions/generatePlan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ onboarding })
+    });
 
-        if (!response.ok) {
-          throw new Error("Backend error");
-        }
+    const text = await response.text();
 
-        const data = await response.json();
+    statusEl.textContent = `Response status: ${response.status}`;
+    resultEl.textContent = text;
 
-        statusEl.textContent = "";
-        resultEl.style.display = "block";
-
-        // For now, show raw response (we’ll format later)
-        resultEl.textContent = JSON.stringify(data, null, 2);
-
-      } catch (error) {
-        statusEl.textContent =
-          "Something went wrong while generating your plan.";
-      }
-    }
-  </script>
-
+  } catch (err) {
+    statusEl.textContent = "Fetch failed";
+    resultEl.textContent = err.message;
+  }
+}
+</script>
 </body>
 </html>
