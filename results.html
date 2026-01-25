@@ -5,7 +5,7 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- KEEP CSS LINK -->
+  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
 </head>
 
@@ -27,21 +27,39 @@
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
+    <!-- STATUS -->
     <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
-    <button onclick="generatePlan()" style="
-      margin-top:20px;
-      padding:14px 22px;
-      border-radius:999px;
-      border:none;
-      background:#7c5cff;
-      color:white;
-      font-weight:700;
-      font-size:16px;
-      cursor:pointer;
-    ">
-      Generate My Plan
-    </button>
+    <!-- BUTTONS -->
+    <div style="margin-top:20px;">
+      <button id="generateBtn" onclick="generatePlan()" style="
+        padding:14px 22px;
+        border-radius:999px;
+        border:none;
+        background:#7c5cff;
+        color:white;
+        font-weight:700;
+        font-size:16px;
+        cursor:pointer;
+      ">
+        Generate My Plan
+      </button>
+
+      <button id="regenBtn" onclick="generatePlan()" style="
+        margin-left:12px;
+        padding:12px 20px;
+        border-radius:999px;
+        border:1px solid #7c5cff;
+        background:transparent;
+        color:#7c5cff;
+        font-weight:600;
+        font-size:14px;
+        cursor:pointer;
+        display:none;
+      ">
+        Regenerate Plan
+      </button>
+    </div>
 
     <!-- PLAN CARD -->
     <div id="result" style="
@@ -60,8 +78,12 @@
 async function generatePlan() {
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
+  const generateBtn = document.getElementById("generateBtn");
+  const regenBtn = document.getElementById("regenBtn");
 
-  statusEl.textContent = "Building your CoreHabit plan...";
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Generating...";
+  statusEl.textContent = "Creating a fresh CoreHabit plan...";
   resultEl.style.display = "none";
   resultEl.innerHTML = "";
 
@@ -69,6 +91,8 @@ async function generatePlan() {
 
   if (!onboardingRaw) {
     statusEl.textContent = "No onboarding data found.";
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
     return;
   }
 
@@ -125,10 +149,17 @@ async function generatePlan() {
         <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
       </section>
     `;
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+    regenBtn.style.display = "inline-block";
+
   } catch (err) {
     statusEl.textContent = "Something went wrong.";
     resultEl.style.display = "block";
     resultEl.textContent = err.message;
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
   }
 }
 </script>
