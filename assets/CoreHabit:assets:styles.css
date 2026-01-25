@@ -1,12 +1,14 @@
 /* ===== CoreHabit Global Styles ===== */
 
-/* GLOBAL BACKGROUND + TEXT */
+/* FORCE DARK BACKGROUND (OVERRIDES EVERYTHING) */
+html,
 body {
+  min-height: 100%;
   background: radial-gradient(
     80% 80% at 20% 10%,
     #1a1f35 0%,
     #0b0f19 60%
-  );
+  ) !important;
   color: #ffffff;
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,6 +32,7 @@ h1, h2 {
 p {
   max-width: 680px;
   color: #e5e7eb;
+  line-height: 1.6;
 }
 
 /* RESULTS PAGE PLAN STYLES */
@@ -40,6 +43,7 @@ p {
 #result h2 {
   margin-bottom: 8px;
   font-size: 20px;
+  color: #ffffff;
 }
 
 #result ul {
@@ -48,6 +52,7 @@ p {
 
 #result li {
   margin-bottom: 6px;
+  color: #e5e7eb;
 }
 
 #result p {
