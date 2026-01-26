@@ -8,168 +8,56 @@
 </head>
 
 <body>
-  <div class="page">
-    <div class="page-narrow">
+  <div class="page-wrapper">
 
-      <!-- HEADER -->
-      <h1 class="section-title">Your Personalized Plan</h1>
-      <p class="section-subtitle">
-        Based on your answers, here’s your CoreHabit plan.
-      </p>
+    <h1>Your Personalized Plan</h1>
+    <p>Based on your answers, here’s your CoreHabit plan.</p>
 
-      <!-- ACTIONS -->
-      <div class="action-row">
-        <button class="primary-button" onclick="generatePlan()">
-          Generate My Plan
-        </button>
-
-        <button class="secondary-button" onclick="generatePlan()">
-          Regenerate Plan
-        </button>
-      </div>
-
-      <!-- STATUS -->
-      <p id="status" class="status-text"></p>
-
-      <!-- PREMIUM TABS (LOCKED) -->
-      <div class="plan-tabs">
-        <div class="tab active">Plan</div>
-        <div class="tab locked" onclick="openUpgradeModal()">Grocery List 🔒</div>
-        <div class="tab locked" onclick="openUpgradeModal()">Budget 🔒</div>
-      </div>
-
-      <!-- PLAN CARD -->
-      <div id="result" class="plan-card" style="display:none;"></div>
-
+    <div style="margin-top:24px;">
+      <button class="button-primary" onclick="generatePlan()">Generate My Plan</button>
+      <button class="button-secondary" onclick="generatePlan()">Regenerate</button>
     </div>
-  </div>
 
-  <!-- PREMIUM MODAL -->
-  <div class="modal-overlay" id="premiumModalOverlay" onclick="overlayClickClose(event)">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <p class="modal-title">Upgrade to CoreHabit Premium</p>
-          <p class="modal-subtitle"><strong>$14.99/month</strong> · Cancel anytime</p>
-        </div>
-        <button class="modal-close" onclick="closeUpgradeModal()">✕</button>
-      </div>
+    <div id="result" class="card" style="margin-top:32px; display:none;"></div>
 
-      <div class="modal-body">
-        <p class="modal-contrast">
-          Free: “Here’s what to do.”<br>
-          Premium: “Here’s how to actually do it — affordably.”
-        </p>
-
-        <ul class="modal-bullets">
-          <li>🛒 Weekly grocery list</li>
-          <li>💵 Budget modes & food swaps</li>
-          <li>💪 Muscle group focus</li>
-          <li>🔁 Unlimited regenerations</li>
-        </ul>
-      </div>
-
-      <div class="modal-footer">
-        <button class="modal-primary" onclick="upgradeClicked()">Upgrade to Premium</button>
-        <button class="modal-secondary" onclick="closeUpgradeModal()">Keep Free</button>
-      </div>
-    </div>
   </div>
 
 <script>
 async function generatePlan() {
-  const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
+  resultEl.style.display = "block";
+  resultEl.innerHTML = "Building your plan...";
 
-  statusEl.textContent = "Building your CoreHabit plan…";
-  resultEl.style.display = "none";
-  resultEl.innerHTML = "";
+  const onboarding = JSON.parse(localStorage.getItem("corehabit_onboarding"));
 
-  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-  if (!onboardingRaw) {
-    statusEl.textContent = "No onboarding data found.";
-    return;
-  }
+  const res = await fetch("/.netlify/functions/generatePlan", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ onboarding })
+  });
 
-  const onboarding = JSON.parse(onboardingRaw);
+  const data = await res.json();
 
-  try {
-    const response = await fetch("/.netlify/functions/generatePlan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ onboarding })
-    });
+  resultEl.innerHTML = `
+    <h2>Overview</h2>
+    <p>${data.overview}</p>
 
-    const data = await response.json();
+    <h2>Weekly Workout Split</h2>
+    <ul>${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}</ul>
 
-    statusEl.textContent = "";
-    resultEl.style.display = "block";
+    <h2>Sample Workout</h2>
+    <ul>${data.sample_workout.map(i => `<li>${i}</li>`).join("")}</ul>
 
-    resultEl.innerHTML = `
-      <section>
-        <h2>Overview</h2>
-        <p>${data.overview}</p>
-      </section>
+    <h2>Daily Nutrition Guidelines</h2>
+    <ul>${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}</ul>
 
-      <section>
-        <h2>Weekly Workout Split</h2>
-        <ul>
-          ${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}
-        </ul>
-      </section>
+    <h2>Sample Day of Eating</h2>
+    <ul>${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}</ul>
 
-      <section>
-        <h2>Sample Workout</h2>
-        <ul>
-          ${data.sample_workout.map(i => `<li>${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Daily Nutrition Guidelines</h2>
-        <ul>
-          ${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Sample Day of Eating</h2>
-        <ul>
-          ${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section>
-        <h2>Weekly Focus</h2>
-        <p>${data.weekly_focus_tip}</p>
-      </section>
-    `;
-
-  } catch (err) {
-    statusEl.textContent = "Something went wrong.";
-    resultEl.style.display = "block";
-    resultEl.textContent = err.message;
-  }
-}
-
-/* ---------- Premium modal ---------- */
-function openUpgradeModal() {
-  document.getElementById("premiumModalOverlay").style.display = "flex";
-}
-
-function closeUpgradeModal() {
-  document.getElementById("premiumModalOverlay").style.display = "none";
-}
-
-function overlayClickClose(e) {
-  if (e.target.id === "premiumModalOverlay") closeUpgradeModal();
-}
-
-function upgradeClicked() {
-  alert("Premium checkout coming next.");
-  closeUpgradeModal();
+    <h2>Weekly Focus</h2>
+    <p>${data.weekly_focus_tip}</p>
+  `;
 }
 </script>
-
 </body>
 </html>
