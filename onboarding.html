@@ -8,196 +8,81 @@
 </head>
 
 <body>
-  <div class="page">
-    <div class="page-narrow">
+  <div class="page-wrapper">
 
-      <!-- HERO -->
-      <h1 class="section-title">Tell us about yourself</h1>
-      <p class="section-subtitle">
-        Answer a few quick questions so we can personalize your CoreHabit plan.
-      </p>
+    <h1>Tell us about yourself</h1>
+    <p>Answer a few questions so we can personalize your CoreHabit plan.</p>
 
-      <!-- FORM -->
-      <form id="onboardingForm" class="form-stack">
+    <form id="onboardingForm" class="card">
 
-        <!-- CORE QUESTIONS -->
-        <div class="form-grid">
+      <label>Goal</label>
+      <select name="goal" required>
+        <option value="">Select</option>
+        <option>Lose fat</option>
+        <option>Build muscle</option>
+        <option>Get healthier</option>
+      </select>
 
-          <div class="form-field">
-            <label>Goal</label>
-            <select name="goal" required>
-              <option value="">Select</option>
-              <option value="Lose fat">Lose fat</option>
-              <option value="Build muscle">Build muscle</option>
-              <option value="Get healthier">Get healthier</option>
-            </select>
-          </div>
+      <label>Experience Level</label>
+      <select name="experience" required>
+        <option value="">Select</option>
+        <option>Beginner</option>
+        <option>Intermediate</option>
+      </select>
 
-          <div class="form-field">
-            <label>Experience Level</label>
-            <select name="experience" required>
-              <option value="">Select</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-            </select>
-          </div>
+      <label>Training Location</label>
+      <select name="location" required>
+        <option value="">Select</option>
+        <option>Gym</option>
+        <option>Home</option>
+      </select>
 
-          <div class="form-field">
-            <label>Training Location</label>
-            <select name="location" required>
-              <option value="">Select</option>
-              <option value="Gym">Gym</option>
-              <option value="Home">Home</option>
-            </select>
-          </div>
+      <label>Training Days Per Week</label>
+      <select name="days_per_week" required>
+        <option value="">Select</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+      </select>
 
-          <div class="form-field">
-            <label>Training Days Per Week</label>
-            <select name="days_per_week" required>
-              <option value="">Select</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-          </div>
+      <label>Diet Preference</label>
+      <select name="diet">
+        <option>Balanced</option>
+        <option>High protein</option>
+      </select>
 
-          <div class="form-field">
-            <label>Diet Preference</label>
-            <select name="diet">
-              <option value="Balanced">Balanced</option>
-              <option value="High protein">High protein</option>
-            </select>
-          </div>
+      <label>Meals Per Day</label>
+      <select name="meals_per_day">
+        <option>3</option>
+        <option>4</option>
+      </select>
 
-          <div class="form-field">
-            <label>Meals Per Day</label>
-            <select name="meals_per_day">
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
-          </div>
+      <label>Allergies or Restrictions</label>
+      <input type="text" name="allergies" placeholder="None" />
 
-          <div class="form-field">
-            <label>Allergies or Restrictions</label>
-            <input type="text" name="allergies" placeholder="None" />
-          </div>
-
-        </div>
-
-        <!-- PREMIUM SURFACE -->
-        <div class="premium-surface">
-
-          <div class="premium-header">
-            <h2>Want to personalize your plan even more?</h2>
-            <span class="lock-pill">Premium</span>
-          </div>
-
-          <p class="premium-subtext">
-            Premium members can optionally emphasize a muscle group while keeping the plan balanced.
-          </p>
-
-          <div class="premium-lock" onclick="openUpgradeModal()" role="button">
-            <div class="focus-grid">
-              <label><input type="radio" disabled> Chest</label>
-              <label><input type="radio" disabled> Back</label>
-              <label><input type="radio" disabled> Shoulders</label>
-              <label><input type="radio" disabled> Arms</label>
-              <label><input type="radio" disabled> Glutes</label>
-              <label><input type="radio" disabled> Quads</label>
-              <label><input type="radio" disabled> Hamstrings</label>
-              <label><input type="radio" disabled> Core</label>
-            </div>
-
-            <p class="premium-hint">
-              Included with CoreHabit Premium — $14.99/month · Cancel anytime
-            </p>
-          </div>
-
-        </div>
-
-        <!-- REASSURANCE -->
-        <p class="soft-note">
-          You can always upgrade later — your free plan still includes full workouts and nutrition guidance.
-        </p>
-
-        <!-- CTA -->
-        <button type="submit" class="primary-button">
-          Continue
-        </button>
-
-      </form>
-    </div>
-  </div>
-
-  <!-- PREMIUM MODAL -->
-  <div class="modal-overlay" id="premiumModalOverlay" onclick="overlayClickClose(event)">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <p class="modal-title">Upgrade to CoreHabit Premium</p>
-          <p class="modal-subtitle"><strong>$14.99/month</strong> · Cancel anytime</p>
-        </div>
-        <button class="modal-close" onclick="closeUpgradeModal()">✕</button>
+      <div style="margin-top:28px;">
+        <h2>Want to personalize your plan even more?</h2>
+        <p>Premium members can optionally emphasize a muscle group.</p>
+        <span class="lock-pill">🔒 Premium — $14.99/month</span>
       </div>
 
-      <div class="modal-body">
-        <p class="modal-contrast">
-          Free: “Here’s what to do.”<br>
-          Premium: “Here’s how to actually do it — affordably.”
-        </p>
+      <button class="button-primary" style="margin-top:32px;">
+        Continue
+      </button>
 
-        <ul class="modal-bullets">
-          <li>🛒 Weekly grocery list</li>
-          <li>💵 Budget modes & food swaps</li>
-          <li>💪 Muscle group focus</li>
-          <li>🔁 Unlimited regenerations</li>
-        </ul>
-      </div>
-
-      <div class="modal-footer">
-        <button class="modal-primary" onclick="upgradeClicked()">Upgrade to Premium</button>
-        <button class="modal-secondary" onclick="closeUpgradeModal()">Keep Free</button>
-      </div>
-    </div>
+    </form>
   </div>
 
 <script>
-/* ---------- Save onboarding ---------- */
 document.getElementById("onboardingForm").addEventListener("submit", function(e) {
   e.preventDefault();
-
   const formData = new FormData(e.target);
   const data = {};
-
-  for (const [key, value] of formData.entries()) {
-    data[key] = value;
-  }
-
-  // Premium locked by default
+  for (const [k, v] of formData.entries()) data[k] = v;
   data.focus_muscle = "none";
-
   localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
   window.location.href = "results.html";
 });
-
-/* ---------- Premium modal ---------- */
-function openUpgradeModal() {
-  document.getElementById("premiumModalOverlay").style.display = "flex";
-}
-
-function closeUpgradeModal() {
-  document.getElementById("premiumModalOverlay").style.display = "none";
-}
-
-function overlayClickClose(e) {
-  if (e.target.id === "premiumModalOverlay") closeUpgradeModal();
-}
-
-function upgradeClicked() {
-  alert("Premium checkout coming next.");
-  closeUpgradeModal();
-}
 </script>
-
 </body>
 </html>
