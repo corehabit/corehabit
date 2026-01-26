@@ -1,108 +1,128 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- FORCE DARK BACKGROUND SAFETY NET -->
-  <style>
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: radial-gradient(
-        80% 80% at 20% 10%,
-        #1a1f35 0%,
-        #0b0f19 60%
-      );
-      color: #ffffff;
-    }
-  </style>
-
-  <!-- MAIN STYLES -->
-  <link rel="stylesheet" href="assets/styles.css" />
-
-  <title>Your Plan — CoreHabit</title>
-</head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/styles.css">
+
+  <!-- GLOBAL STYLES (ABSOLUTE PATH – REQUIRED FOR NETLIFY) -->
+  <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 
 <body>
-  <div class="page-container">
 
-    <h1 class="page-title">Your Personalized Plan</h1>
-    <p class="page-subtitle">
+  <div class="page-wrapper">
+
+    <!-- HEADER -->
+    <h1>Your Personalized Plan</h1>
+    <p>
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
-    <div class="action-row">
-      <button class="primary-btn" onclick="generatePlan()">Generate My Plan</button>
-      <button class="secondary-btn" onclick="generatePlan()">Regenerate</button>
+    <!-- ACTION BUTTONS -->
+    <div style="display:flex;gap:12px;margin:20px 0;">
+      <button class="button-primary" id="generateBtn">
+        Generate My Plan
+      </button>
+
+      <button class="button-secondary" id="regenBtn">
+        Regenerate
+      </button>
     </div>
 
-    <!-- LOCKED TABS -->
-    <div class="locked-tabs">
-      <span>Plan</span>
-      <span class="locked">Grocery List 🔒</span>
-      <span class="locked">Budget 🔒</span>
+    <!-- PREMIUM TABS -->
+    <div style="margin-bottom:30px;">
+      <strong>Plan</strong><br />
+      Grocery List <span class="lock-pill">🔒 Premium</span><br />
+      Budget <span class="lock-pill">🔒 Premium</span>
     </div>
 
-    <div id="result" class="card" style="display:none;"></div>
+    <!-- PLAN CONTENT -->
+    <div class="card">
+
+      <h2>Overview</h2>
+      <p id="overviewText">Loading your plan…</p>
+
+      <h2>Weekly Workout Split</h2>
+      <ul id="workoutSplit"></ul>
+
+      <h2>Sample Workout</h2>
+      <ul id="sampleWorkout"></ul>
+
+      <h2>Daily Nutrition Guidelines</h2>
+      <ul id="nutritionGuidelines"></ul>
+
+      <h2>Sample Day of Eating</h2>
+      <ul id="sampleEating"></ul>
+
+      <p id="weeklyTip" style="margin-top:20px;font-style:italic;"></p>
+
+    </div>
 
   </div>
 
-<script>
-async function generatePlan() {
-  const resultEl = document.getElementById("result");
-  resultEl.style.display = "block";
-  resultEl.innerHTML = "Building your plan…";
+  <!-- SCRIPT -->
+  <script>
+    const onboarding = JSON.parse(
+      localStorage.getItem("corehabit_onboarding") || "{}"
+    );
 
-  const onboarding = JSON.parse(localStorage.getItem("corehabit_onboarding"));
+    const overviewText = document.getElementById("overviewText");
+    const workoutSplit = document.getElementById("workoutSplit");
+    const sampleWorkout = document.getElementById("sampleWorkout");
+    const nutritionGuidelines = document.getElementById("nutritionGuidelines");
+    const sampleEating = document.getElementById("sampleEating");
+    const weeklyTip = document.getElementById("weeklyTip");
 
-  const res = await fetch("/.netlify/functions/generatePlan", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ onboarding })
-  });
+    async function generatePlan() {
+      overviewText.textContent = "Generating your personalized plan…";
 
-  const data = await res.json();
+      workoutSplit.innerHTML = "";
+      sampleWorkout.innerHTML = "";
+      nutritionGuidelines.innerHTML = "";
+      sampleEating.innerHTML = "";
+      weeklyTip.textContent = "";
 
-  resultEl.innerHTML = `
-    <section>
-      <h2>Overview</h2>
-      <p>${data.overview}</p>
-    </section>
+      const res = await fetch("/.netlify/functions/generatePlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ onboarding })
+      });
 
-    <section>
-      <h2>Weekly Workout Split</h2>
-      <ul>${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}</ul>
-    </section>
+      const plan = await res.json();
 
-    <section>
-      <h2>Sample Workout</h2>
-      <ul>${data.sample_workout.map(i => `<li>${i}</li>`).join("")}</ul>
-    </section>
+      overviewText.textContent = plan.overview;
 
-    <section>
-      <h2>Daily Nutrition Guidelines</h2>
-      <ul>${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}</ul>
-    </section>
+      plan.weekly_workout_split.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        workoutSplit.appendChild(li);
+      });
 
-    <section>
-      <h2>Sample Day of Eating</h2>
-      <ul>${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}</ul>
-    </section>
+      plan.sample_workout.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        sampleWorkout.appendChild(li);
+      });
 
-    <section>
-      <h2>Weekly Focus</h2>
-      <p>${data.weekly_focus_tip}</p>
-    </section>
-  `;
-}
-</script>
+      plan.daily_nutrition_guidelines.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        nutritionGuidelines.appendChild(li);
+      });
+
+      plan.sample_day_of_eating.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        sampleEating.appendChild(li);
+      });
+
+      weeklyTip.textContent = plan.weekly_focus_tip;
+    }
+
+    document.getElementById("generateBtn").onclick = generatePlan;
+    document.getElementById("regenBtn").onclick = generatePlan;
+  </script>
 
 </body>
 </html>
