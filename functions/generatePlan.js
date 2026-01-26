@@ -19,6 +19,9 @@ exports.handler = async function (event) {
       };
     }
 
+    // ---- PREMIUM DATA (SAFE DEFAULT) ----
+    const focusMuscle = onboarding.focus_muscle || "none";
+
     // --- STRICT STRUCTURED PROMPT ---
     const systemPrompt =
       "You are CoreHabit, a fitness and nutrition coaching engine. " +
@@ -35,6 +38,16 @@ exports.handler = async function (event) {
       '  "sample_day_of_eating": string[],\n' +
       '  "weekly_focus_tip": string\n' +
       "}\n\n" +
+
+      // ---- PREMIUM MUSCLE FOCUS INSTRUCTIONS ----
+      "Muscle focus rules:\n" +
+      "- Selected muscle: \"" + focusMuscle + "\"\n" +
+      "- If the selected muscle is \"none\", create a fully balanced beginner program.\n" +
+      "- If a muscle is selected, SLIGHTLY prioritize it while maintaining full-body balance.\n" +
+      "- Do NOT dramatically increase volume.\n" +
+      "- Keep everything beginner-safe and sustainable.\n" +
+      "- Use gym or home exercises based on the user's training location.\n\n" +
+
       "Onboarding data:\n" +
       JSON.stringify(onboarding, null, 2);
 
