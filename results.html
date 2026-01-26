@@ -4,172 +4,90 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 
-<body style="
-  min-height:100vh;
-  background: radial-gradient(80% 80% at 20% 10%, #1a1f35 0%, #0b0f19 60%) !important;
-  color:#ffffff;
-">
+<body>
+  <div class="page">
+    <div class="page-narrow">
 
-  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
+      <!-- HEADER -->
+      <h1 class="section-title">Your Personalized Plan</h1>
+      <p class="section-subtitle">
+        Based on your answers, here’s your CoreHabit plan.
+      </p>
 
-    <h1>Your Personalized Plan</h1>
-    <p style="color:#9ca3af;">
-      Based on your answers, here’s your CoreHabit plan.
-    </p>
+      <!-- ACTIONS -->
+      <div class="action-row">
+        <button class="primary-button" onclick="generatePlan()">
+          Generate My Plan
+        </button>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab active" id="tab-plan" onclick="showTab('plan')">Plan</div>
-      <div class="tab locked" id="tab-grocery" onclick="openUpgradeModal('grocery')">
-        Grocery List <span class="lock-pill">🔒 Premium</span>
+        <button class="secondary-button" onclick="generatePlan()">
+          Regenerate Plan
+        </button>
       </div>
-      <div class="tab locked" id="tab-budget" onclick="openUpgradeModal('budget')">
-        Budget <span class="lock-pill">🔒 Premium</span>
+
+      <!-- STATUS -->
+      <p id="status" class="status-text"></p>
+
+      <!-- PREMIUM TABS (LOCKED) -->
+      <div class="plan-tabs">
+        <div class="tab active">Plan</div>
+        <div class="tab locked" onclick="openUpgradeModal()">Grocery List 🔒</div>
+        <div class="tab locked" onclick="openUpgradeModal()">Budget 🔒</div>
       </div>
+
+      <!-- PLAN CARD -->
+      <div id="result" class="plan-card" style="display:none;"></div>
+
     </div>
-
-    <!-- STATUS -->
-    <p id="status" style="margin-top:10px;font-weight:600;"></p>
-
-    <!-- BUTTONS -->
-    <div style="margin-top:14px;">
-      <button id="generateBtn" onclick="generatePlan()" style="
-        padding:14px 22px;
-        border-radius:999px;
-        border:none;
-        background:#7c5cff;
-        color:white;
-        font-weight:700;
-        font-size:16px;
-        cursor:pointer;
-      ">
-        Generate My Plan
-      </button>
-
-      <button id="regenBtn" onclick="generatePlan()" style="
-        margin-left:12px;
-        padding:12px 20px;
-        border-radius:999px;
-        border:1px solid #7c5cff;
-        background:transparent;
-        color:#7c5cff;
-        font-weight:600;
-        font-size:14px;
-        cursor:pointer;
-        display:none;
-      ">
-        Regenerate Plan
-      </button>
-    </div>
-
-    <!-- PLAN CARD -->
-    <div id="result" style="
-      margin-top:40px;
-      padding:32px;
-      background:#111827;
-      color:#e5e7eb;
-      border-radius:20px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.4);
-      display:none;
-    "></div>
-
   </div>
 
-  <!-- Premium Upgrade Modal -->
+  <!-- PREMIUM MODAL -->
   <div class="modal-overlay" id="premiumModalOverlay" onclick="overlayClickClose(event)">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="premiumTitle">
+    <div class="modal">
       <div class="modal-header">
         <div>
-          <p class="modal-title" id="premiumTitle">Upgrade to CoreHabit Premium</p>
+          <p class="modal-title">Upgrade to CoreHabit Premium</p>
           <p class="modal-subtitle"><strong>$14.99/month</strong> · Cancel anytime</p>
         </div>
-        <button class="modal-close" onclick="closeUpgradeModal()" aria-label="Close">✕</button>
+        <button class="modal-close" onclick="closeUpgradeModal()">✕</button>
       </div>
 
       <div class="modal-body">
-        <div style="color:#cbd5e1;font-weight:700;">
-          Free: “Here’s what to do.”<br/>
+        <p class="modal-contrast">
+          Free: “Here’s what to do.”<br>
           Premium: “Here’s how to actually do it — affordably.”
-        </div>
+        </p>
 
         <ul class="modal-bullets">
-          <li>🛒 Get a weekly <strong>grocery list</strong> from your plan</li>
-          <li>💵 Choose a <strong>budget mode</strong> (low-cost, balanced, flexible)</li>
-          <li>💪 Optionally <strong>focus a muscle group</strong> (glutes, arms, chest, etc.)</li>
-          <li>🔁 <strong>Unlimited</strong> plan regenerations</li>
+          <li>🛒 Weekly grocery list</li>
+          <li>💵 Budget modes & food swaps</li>
+          <li>💪 Muscle group focus</li>
+          <li>🔁 Unlimited regenerations</li>
         </ul>
-
-        <div id="premiumContext" style="margin-top:14px;color:#cbd5e1;font-weight:700;"></div>
       </div>
 
       <div class="modal-footer">
         <button class="modal-primary" onclick="upgradeClicked()">Upgrade to Premium</button>
-        <button class="modal-secondary" onclick="closeUpgradeModal()">Keep Free Plan</button>
+        <button class="modal-secondary" onclick="closeUpgradeModal()">Keep Free</button>
       </div>
     </div>
   </div>
 
 <script>
-/* ---------- Tabs (free users only get Plan; locked tabs open modal) ---------- */
-function showTab(tabName) {
-  // Only Plan is available in free right now.
-  document.getElementById("tab-plan").classList.add("active");
-  // If you later implement premium tabs, this is where you’d switch content.
-}
-
-/* ---------- Premium Modal ---------- */
-function openUpgradeModal(source) {
-  const overlay = document.getElementById("premiumModalOverlay");
-  const ctx = document.getElementById("premiumContext");
-
-  if (source === "grocery") {
-    ctx.textContent = "Unlock Grocery List: turn your plan into a ready-to-shop list each week.";
-  } else if (source === "budget") {
-    ctx.textContent = "Unlock Budget: get low-cost swaps and budget modes that fit your lifestyle.";
-  } else if (source === "focus") {
-    ctx.textContent = "Unlock Muscle Focus: emphasize one area (glutes, arms, chest, etc.) while staying balanced.";
-  } else {
-    ctx.textContent = "";
-  }
-
-  overlay.style.display = "flex";
-}
-
-function closeUpgradeModal() {
-  document.getElementById("premiumModalOverlay").style.display = "none";
-}
-
-function overlayClickClose(e) {
-  if (e.target.id === "premiumModalOverlay") closeUpgradeModal();
-}
-
-function upgradeClicked() {
-  // Placeholder for Stripe/checkout later
-  alert("Premium checkout is coming next. This button will take users to payment.");
-  closeUpgradeModal();
-}
-
-/* ---------- Plan Generation ---------- */
 async function generatePlan() {
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
-  const generateBtn = document.getElementById("generateBtn");
-  const regenBtn = document.getElementById("regenBtn");
 
-  generateBtn.disabled = true;
-  generateBtn.textContent = "Generating...";
-  statusEl.textContent = "Creating a fresh CoreHabit plan...";
+  statusEl.textContent = "Building your CoreHabit plan…";
   resultEl.style.display = "none";
   resultEl.innerHTML = "";
 
   const onboardingRaw = localStorage.getItem("corehabit_onboarding");
   if (!onboardingRaw) {
     statusEl.textContent = "No onboarding data found.";
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
     return;
   }
 
@@ -188,56 +106,68 @@ async function generatePlan() {
     resultEl.style.display = "block";
 
     resultEl.innerHTML = `
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Overview</h2>
-        <p style="line-height:1.7;">${data.overview}</p>
+      <section>
+        <h2>Overview</h2>
+        <p>${data.overview}</p>
       </section>
 
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Workout Split</h2>
-        <ul style="padding-left:20px;">
-          ${data.weekly_workout_split.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Sample Workout</h2>
-        <ul style="padding-left:20px;">
-          ${data.sample_workout.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Daily Nutrition Guidelines</h2>
-        <ul style="padding-left:20px;">
-          ${data.daily_nutrition_guidelines.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
-
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Sample Day of Eating</h2>
-        <ul style="padding-left:20px;">
-          ${data.sample_day_of_eating.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+      <section>
+        <h2>Weekly Workout Split</h2>
+        <ul>
+          ${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}
         </ul>
       </section>
 
       <section>
-        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Focus</h2>
-        <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
+        <h2>Sample Workout</h2>
+        <ul>
+          ${data.sample_workout.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Daily Nutrition Guidelines</h2>
+        <ul>
+          ${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Sample Day of Eating</h2>
+        <ul>
+          ${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Weekly Focus</h2>
+        <p>${data.weekly_focus_tip}</p>
       </section>
     `;
-
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
-    regenBtn.style.display = "inline-block";
 
   } catch (err) {
     statusEl.textContent = "Something went wrong.";
     resultEl.style.display = "block";
     resultEl.textContent = err.message;
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
   }
+}
+
+/* ---------- Premium modal ---------- */
+function openUpgradeModal() {
+  document.getElementById("premiumModalOverlay").style.display = "flex";
+}
+
+function closeUpgradeModal() {
+  document.getElementById("premiumModalOverlay").style.display = "none";
+}
+
+function overlayClickClose(e) {
+  if (e.target.id === "premiumModalOverlay") closeUpgradeModal();
+}
+
+function upgradeClicked() {
+  alert("Premium checkout coming next.");
+  closeUpgradeModal();
 }
 </script>
 
