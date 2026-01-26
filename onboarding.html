@@ -163,9 +163,12 @@ document.getElementById("onboardingForm").addEventListener("submit", function(e)
   const formData = new FormData(e.target);
   const data = {};
 
-  for (const [key, value] of formData.entries()) {
-    data[key] = value;
-  }
+ for (const [key, value] of formData.entries()) {
+  data[key] = value;
+}
+
+/* PREMIUM DATA (locked for now) */
+data.focus_muscle = "none"; // default for free users
 
   localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
   window.location.href = "results.html";
