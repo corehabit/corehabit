@@ -7,132 +7,129 @@
   <link rel="stylesheet" href="./assets/styles.css">
 </head>
 
-<body style="
-  min-height:100vh;
-  background: radial-gradient(80% 80% at 20% 10%, #1a1f35 0%, #0b0f19 60%) !important;
-  color:#ffffff;
-">
+<body>
+  <div class="page">
+    <div class="page-narrow">
 
-  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
-
-    <h1>Tell us about yourself</h1>
-    <p style="color:#9ca3af;max-width:640px;">
-      Answer a few questions so we can personalize your CoreHabit plan.
-    </p>
-
-    <form id="onboardingForm" style="margin-top:28px;">
-
-      <!-- CORE QUESTIONS -->
-
-      <label>Goal</label>
-      <select name="goal" required>
-        <option value="">Select</option>
-        <option value="Lose fat">Lose fat</option>
-        <option value="Build muscle">Build muscle</option>
-        <option value="Get healthier">Get healthier</option>
-      </select>
-
-      <label>Experience Level</label>
-      <select name="experience" required>
-        <option value="">Select</option>
-        <option value="Beginner">Beginner</option>
-        <option value="Intermediate">Intermediate</option>
-      </select>
-
-      <label>Training Location</label>
-      <select name="location" required>
-        <option value="">Select</option>
-        <option value="Gym">Gym</option>
-        <option value="Home">Home</option>
-      </select>
-
-      <label>Training Days Per Week</label>
-      <select name="days_per_week" required>
-        <option value="">Select</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-
-      <label>Diet Preference</label>
-      <select name="diet">
-        <option value="Balanced">Balanced</option>
-        <option value="High protein">High protein</option>
-      </select>
-
-      <label>Meals Per Day</label>
-      <select name="meals_per_day">
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-
-      <label>Allergies or Restrictions</label>
-      <input type="text" name="allergies" placeholder="None" />
-
-      <!-- OPTIONAL PREMIUM PERSONALIZATION (SOFT) -->
-      <div style="
-        margin-top:44px;
-        padding:24px;
-        border-radius:18px;
-        background:rgba(124,92,255,0.06);
-        border:1px dashed rgba(124,92,255,0.25);
-      ">
-
-        <h2 style="margin:0 0 6px 0;font-size:18px;">
-          Want to personalize your plan even more?
-        </h2>
-
-        <p style="margin:0 0 14px 0;color:#cbd5e1;">
-          Premium members can optionally emphasize a muscle group while keeping the plan balanced.
-        </p>
-
-        <div class="premium-lock" onclick="openUpgradeModal('focus')">
-          <div style="
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:10px;
-            opacity:0.7;
-          ">
-            <label><input type="radio" disabled> Chest</label>
-            <label><input type="radio" disabled> Back</label>
-            <label><input type="radio" disabled> Shoulders</label>
-            <label><input type="radio" disabled> Arms</label>
-            <label><input type="radio" disabled> Glutes</label>
-            <label><input type="radio" disabled> Quads</label>
-            <label><input type="radio" disabled> Hamstrings</label>
-            <label><input type="radio" disabled> Core</label>
-          </div>
-        </div>
-
-        <p style="margin-top:16px;font-size:14px;color:#9ca3af;">
-          🔒 Included with <strong>CoreHabit Premium</strong> — $14.99/month · Cancel anytime
-        </p>
-      </div>
-
-      <!-- MICRO-REASSURANCE -->
-      <p style="margin-top:28px;color:#9ca3af;font-size:14px;max-width:640px;">
-        You can always upgrade later — your free plan still includes full workouts and nutrition guidance.
+      <!-- HERO -->
+      <h1 class="section-title">Tell us about yourself</h1>
+      <p class="section-subtitle">
+        Answer a few quick questions so we can personalize your CoreHabit plan.
       </p>
 
-      <!-- SUBMIT -->
-      <button type="submit" style="
-        margin-top:24px;
-        padding:14px 22px;
-        border-radius:999px;
-        border:none;
-        background:#7c5cff;
-        color:white;
-        font-weight:700;
-        font-size:16px;
-        cursor:pointer;
-      ">
-        Continue
-      </button>
+      <!-- FORM -->
+      <form id="onboardingForm" class="form-stack">
 
-    </form>
+        <!-- CORE QUESTIONS -->
+        <div class="form-grid">
+
+          <div class="form-field">
+            <label>Goal</label>
+            <select name="goal" required>
+              <option value="">Select</option>
+              <option value="Lose fat">Lose fat</option>
+              <option value="Build muscle">Build muscle</option>
+              <option value="Get healthier">Get healthier</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Experience Level</label>
+            <select name="experience" required>
+              <option value="">Select</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Training Location</label>
+            <select name="location" required>
+              <option value="">Select</option>
+              <option value="Gym">Gym</option>
+              <option value="Home">Home</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Training Days Per Week</label>
+            <select name="days_per_week" required>
+              <option value="">Select</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Diet Preference</label>
+            <select name="diet">
+              <option value="Balanced">Balanced</option>
+              <option value="High protein">High protein</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Meals Per Day</label>
+            <select name="meals_per_day">
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Allergies or Restrictions</label>
+            <input type="text" name="allergies" placeholder="None" />
+          </div>
+
+        </div>
+
+        <!-- PREMIUM SURFACE -->
+        <div class="premium-surface">
+
+          <div class="premium-header">
+            <h2>Want to personalize your plan even more?</h2>
+            <span class="lock-pill">Premium</span>
+          </div>
+
+          <p class="premium-subtext">
+            Premium members can optionally emphasize a muscle group while keeping the plan balanced.
+          </p>
+
+          <div class="premium-lock" onclick="openUpgradeModal()" role="button">
+            <div class="focus-grid">
+              <label><input type="radio" disabled> Chest</label>
+              <label><input type="radio" disabled> Back</label>
+              <label><input type="radio" disabled> Shoulders</label>
+              <label><input type="radio" disabled> Arms</label>
+              <label><input type="radio" disabled> Glutes</label>
+              <label><input type="radio" disabled> Quads</label>
+              <label><input type="radio" disabled> Hamstrings</label>
+              <label><input type="radio" disabled> Core</label>
+            </div>
+
+            <p class="premium-hint">
+              Included with CoreHabit Premium — $14.99/month · Cancel anytime
+            </p>
+          </div>
+
+        </div>
+
+        <!-- REASSURANCE -->
+        <p class="soft-note">
+          You can always upgrade later — your free plan still includes full workouts and nutrition guidance.
+        </p>
+
+        <!-- CTA -->
+        <button type="submit" class="primary-button">
+          Continue
+        </button>
+
+      </form>
+    </div>
   </div>
 
-  <!-- PREMIUM UPGRADE MODAL -->
+  <!-- PREMIUM MODAL -->
   <div class="modal-overlay" id="premiumModalOverlay" onclick="overlayClickClose(event)">
     <div class="modal">
       <div class="modal-header">
@@ -144,10 +141,10 @@
       </div>
 
       <div class="modal-body">
-        <div style="color:#cbd5e1;font-weight:700;">
-          Free: “Here’s what to do.”<br/>
+        <p class="modal-contrast">
+          Free: “Here’s what to do.”<br>
           Premium: “Here’s how to actually do it — affordably.”
-        </div>
+        </p>
 
         <ul class="modal-bullets">
           <li>🛒 Weekly grocery list</li>
@@ -176,7 +173,7 @@ document.getElementById("onboardingForm").addEventListener("submit", function(e)
     data[key] = value;
   }
 
-  /* PREMIUM DATA (default for free users) */
+  // Premium locked by default
   data.focus_muscle = "none";
 
   localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
@@ -184,7 +181,7 @@ document.getElementById("onboardingForm").addEventListener("submit", function(e)
 });
 
 /* ---------- Premium modal ---------- */
-function openUpgradeModal(source) {
+function openUpgradeModal() {
   document.getElementById("premiumModalOverlay").style.display = "flex";
 }
 
