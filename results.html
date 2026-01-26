@@ -1,36 +1,33 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <style>
-  body {
-    background: radial-gradient(
-      80% 80% at 20% 10%,
-      #1a1f35 0%,
-      #0b0f19 60%
-    );
-    color: #ffffff;
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-</style>
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 
 <body>
-  <div class="page-wrapper">
+  <div class="page-container">
 
-    <h1>Your Personalized Plan</h1>
-    <p>Based on your answers, here’s your CoreHabit plan.</p>
+    <h1 class="page-title">Your Personalized Plan</h1>
+    <p class="page-subtitle">
+      Based on your answers, here’s your CoreHabit plan.
+    </p>
 
-    <div style="margin-top:24px;">
-      <button class="button-primary" onclick="generatePlan()">Generate My Plan</button>
-      <button class="button-secondary" onclick="generatePlan()">Regenerate</button>
+    <div class="action-row">
+      <button class="primary-btn" onclick="generatePlan()">Generate My Plan</button>
+      <button class="secondary-btn" onclick="generatePlan()">Regenerate</button>
     </div>
 
-    <div id="result" class="card" style="margin-top:32px; display:none;"></div>
+    <!-- LOCKED TABS -->
+    <div class="locked-tabs">
+      <span>Plan</span>
+      <span class="locked">Grocery List 🔒</span>
+      <span class="locked">Budget 🔒</span>
+    </div>
+
+    <div id="result" class="card" style="display:none;"></div>
 
   </div>
 
@@ -38,7 +35,7 @@
 async function generatePlan() {
   const resultEl = document.getElementById("result");
   resultEl.style.display = "block";
-  resultEl.innerHTML = "Building your plan...";
+  resultEl.innerHTML = "Building your plan…";
 
   const onboarding = JSON.parse(localStorage.getItem("corehabit_onboarding"));
 
@@ -51,25 +48,38 @@ async function generatePlan() {
   const data = await res.json();
 
   resultEl.innerHTML = `
-    <h2>Overview</h2>
-    <p>${data.overview}</p>
+    <section>
+      <h2>Overview</h2>
+      <p>${data.overview}</p>
+    </section>
 
-    <h2>Weekly Workout Split</h2>
-    <ul>${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}</ul>
+    <section>
+      <h2>Weekly Workout Split</h2>
+      <ul>${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}</ul>
+    </section>
 
-    <h2>Sample Workout</h2>
-    <ul>${data.sample_workout.map(i => `<li>${i}</li>`).join("")}</ul>
+    <section>
+      <h2>Sample Workout</h2>
+      <ul>${data.sample_workout.map(i => `<li>${i}</li>`).join("")}</ul>
+    </section>
 
-    <h2>Daily Nutrition Guidelines</h2>
-    <ul>${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}</ul>
+    <section>
+      <h2>Daily Nutrition Guidelines</h2>
+      <ul>${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}</ul>
+    </section>
 
-    <h2>Sample Day of Eating</h2>
-    <ul>${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}</ul>
+    <section>
+      <h2>Sample Day of Eating</h2>
+      <ul>${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}</ul>
+    </section>
 
-    <h2>Weekly Focus</h2>
-    <p>${data.weekly_focus_tip}</p>
+    <section>
+      <h2>Weekly Focus</h2>
+      <p>${data.weekly_focus_tip}</p>
+    </section>
   `;
 }
 </script>
+
 </body>
 </html>
