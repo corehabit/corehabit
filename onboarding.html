@@ -1,84 +1,106 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <style>
-  body {
-    background: radial-gradient(
-      80% 80% at 20% 10%,
-      #1a1f35 0%,
-      #0b0f19 60%
-    );
-    color: #ffffff;
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-</style>
   <meta charset="utf-8">
   <title>Onboarding — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 
 <body>
-  <div class="page-wrapper">
+  <div class="page-container">
 
-    <h1>Tell us about yourself</h1>
-    <p>Answer a few questions so we can personalize your CoreHabit plan.</p>
+    <h1 class="page-title">Tell us about yourself</h1>
+    <p class="page-subtitle">
+      Answer a few questions so we can personalize your CoreHabit plan.
+    </p>
 
     <form id="onboardingForm" class="card">
 
-      <label>Goal</label>
-      <select name="goal" required>
-        <option value="">Select</option>
-        <option>Lose fat</option>
-        <option>Build muscle</option>
-        <option>Get healthier</option>
-      </select>
+      <div class="form-grid">
+        <label>
+          Goal
+          <select name="goal" required>
+            <option value="">Select</option>
+            <option>Lose fat</option>
+            <option>Build muscle</option>
+            <option>Get healthier</option>
+          </select>
+        </label>
 
-      <label>Experience Level</label>
-      <select name="experience" required>
-        <option value="">Select</option>
-        <option>Beginner</option>
-        <option>Intermediate</option>
-      </select>
+        <label>
+          Experience Level
+          <select name="experience" required>
+            <option value="">Select</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+          </select>
+        </label>
 
-      <label>Training Location</label>
-      <select name="location" required>
-        <option value="">Select</option>
-        <option>Gym</option>
-        <option>Home</option>
-      </select>
+        <label>
+          Training Location
+          <select name="location" required>
+            <option value="">Select</option>
+            <option>Gym</option>
+            <option>Home</option>
+          </select>
+        </label>
 
-      <label>Training Days Per Week</label>
-      <select name="days_per_week" required>
-        <option value="">Select</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
-      </select>
+        <label>
+          Training Days / Week
+          <select name="days_per_week" required>
+            <option value="">Select</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </label>
 
-      <label>Diet Preference</label>
-      <select name="diet">
-        <option>Balanced</option>
-        <option>High protein</option>
-      </select>
+        <label>
+          Diet Preference
+          <select name="diet">
+            <option>Balanced</option>
+            <option>High protein</option>
+          </select>
+        </label>
 
-      <label>Meals Per Day</label>
-      <select name="meals_per_day">
-        <option>3</option>
-        <option>4</option>
-      </select>
+        <label>
+          Meals Per Day
+          <select name="meals_per_day">
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </label>
 
-      <label>Allergies or Restrictions</label>
-      <input type="text" name="allergies" placeholder="None" />
-
-      <div style="margin-top:28px;">
-        <h2>Want to personalize your plan even more?</h2>
-        <p>Premium members can optionally emphasize a muscle group.</p>
-        <span class="lock-pill">🔒 Premium — $14.99/month</span>
+        <label class="full">
+          Allergies or Restrictions
+          <input type="text" name="allergies" placeholder="None" />
+        </label>
       </div>
 
-      <button class="button-primary" style="margin-top:32px;">
+      <!-- PREMIUM CARD -->
+      <div class="premium-card">
+        <div class="premium-header">
+          <h2>Want to personalize your plan even more?</h2>
+          <span class="lock-pill">Premium</span>
+        </div>
+
+        <p>
+          Premium members can optionally emphasize a muscle group while keeping the plan balanced.
+        </p>
+
+        <div class="premium-options">
+          <span>Chest</span><span>Back</span><span>Shoulders</span>
+          <span>Arms</span><span>Glutes</span><span>Quads</span>
+          <span>Hamstrings</span><span>Core</span>
+        </div>
+
+        <p class="premium-footnote">
+          Included with CoreHabit Premium — <strong>$14.99/month</strong>. Cancel anytime.
+        </p>
+      </div>
+
+      <button class="primary-btn" type="submit">
         Continue
       </button>
 
@@ -88,13 +110,14 @@
 <script>
 document.getElementById("onboardingForm").addEventListener("submit", function(e) {
   e.preventDefault();
-  const formData = new FormData(e.target);
-  const data = {};
-  for (const [k, v] of formData.entries()) data[k] = v;
-  data.focus_muscle = "none";
+
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  data.focus_muscle = "none"; // locked for free
+
   localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
   window.location.href = "results.html";
 });
 </script>
+
 </body>
 </html>
