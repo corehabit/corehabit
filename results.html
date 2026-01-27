@@ -1,132 +1,168 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-<script>
-  const PREMIUM_ENABLED = false; // flip to true when ready
-</script>
-  
-  <!-- GLOBAL STYLES (ABSOLUTE PATH – REQUIRED FOR NETLIFY) -->
+
+  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
 </head>
 
-<body>
+<body style="
+  min-height:100vh;
+  background: radial-gradient(
+    80% 80% at 20% 10%,
+    #1a1f35 0%,
+    #0b0f19 60%
+  ) !important;
+  color:#ffffff;
+">
 
-  <div class="page-wrapper">
+  <!-- PAGE CONTAINER -->
+  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
-    <!-- HEADER -->
     <h1>Your Personalized Plan</h1>
-    <p>
+    <p style="color:#9ca3af;">
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
-    <!-- ACTION BUTTONS -->
-    <div style="display:flex;gap:12px;margin:20px 0;">
-      <button class="button-primary" id="generateBtn">
+    <!-- STATUS -->
+    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+
+    <!-- BUTTONS -->
+    <div style="margin-top:20px;">
+      <button id="generateBtn" onclick="generatePlan()" style="
+        padding:14px 22px;
+        border-radius:999px;
+        border:none;
+        background:#7c5cff;
+        color:white;
+        font-weight:700;
+        font-size:16px;
+        cursor:pointer;
+      ">
         Generate My Plan
       </button>
 
-      <button class="button-secondary" id="regenBtn">
-        Regenerate
+      <button id="regenBtn" onclick="generatePlan()" style="
+        margin-left:12px;
+        padding:12px 20px;
+        border-radius:999px;
+        border:1px solid #7c5cff;
+        background:transparent;
+        color:#7c5cff;
+        font-weight:600;
+        font-size:14px;
+        cursor:pointer;
+        display:none;
+      ">
+        Regenerate Plan
       </button>
     </div>
 
-    <!-- PREMIUM TABS -->
-    <div style="margin-bottom:30px;">
-      <strong>Plan</strong><br />
-      Grocery List <span class="lock-pill">🔒 Premium</span><br />
-      Budget <span class="lock-pill">🔒 Premium</span>
-    </div>
-
-    <!-- PLAN CONTENT -->
-    <div class="card">
-
-      <h2>Overview</h2>
-      <p id="overviewText">Loading your plan…</p>
-
-      <h2>Weekly Workout Split</h2>
-      <ul id="workoutSplit"></ul>
-
-      <h2>Sample Workout</h2>
-      <ul id="sampleWorkout"></ul>
-
-      <h2>Daily Nutrition Guidelines</h2>
-      <ul id="nutritionGuidelines"></ul>
-
-      <h2>Sample Day of Eating</h2>
-      <ul id="sampleEating"></ul>
-
-      <p id="weeklyTip" style="margin-top:20px;font-style:italic;"></p>
-
-    </div>
+    <!-- PLAN CARD -->
+    <div id="result" style="
+      margin-top:40px;
+      padding:32px;
+      background:#111827;
+      color:#e5e7eb;
+      border-radius:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.4);
+      display:none;
+    "></div>
 
   </div>
 
-  <!-- SCRIPT -->
-  <script>
-    const onboarding = JSON.parse(
-      localStorage.getItem("corehabit_onboarding") || "{}"
-    );
+<script>
+async function generatePlan() {
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
+  const generateBtn = document.getElementById("generateBtn");
+  const regenBtn = document.getElementById("regenBtn");
 
-    const overviewText = document.getElementById("overviewText");
-    const workoutSplit = document.getElementById("workoutSplit");
-    const sampleWorkout = document.getElementById("sampleWorkout");
-    const nutritionGuidelines = document.getElementById("nutritionGuidelines");
-    const sampleEating = document.getElementById("sampleEating");
-    const weeklyTip = document.getElementById("weeklyTip");
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Generating...";
+  statusEl.textContent = "Creating a fresh CoreHabit plan...";
+  resultEl.style.display = "none";
+  resultEl.innerHTML = "";
 
-    async function generatePlan() {
-      overviewText.textContent = "Generating your personalized plan…";
+  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
 
-      workoutSplit.innerHTML = "";
-      sampleWorkout.innerHTML = "";
-      nutritionGuidelines.innerHTML = "";
-      sampleEating.innerHTML = "";
-      weeklyTip.textContent = "";
+  if (!onboardingRaw) {
+    statusEl.textContent = "No onboarding data found.";
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+    return;
+  }
 
-      const res = await fetch("/.netlify/functions/generatePlan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ onboarding })
-      });
+  const onboarding = JSON.parse(onboardingRaw);
 
-      const plan = await res.json();
+  try {
+    const response = await fetch("/.netlify/functions/generatePlan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ onboarding })
+    });
 
-      overviewText.textContent = plan.overview;
+    const data = await response.json();
 
-      plan.weekly_workout_split.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        workoutSplit.appendChild(li);
-      });
+    statusEl.textContent = "";
+    resultEl.style.display = "block";
 
-      plan.sample_workout.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        sampleWorkout.appendChild(li);
-      });
+    resultEl.innerHTML = `
+      <section style="margin-bottom:32px;">
+        <h2 style="font-size:22px;margin-bottom:10px;">Overview</h2>
+        <p style="line-height:1.7;">${data.overview}</p>
+      </section>
 
-      plan.daily_nutrition_guidelines.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        nutritionGuidelines.appendChild(li);
-      });
+      <section style="margin-bottom:32px;">
+        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Workout Split</h2>
+        <ul style="padding-left:20px;">
+          ${data.weekly_workout_split.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+        </ul>
+      </section>
 
-      plan.sample_day_of_eating.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        sampleEating.appendChild(li);
-      });
+      <section style="margin-bottom:32px;">
+        <h2 style="font-size:22px;margin-bottom:10px;">Sample Workout</h2>
+        <ul style="padding-left:20px;">
+          ${data.sample_workout.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+        </ul>
+      </section>
 
-      weeklyTip.textContent = plan.weekly_focus_tip;
-    }
+      <section style="margin-bottom:32px;">
+        <h2 style="font-size:22px;margin-bottom:10px;">Daily Nutrition Guidelines</h2>
+        <ul style="padding-left:20px;">
+          ${data.daily_nutrition_guidelines.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+        </ul>
+      </section>
 
-    document.getElementById("generateBtn").onclick = generatePlan;
-    document.getElementById("regenBtn").onclick = generatePlan;
-  </script>
+      <section style="margin-bottom:32px;">
+        <h2 style="font-size:22px;margin-bottom:10px;">Sample Day of Eating</h2>
+        <ul style="padding-left:20px;">
+          ${data.sample_day_of_eating.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+        </ul>
+      </section>
+
+      <section>
+        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Focus</h2>
+        <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
+      </section>
+    `;
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+    regenBtn.style.display = "inline-block";
+
+  } catch (err) {
+    statusEl.textContent = "Something went wrong.";
+    resultEl.style.display = "block";
+    resultEl.textContent = err.message;
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+  }
+}
+</script>
 
 </body>
 </html>
