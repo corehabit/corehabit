@@ -5,25 +5,17 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Global CoreHabit styles -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
-    /* PAGE BASE — EXACT HOMEPAGE FEEL */
+    /* PAGE BASE — MATCH HOMEPAGE */
     .premium-page {
       font-family: inherit;
-      background:
-        radial-gradient(
-          circle at top left,
-          rgba(139, 123, 255, 0.18),
-          transparent 42%
-        ),
-        #0b0f14;
+      background: #0b0f14;
       min-height: 100vh;
       color: #f1f3f9;
-      padding: 96px 64px;
+      padding: 88px 64px;
 
-      /* TEXT RENDERING MATCH */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -33,21 +25,17 @@
       max-width: 760px;
     }
 
-    /* HERO — FULL SCREEN */
+    /* HERO */
     .premium-hero {
-      min-height: calc(100vh - 96px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-bottom: 80px;
+      margin-bottom: 72px;
     }
 
     .premium-hero h1 {
-      font-size: 3.6rem;
-      line-height: 1.08;
+      font-size: 3.4rem;
+      line-height: 1.1;
       font-weight: 700;
       letter-spacing: -0.025em;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .premium-hero h1 span {
@@ -59,21 +47,20 @@
       line-height: 1.65;
       color: #cfd3ff;
       max-width: 640px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
-    /* PRIMARY CTA — HOMEPAGE STYLE */
+    /* CTA — INLINE, NOT STRETCHED */
     .premium-cta {
       display: inline-block;
       background: linear-gradient(135deg, #8b7bff, #6f63ff);
       color: #ffffff;
-      padding: 14px 30px;
+      padding: 14px 28px;
       font-size: 1rem;
       font-weight: 600;
       border-radius: 999px;
       text-decoration: none;
-      box-shadow: 0 0 32px rgba(139, 123, 255, 0.45);
-      margin-top: 8px;
+      box-shadow: 0 0 28px rgba(139, 123, 255, 0.45);
     }
 
     /* SECTIONS */
@@ -85,7 +72,6 @@
       font-size: 1.45rem;
       font-weight: 600;
       color: #ffffff;
-      letter-spacing: -0.01em;
       margin-bottom: 22px;
     }
 
@@ -93,58 +79,27 @@
     .premium-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 18px;
     }
 
-    /* COREHABIT BUBBLES */
+    /* BUBBLES */
     .premium-card {
-      background: rgba(139, 123, 255, 0.07);
-      border: 1px solid rgba(139, 123, 255, 0.22);
-      border-radius: 999px;
-      padding: 14px 22px;
+      background: rgba(139, 123, 255, 0.06);
+      border: 1px solid rgba(139, 123, 255, 0.2);
+      border-radius: 16px;
+      padding: 18px 22px;
       font-size: 0.95rem;
-      line-height: 1.4;
-      width: fit-content;
-      max-width: 100%;
-      box-shadow: 0 0 20px rgba(139, 123, 255, 0.18);
-    }
-
-    /* LARGE VALUE CALLOUTS */
-    .premium-card-large {
-      border-radius: 18px;
-      padding: 22px 26px;
-      box-shadow: 0 0 32px rgba(139, 123, 255, 0.22);
+      line-height: 1.45;
+      box-shadow: 0 0 18px rgba(139, 123, 255, 0.18);
       max-width: 240px;
     }
 
-    .premium-card-large h3 {
+    .premium-card h3 {
       font-size: 1rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: #f5c16c;
     }
-
-    /* COMPARISON TABLE */
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-    }
-
-    .comparison-table th,
-    .comparison-table td {
-      padding: 14px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      text-align: left;
-    }
-
-    .comparison-table th {
-      color: #f5c16c;
-      font-weight: 600;
-    }
-
-    .check { color: #4caf50; font-weight: 600; }
-    .x { color: #f44336; font-weight: 600; }
 
     /* FINAL CTA */
     .final-cta {
@@ -160,11 +115,7 @@
     /* MOBILE */
     @media (max-width: 768px) {
       .premium-page {
-        padding: 72px 24px;
-      }
-
-      .premium-hero {
-        min-height: auto;
+        padding: 64px 24px;
       }
 
       .premium-hero h1 {
@@ -191,15 +142,15 @@
       <!-- VALUE PILLARS -->
       <section class="premium-section">
         <div class="premium-grid">
-          <div class="premium-card premium-card-large">
+          <div class="premium-card">
             <h3>Done-for-you planning</h3>
             <p>No guessing. No overthinking. Your nutrition and training handled.</p>
           </div>
-          <div class="premium-card premium-card-large">
+          <div class="premium-card">
             <h3>Built for beginners</h3>
             <p>Simple meals, clear workouts, realistic expectations.</p>
           </div>
-          <div class="premium-card premium-card-large">
+          <div class="premium-card">
             <h3>Adapts with you</h3>
             <p>Your plan updates as your body and habits change.</p>
           </div>
@@ -216,45 +167,7 @@
           <div class="premium-card">Calories & macro targets</div>
           <div class="premium-card">Weekly check-ins & plan updates</div>
           <div class="premium-card">Progress tracking & history</div>
-          <div class="premium-card">Account-based plan persistence</div>
         </div>
-      </section>
-
-      <!-- COMPARISON -->
-      <section class="premium-section">
-        <h2>Free vs Premium</h2>
-        <table class="comparison-table">
-          <tr>
-            <th>Feature</th>
-            <th>Free</th>
-            <th>Premium</th>
-          </tr>
-          <tr>
-            <td>Basic plan</td>
-            <td class="check">✓</td>
-            <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>Meal planning</td>
-            <td class="x">✕</td>
-            <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>Grocery lists</td>
-            <td class="x">✕</td>
-            <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>Workout targeting</td>
-            <td class="x">✕</td>
-            <td class="check">✓</td>
-          </tr>
-          <tr>
-            <td>Progress tracking</td>
-            <td class="x">✕</td>
-            <td class="check">✓</td>
-          </tr>
-        </table>
       </section>
 
       <!-- FINAL CTA -->
