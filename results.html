@@ -81,21 +81,16 @@
     <!-- ======================
          PREMIUM SECTION
          ====================== -->
-    <div id="premium-root" hidden style="margin-top:48px;">
+    <div id="premium-root" hidden style="margin-top:56px;">
 
-      <h2 style="font-size:24px;margin-bottom:8px;">
-        Upgrade to CoreHabit Premium
-      </h2>
+      <h2>Upgrade to CoreHabit Premium</h2>
 
-      <p style="color:#9ca3af;margin-bottom:32px;">
+      <p>
         Adaptive plans, real tracking, and weekly updates tailored to you.
       </p>
 
       <div class="premium-card">
-        <h3>
-          🛒 Budget-Based Grocery List
-          <span class="premium-pill">Premium</span>
-        </h3>
+        <h3>🛒 Budget-Based Grocery List</h3>
         <p>
           Weekly groceries auto-generated to match your calories,
           macros, and budget level.
@@ -103,10 +98,7 @@
       </div>
 
       <div class="premium-card">
-        <h3>
-          🍽️ 7-Day Meal Plan
-          <span class="premium-pill">Premium</span>
-        </h3>
+        <h3>🍽️ 7-Day Meal Plan</h3>
         <p>
           A full week of meals built from your targets and preferences,
           updated as your plan changes.
@@ -114,10 +106,7 @@
       </div>
 
       <div class="premium-card">
-        <h3>
-          🏋️ Targeted Muscle Group Workouts
-          <span class="premium-pill">Premium</span>
-        </h3>
+        <h3>🏋️ Targeted Muscle Group Workouts</h3>
         <p>
           Optional muscle focus programming that adapts your training
           without sacrificing balance.
@@ -125,20 +114,14 @@
       </div>
 
       <div class="premium-card">
-        <h3>
-          📊 Macro Targets & Progress Tracking
-          <span class="premium-pill">Premium</span>
-        </h3>
+        <h3>📊 Macro Targets & Progress Tracking</h3>
         <p>
           Exact calorie and macro targets with ongoing progress tracking.
         </p>
       </div>
 
       <div class="premium-card">
-        <h3>
-          🔁 Weekly Check-Ins & Plan Updates
-          <span class="premium-pill">Premium</span>
-        </h3>
+        <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
         <p>
           Weekly feedback and automatic plan adjustments based on results.
         </p>
@@ -146,7 +129,6 @@
 
       <!-- ACCOUNT CTA -->
       <div class="premium-account-cta">
-
         <p class="premium-account-text">
           Premium requires an account so we can save your progress,
           update your plans, and personalize your experience over time.
@@ -156,12 +138,10 @@
           <button class="premium-primary-btn">
             Create Free Account
           </button>
-
           <button class="premium-secondary-btn">
             Log In
           </button>
         </div>
-
       </div>
 
     </div>
@@ -214,57 +194,4 @@
 
         resultEl.innerHTML = `
           <section style="margin-bottom:32px;">
-            <h2>Overview</h2>
-            <p>${data.overview}</p>
-          </section>
-
-          <section style="margin-bottom:32px;">
-            <h2>Weekly Workout Split</h2>
-            <ul>
-              ${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}
-            </ul>
-          </section>
-
-          <section style="margin-bottom:32px;">
-            <h2>Sample Workout</h2>
-            <ul>
-              ${data.sample_workout.map(i => `<li>${i}</li>`).join("")}
-            </ul>
-          </section>
-
-          <section style="margin-bottom:32px;">
-            <h2>Daily Nutrition Guidelines</h2>
-            <ul>
-              ${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}
-            </ul>
-          </section>
-
-          <section style="margin-bottom:32px;">
-            <h2>Sample Day of Eating</h2>
-            <ul>
-              ${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}
-            </ul>
-          </section>
-
-          <section>
-            <h2>Weekly Focus</h2>
-            <p>${data.weekly_focus_tip}</p>
-          </section>
-        `;
-
-        generateBtn.disabled = false;
-        generateBtn.textContent = "Generate My Plan";
-        regenBtn.style.display = "inline-block";
-
-      } catch (err) {
-        statusEl.textContent = "Something went wrong.";
-        resultEl.style.display = "block";
-        resultEl.textContent = err.message;
-        generateBtn.disabled = false;
-        generateBtn.textContent = "Generate My Plan";
-      }
-    }
-  </script>
-
-</body>
-</html>
+            <
