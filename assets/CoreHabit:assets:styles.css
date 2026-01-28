@@ -239,3 +239,28 @@ a.global-premium-tab:active {
   color: #1a1a1a !important;
   text-decoration: none !important;
 }
+/* ============================
+   Premium Tab – Context Aware
+   ============================ */
+
+/* Default behavior (all pages) */
+.global-premium-tab {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+/* Home page override */
+.home-page .global-premium-tab.inline-premium {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin-left: 12px;
+}
+
+/* Align nicely with CTA buttons */
+.home-page .hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
