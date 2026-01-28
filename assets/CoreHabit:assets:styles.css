@@ -230,3 +230,12 @@ body * {
 @media (max-width: 600px) {
   .global-premium-tab {
     top: 14p
+/* HARD OVERRIDE: Global Premium Bubble */
+a.global-premium-tab,
+a.global-premium-tab:visited,
+a.global-premium-tab:hover,
+a.global-premium-tab:active {
+  background: linear-gradient(135deg, #d4af37, #f0d58c) !important;
+  color: #1a1a1a !important;
+  text-decoration: none !important;
+}
