@@ -5,7 +5,7 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CoreHabit global styles -->
+  <!-- Global CoreHabit styles -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
@@ -22,6 +22,10 @@
       min-height: 100vh;
       color: #f1f3f9;
       padding: 96px 64px;
+
+      /* TEXT RENDERING MATCH */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* LEFT CONTENT RAIL */
@@ -29,17 +33,21 @@
       max-width: 760px;
     }
 
-    /* HERO */
+    /* HERO — FULL SCREEN */
     .premium-hero {
-      margin-bottom: 64px;
+      min-height: calc(100vh - 96px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-bottom: 80px;
     }
 
     .premium-hero h1 {
-      font-size: 3.2rem;
-      line-height: 1.12;
+      font-size: 3.6rem;
+      line-height: 1.08;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 20px;
+      letter-spacing: -0.025em;
+      margin-bottom: 22px;
     }
 
     .premium-hero h1 span {
@@ -48,13 +56,13 @@
 
     .premium-hero p {
       font-size: 1.05rem;
-      line-height: 1.6;
+      line-height: 1.65;
       color: #cfd3ff;
       max-width: 640px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
 
-    /* PRIMARY CTA — SAME AS HOMEPAGE */
+    /* PRIMARY CTA — HOMEPAGE STYLE */
     .premium-cta {
       display: inline-block;
       background: linear-gradient(135deg, #8b7bff, #6f63ff);
@@ -65,6 +73,7 @@
       border-radius: 999px;
       text-decoration: none;
       box-shadow: 0 0 32px rgba(139, 123, 255, 0.45);
+      margin-top: 8px;
     }
 
     /* SECTIONS */
@@ -87,7 +96,7 @@
       gap: 16px;
     }
 
-    /* COREHABIT BUBBLES / CHIPS */
+    /* COREHABIT BUBBLES */
     .premium-card {
       background: rgba(139, 123, 255, 0.07);
       border: 1px solid rgba(139, 123, 255, 0.22);
@@ -152,6 +161,10 @@
     @media (max-width: 768px) {
       .premium-page {
         padding: 72px 24px;
+      }
+
+      .premium-hero {
+        min-height: auto;
       }
 
       .premium-hero h1 {
