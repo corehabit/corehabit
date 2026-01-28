@@ -8,32 +8,37 @@
   <!-- Global CoreHabit styles -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
-  <!-- Premium page styles (SCOPED) -->
+  <!-- Premium-only styles (fully scoped) -->
   <style>
+    /* PAGE BASE */
     .premium-page {
-      background: linear-gradient(
-        180deg,
-        #0f2027 0%,
-        #162f3a 40%,
-        #1b3b47 100%
-      );
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(124, 77, 255, 0.12),
+          transparent 40%
+        ),
+        #0b0f14;
       min-height: 100vh;
-      color: #f5f5f5;
-      padding: 60px 20px;
-      max-width: 1100px;
-      margin: 0 auto;
+      color: #eaeaf0;
+      padding: 88px 64px;
+    }
+
+    /* LEFT CONTENT RAIL (matches homepage) */
+    .premium-content {
+      max-width: 760px;
     }
 
     /* HERO */
     .premium-hero {
-      text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 64px;
     }
 
     .premium-hero h1 {
-      font-size: 2.6rem;
-      margin-bottom: 14px;
-      font-weight: 600;
+      font-size: 3.2rem;
+      line-height: 1.15;
+      font-weight: 700;
+      margin-bottom: 20px;
     }
 
     .premium-hero h1 span {
@@ -42,73 +47,76 @@
 
     .premium-hero p {
       font-size: 1.05rem;
-      max-width: 720px;
-      margin: 0 auto 28px;
-      opacity: 0.9;
-      line-height: 1.5;
+      line-height: 1.6;
+      opacity: 0.85;
+      max-width: 640px;
+      margin-bottom: 28px;
     }
 
     .premium-cta {
+      display: inline-block;
       background: linear-gradient(135deg, #f5c16c, #e0a84f);
       color: #111;
       padding: 12px 26px;
       font-size: 1rem;
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: 999px;
       text-decoration: none;
-      display: inline-block;
     }
 
     /* SECTIONS */
     .premium-section {
-      margin-bottom: 64px;
+      margin-bottom: 72px;
     }
 
     .premium-section h2 {
-      margin-bottom: 24px;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 600;
-      text-align: left;
+      margin-bottom: 22px;
+      opacity: 0.9;
     }
 
     /* GRIDS */
     .premium-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
     }
 
+    /* COREHABIT-STYLE PANELS */
     .premium-card {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 20px;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px 20px;
       line-height: 1.45;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .premium-card h3 {
-      margin-bottom: 8px;
-      color: #f5c16c;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 600;
+      margin-bottom: 6px;
+      color: #f5c16c;
     }
 
     .premium-card:hover {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.045);
+      border-color: rgba(124, 77, 255, 0.4);
     }
 
     /* COMPARISON TABLE */
     .comparison-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      font-size: 0.95rem;
     }
 
     .comparison-table th,
     .comparison-table td {
-      padding: 12px;
-      text-align: center;
+      padding: 14px 10px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.95rem;
+      text-align: left;
     }
 
     .comparison-table th {
@@ -118,35 +126,17 @@
 
     .check {
       color: #4caf50;
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .x {
       color: #f44336;
-      font-weight: bold;
-    }
-
-    /* HOW IT WORKS */
-    .how-it-works {
-      text-align: left;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .step {
-      background: rgba(255,255,255,0.04);
-      padding: 20px;
-      border-radius: 10px;
+      font-weight: 600;
     }
 
     /* FINAL CTA */
     .final-cta {
-      text-align: center;
-      margin-top: 40px;
+      margin-top: 48px;
     }
 
     .trust-note {
@@ -154,118 +144,112 @@
       font-size: 0.85rem;
       opacity: 0.7;
     }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .premium-page {
+        padding: 64px 24px;
+      }
+
+      .premium-hero h1 {
+        font-size: 2.4rem;
+      }
+    }
   </style>
 </head>
 
 <body>
   <main class="premium-page">
+    <div class="premium-content">
 
-    <!-- HERO -->
-    <section class="premium-hero">
-      <h1>Upgrade to <span>CoreHabit Premium</span></h1>
-      <p>
-        Everything you need to lose fat, build muscle, and stay consistent —
-        personalized, beginner-friendly, and updated as you progress.
-      </p>
-      <a href="#" class="premium-cta">Upgrade to Premium</a>
-    </section>
+      <!-- HERO -->
+      <section class="premium-hero">
+        <h1>Upgrade to <span>CoreHabit Premium</span></h1>
+        <p>
+          Everything you need to lose fat, build muscle, and stay consistent —
+          personalized, beginner-friendly, and updated as you progress.
+        </p>
+        <a href="#" class="premium-cta">Upgrade to Premium</a>
+      </section>
 
-    <!-- VALUE PILLARS -->
-    <section class="premium-section">
-      <div class="premium-grid">
-        <div class="premium-card">
-          <h3>Done-for-you planning</h3>
-          <p>No guessing. No overthinking. Your nutrition and training handled.</p>
+      <!-- VALUE PILLARS -->
+      <section class="premium-section">
+        <div class="premium-grid">
+          <div class="premium-card">
+            <h3>Done-for-you planning</h3>
+            <p>No guessing. No overthinking. Your nutrition and training handled.</p>
+          </div>
+          <div class="premium-card">
+            <h3>Built for beginners</h3>
+            <p>Simple meals, clear workouts, realistic expectations.</p>
+          </div>
+          <div class="premium-card">
+            <h3>Adapts with you</h3>
+            <p>Your plan updates as your body and habits change.</p>
+          </div>
         </div>
-        <div class="premium-card">
-          <h3>Built for beginners</h3>
-          <p>Simple meals, clear workouts, realistic expectations.</p>
-        </div>
-        <div class="premium-card">
-          <h3>Adapts with you</h3>
-          <p>Your plan updates as your body and habits change.</p>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FEATURES -->
-    <section class="premium-section">
-      <h2>What you get with Premium</h2>
-      <div class="premium-grid">
-        <div class="premium-card">Budget-based grocery lists</div>
-        <div class="premium-card">7-day personalized meal plans</div>
-        <div class="premium-card">Targeted muscle group workouts</div>
-        <div class="premium-card">Calories & macro targets</div>
-        <div class="premium-card">Weekly check-ins & plan updates</div>
-        <div class="premium-card">Progress tracking & history</div>
-        <div class="premium-card">Account-based plan persistence</div>
-      </div>
-    </section>
-
-    <!-- COMPARISON -->
-    <section class="premium-section">
-      <h2>Free vs Premium</h2>
-      <table class="comparison-table">
-        <tr>
-          <th>Feature</th>
-          <th>Free</th>
-          <th>Premium</th>
-        </tr>
-        <tr>
-          <td>Basic plan</td>
-          <td class="check">✓</td>
-          <td class="check">✓</td>
-        </tr>
-        <tr>
-          <td>Meal planning</td>
-          <td class="x">✕</td>
-          <td class="check">✓</td>
-        </tr>
-        <tr>
-          <td>Grocery lists</td>
-          <td class="x">✕</td>
-          <td class="check">✓</td>
-        </tr>
-        <tr>
-          <td>Workout targeting</td>
-          <td class="x">✕</td>
-          <td class="check">✓</td>
-        </tr>
-        <tr>
-          <td>Progress tracking</td>
-          <td class="x">✕</td>
-          <td class="check">✓</td>
-        </tr>
-      </table>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="premium-section how-it-works">
-      <h2>How Premium works</h2>
-      <div class="steps">
-        <div class="step">
-          <h3>1. Upgrade</h3>
-          <p>Create an account and unlock Premium.</p>
+      <!-- FEATURES -->
+      <section class="premium-section">
+        <h2>What you get with Premium</h2>
+        <div class="premium-grid">
+          <div class="premium-card">Budget-based grocery lists</div>
+          <div class="premium-card">7-day personalized meal plans</div>
+          <div class="premium-card">Targeted muscle group workouts</div>
+          <div class="premium-card">Calories & macro targets</div>
+          <div class="premium-card">Weekly check-ins & plan updates</div>
+          <div class="premium-card">Progress tracking & history</div>
+          <div class="premium-card">Account-based plan persistence</div>
         </div>
-        <div class="step">
-          <h3>2. Get your plan</h3>
-          <p>Meals, workouts, and targets generated instantly.</p>
-        </div>
-        <div class="step">
-          <h3>3. Track & adapt</h3>
-          <p>Weekly updates as you progress.</p>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FINAL CTA -->
-    <section class="final-cta">
-      <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
-      <div class="trust-note">
-        Cancel anytime • No extreme diets • Built for real people
-      </div>
-    </section>
+      <!-- COMPARISON -->
+      <section class="premium-section">
+        <h2>Free vs Premium</h2>
+        <table class="comparison-table">
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Premium</th>
+          </tr>
+          <tr>
+            <td>Basic plan</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Meal planning</td>
+            <td class="x">✕</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Grocery lists</td>
+            <td class="x">✕</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Workout targeting</td>
+            <td class="x">✕</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Progress tracking</td>
+            <td class="x">✕</td>
+            <td class="check">✓</td>
+          </tr>
+        </table>
+      </section>
 
+      <!-- FINAL CTA -->
+      <section class="final-cta">
+        <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
+        <div class="trust-note">
+          Cancel anytime • No extreme diets • Built for real people
+        </div>
+      </section>
+
+    </div>
   </main>
 </body>
 </html>
