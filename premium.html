@@ -5,53 +5,88 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- GLOBAL STYLES (SOURCE OF TRUTH) -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
-    /* ===============================
-       LAYOUT ONLY — NO TEXT STYLES
-       =============================== */
-
-    .premium-page {
-      background: #0b0f14;
-      min-height: 100vh;
-      padding: 88px 64px;
+    /* ===== SAME ROOT VARIABLES AS HOMEPAGE ===== */
+    :root {
+      --bg: #0b0f14;
+      --panel: #111827;
+      --text: #e9eef5;
+      --muted: #a9b6c6;
+      --purple: #7c5cff;
+      --purple-soft: rgba(124,92,255,0.15);
+      --border: rgba(255,255,255,0.08);
     }
 
-    .premium-content {
-      max-width: 760px;
+    /* ===== SAME BODY STYLES AS HOMEPAGE ===== */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(800px 400px at 15% -10%, rgba(124,92,255,0.25), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
 
-    /* GOLD CTA — PREMIUM ONLY */
+    /* ===== SAME TYPOGRAPHY ===== */
+    h1 {
+      font-size: 50px;
+      line-height: 1.08;
+      margin-bottom: 20px;
+      letter-spacing: -0.6px;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    /* ===== SAME CONTAINER ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    /* ===== PREMIUM-SPECIFIC ONLY ===== */
     .premium-cta {
       display: inline-block;
-      background: linear-gradient(135deg, #f5c16c, #e0a84f);
-      color: #111;
-      padding: 14px 28px;
+      padding: 12px 22px;
       border-radius: 999px;
+      background: linear-gradient(135deg, #d4af37, #f0d58c);
+      color: #1a1a1a;
+      font-weight: 700;
       text-decoration: none;
-      font-weight: 600;
-      box-shadow: 0 0 26px rgba(245, 193, 108, 0.4);
+      box-shadow: 0 12px 35px rgba(212,175,55,0.45);
     }
 
-    /* VALUE CARDS (TOP 3) */
     .premium-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      margin-top: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
     }
 
     .premium-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 18px 22px;
-      max-width: 240px;
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 26px;
+      border: 1px solid var(--border);
     }
 
-    /* PREMIUM FEATURE TABS */
     .premium-tabs {
       display: flex;
       flex-direction: column;
@@ -61,123 +96,102 @@
 
     .premium-tab {
       display: flex;
-      align-items: flex-start;
       gap: 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(245, 193, 108, 0.35);
-      border-radius: 14px;
-      padding: 18px 22px;
+      background: var(--panel);
+      border: 1px solid rgba(212,175,55,0.45);
+      border-radius: 16px;
+      padding: 20px 24px;
     }
 
     .premium-tab-icon {
-      font-size: 1.25rem;
-      line-height: 1;
+      font-size: 22px;
       margin-top: 2px;
-    }
-
-    .final-cta {
-      margin-top: 48px;
-    }
-
-    .trust-note {
-      margin-top: 12px;
-      opacity: 0.7;
-    }
-
-    /* MOBILE */
-    @media (max-width: 768px) {
-      .premium-page {
-        padding: 64px 24px;
-      }
     }
   </style>
 </head>
 
 <body>
-  <main class="premium-page">
-    <div class="premium-content">
+  <div class="container">
 
-      <!-- HERO (NO CLASSES ON TEXT) -->
-      <section>
-        <h1>Upgrade to CoreHabit Premium</h1>
-        <p>Built for people who want real results, not generic plans.</p>
-        <a href="#" class="premium-cta">Upgrade to Premium</a>
-      </section>
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Upgrade to CoreHabit Premium</h1>
+      <p>Built for people who want real results, not generic plans.</p>
+      <a href="#" class="premium-cta">Upgrade to Premium</a>
+    </section>
 
-      <!-- VALUE PILLARS -->
-      <section>
-        <div class="premium-grid">
-          <div class="premium-card">
-            <h3>Done-for-you planning</h3>
-            <p>No guessing. No overthinking. Your nutrition and training handled.</p>
-          </div>
-          <div class="premium-card">
-            <h3>Built for beginners</h3>
-            <p>Simple meals, clear workouts, realistic expectations.</p>
-          </div>
-          <div class="premium-card">
-            <h3>Adapts with you</h3>
-            <p>Your plan updates as your body and habits change.</p>
+    <!-- VALUE -->
+    <section class="section">
+      <div class="premium-grid">
+        <div class="premium-card">
+          <h3>Done-for-you planning</h3>
+          <p>No guessing. No overthinking. Your nutrition and training handled.</p>
+        </div>
+        <div class="premium-card">
+          <h3>Built for beginners</h3>
+          <p>Simple meals, clear workouts, realistic expectations.</p>
+        </div>
+        <div class="premium-card">
+          <h3>Adapts with you</h3>
+          <p>Your plan updates as your body and habits change.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section">
+      <h2>What you get with Premium</h2>
+
+      <div class="premium-tabs">
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🛒</div>
+          <div>
+            <h3>Budget-Based Grocery List</h3>
+            <p>Weekly groceries auto-generated to match your calories and budget.</p>
           </div>
         </div>
-      </section>
 
-      <!-- PREMIUM FEATURES -->
-      <section>
-        <h2>What you get with Premium</h2>
-
-        <div class="premium-tabs">
-          <div class="premium-tab">
-            <div class="premium-tab-icon">🛒</div>
-            <div>
-              <h3>Budget-Based Grocery List</h3>
-              <p>Weekly groceries auto-generated to match your calories, macros, and budget.</p>
-            </div>
-          </div>
-
-          <div class="premium-tab">
-            <div class="premium-tab-icon">🍽️</div>
-            <div>
-              <h3>7-Day Meal Plan</h3>
-              <p>A full week of meals built from your targets and preferences.</p>
-            </div>
-          </div>
-
-          <div class="premium-tab">
-            <div class="premium-tab-icon">🏋️‍♂️</div>
-            <div>
-              <h3>Targeted Muscle Group Workouts</h3>
-              <p>Optional muscle-focus programming that adapts your training.</p>
-            </div>
-          </div>
-
-          <div class="premium-tab">
-            <div class="premium-tab-icon">📊</div>
-            <div>
-              <h3>Macro Targets & Progress Tracking</h3>
-              <p>Exact calorie and macro targets with ongoing progress tracking.</p>
-            </div>
-          </div>
-
-          <div class="premium-tab">
-            <div class="premium-tab-icon">🔄</div>
-            <div>
-              <h3>Weekly Check-Ins & Plan Updates</h3>
-              <p>Weekly feedback and automatic plan adjustments.</p>
-            </div>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🍽️</div>
+          <div>
+            <h3>7-Day Meal Plan</h3>
+            <p>A full week of meals built from your preferences.</p>
           </div>
         </div>
-      </section>
 
-      <!-- FINAL CTA -->
-      <section class="final-cta">
-        <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
-        <div class="trust-note">
-          Cancel anytime • No extreme diets • Built for real people
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🏋️‍♂️</div>
+          <div>
+            <h3>Targeted Muscle Group Workouts</h3>
+            <p>Optional muscle focus without sacrificing balance.</p>
+          </div>
         </div>
-      </section>
 
-    </div>
-  </main>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">📊</div>
+          <div>
+            <h3>Macro Targets & Progress Tracking</h3>
+            <p>Exact targets with ongoing tracking.</p>
+          </div>
+        </div>
+
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🔄</div>
+          <div>
+            <h3>Weekly Check-Ins & Plan Updates</h3>
+            <p>Automatic adjustments based on results.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="section">
+      <h2>Ready to upgrade?</h2>
+      <p>Unlock advanced planning, tracking, and personalization.</p>
+      <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
+    </section>
+
+  </div>
 </body>
 </html>
