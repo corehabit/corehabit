@@ -5,26 +5,26 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Global CoreHabit styles -->
+  <!-- CoreHabit global styles -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
-  <!-- Premium-only styles (fully scoped) -->
   <style>
-    /* PAGE BASE */
+    /* PAGE BASE — EXACT HOMEPAGE FEEL */
     .premium-page {
+      font-family: inherit;
       background:
         radial-gradient(
           circle at top left,
-          rgba(124, 77, 255, 0.14),
+          rgba(139, 123, 255, 0.18),
           transparent 42%
         ),
         #0b0f14;
       min-height: 100vh;
       color: #f1f3f9;
-      padding: 88px 64px;
+      padding: 96px 64px;
     }
 
-    /* LEFT CONTENT RAIL (matches homepage) */
+    /* LEFT CONTENT RAIL */
     .premium-content {
       max-width: 760px;
     }
@@ -43,7 +43,7 @@
     }
 
     .premium-hero h1 span {
-      color: #f5c16c;
+      color: #8b7bff;
     }
 
     .premium-hero p {
@@ -54,15 +54,17 @@
       margin-bottom: 28px;
     }
 
+    /* PRIMARY CTA — SAME AS HOMEPAGE */
     .premium-cta {
       display: inline-block;
-      background: linear-gradient(135deg, #f5c16c, #e0a84f);
-      color: #111;
-      padding: 12px 28px;
+      background: linear-gradient(135deg, #8b7bff, #6f63ff);
+      color: #ffffff;
+      padding: 14px 30px;
       font-size: 1rem;
       font-weight: 600;
       border-radius: 999px;
       text-decoration: none;
+      box-shadow: 0 0 32px rgba(139, 123, 255, 0.45);
     }
 
     /* SECTIONS */
@@ -78,49 +80,39 @@
       margin-bottom: 22px;
     }
 
-    /* GRIDS */
+    /* GRID */
     .premium-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    /* COREHABIT BUBBLES (POP FIXED) */
+    /* COREHABIT BUBBLES / CHIPS */
     .premium-card {
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 16px;
-      padding: 18px 22px;
-      line-height: 1.45;
-      position: relative;
-
-      box-shadow:
-        0 0 0 rgba(124, 77, 255, 0),
-        inset 0 0 0 rgba(255, 255, 255, 0);
-
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease,
-        background 0.15s ease;
+      background: rgba(139, 123, 255, 0.07);
+      border: 1px solid rgba(139, 123, 255, 0.22);
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      width: fit-content;
+      max-width: 100%;
+      box-shadow: 0 0 20px rgba(139, 123, 255, 0.18);
     }
 
-    .premium-card h3 {
+    /* LARGE VALUE CALLOUTS */
+    .premium-card-large {
+      border-radius: 18px;
+      padding: 22px 26px;
+      box-shadow: 0 0 32px rgba(139, 123, 255, 0.22);
+      max-width: 240px;
+    }
+
+    .premium-card-large h3 {
       font-size: 1rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: #f5c16c;
-      text-shadow: 0 0 12px rgba(245, 193, 108, 0.25);
-    }
-
-    .premium-card:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(124, 77, 255, 0.5);
-
-      box-shadow:
-        0 0 0 1px rgba(124, 77, 255, 0.15),
-        0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
     /* COMPARISON TABLE */
@@ -142,19 +134,12 @@
       font-weight: 600;
     }
 
-    .check {
-      color: #4caf50;
-      font-weight: 600;
-    }
-
-    .x {
-      color: #f44336;
-      font-weight: 600;
-    }
+    .check { color: #4caf50; font-weight: 600; }
+    .x { color: #f44336; font-weight: 600; }
 
     /* FINAL CTA */
     .final-cta {
-      margin-top: 48px;
+      margin-top: 56px;
     }
 
     .trust-note {
@@ -166,7 +151,7 @@
     /* MOBILE */
     @media (max-width: 768px) {
       .premium-page {
-        padding: 64px 24px;
+        padding: 72px 24px;
       }
 
       .premium-hero h1 {
@@ -193,15 +178,15 @@
       <!-- VALUE PILLARS -->
       <section class="premium-section">
         <div class="premium-grid">
-          <div class="premium-card">
+          <div class="premium-card premium-card-large">
             <h3>Done-for-you planning</h3>
             <p>No guessing. No overthinking. Your nutrition and training handled.</p>
           </div>
-          <div class="premium-card">
+          <div class="premium-card premium-card-large">
             <h3>Built for beginners</h3>
             <p>Simple meals, clear workouts, realistic expectations.</p>
           </div>
-          <div class="premium-card">
+          <div class="premium-card premium-card-large">
             <h3>Adapts with you</h3>
             <p>Your plan updates as your body and habits change.</p>
           </div>
