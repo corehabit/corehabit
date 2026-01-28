@@ -1,59 +1,95 @@
 /* ============================
    CoreHabit Premium Styles
-   Fully scoped – safe to use
+   Integrated + Native Look
    ============================ */
 
 #premium-root {
-  margin-top: 48px;
+  margin-top: 56px;
+}
+
+/* Section heading */
+#premium-root > h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+#premium-root > p {
+  font-size: 15px;
+  color: #9ca3af;
+  margin-bottom: 32px;
+  line-height: 1.6;
 }
 
 /* Premium feature cards */
 #premium-root .premium-card {
-  background: linear-gradient(135deg, #141414, #1f1f1f);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 24, 39, 0.75); /* matches free plan */
   border-radius: 16px;
-  padding: 20px 22px;
-  margin-bottom: 16px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* Card titles */
 #premium-root .premium-card h3 {
-  margin: 0 0 6px 0;
-  font-size: 18px;
+  margin: 0 0 4px 0;
+  font-size: 17px;
   font-weight: 600;
-  color: #ffffff;
+  color: #e5e7eb;
 }
 
 /* Card descriptions */
 #premium-root .premium-card p {
   margin: 0;
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.6;
   color: #9ca3af;
 }
 
-/* Premium section heading */
-#premium-root > h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #ffffff;
+/* ============================
+   Account CTA (Integrated)
+   ============================ */
+
+#premium-root .premium-account-cta {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
 }
 
-/* Premium section subtext */
-#premium-root > p {
-  font-size: 15px;
+#premium-root .premium-account-text {
+  font-size: 14.5px;
+  line-height: 1.6;
   color: #9ca3af;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
-/* CTA button (disabled for now) */
-#premium-root button {
-  transition: opacity 0.2s ease;
+/* Buttons */
+#premium-root .premium-account-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-#premium-root button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
+#premium-root .premium-primary-btn {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  background: #7c5cff;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#premium-root .premium-secondary-btn {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 92, 255, 0.6);
+  background: transparent;
+  color: #7c5cff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
 }
