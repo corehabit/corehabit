@@ -1,0 +1,59 @@
+/* ============================
+   CoreHabit Premium Styles
+   Fully scoped – safe to use
+   ============================ */
+
+#premium-root {
+  margin-top: 48px;
+}
+
+/* Premium feature cards */
+#premium-root .premium-card {
+  background: linear-gradient(135deg, #141414, #1f1f1f);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Card titles */
+#premium-root .premium-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Card descriptions */
+#premium-root .premium-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #9ca3af;
+}
+
+/* Premium section heading */
+#premium-root > h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+/* Premium section subtext */
+#premium-root > p {
+  font-size: 15px;
+  color: #9ca3af;
+  margin-bottom: 28px;
+}
+
+/* CTA button (disabled for now) */
+#premium-root button {
+  transition: opacity 0.2s ease;
+}
+
+#premium-root button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
