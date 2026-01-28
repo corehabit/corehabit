@@ -19,11 +19,10 @@
     80% 80% at 20% 10%,
     #1a1f35 0%,
     #0b0f19 60%
-  ) !important;
+  );
   color:#ffffff;
 ">
 
-  <!-- PAGE CONTAINER -->
   <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
@@ -31,10 +30,8 @@
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
-    <!-- STATUS -->
     <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
-    <!-- BUTTONS -->
     <div style="margin-top:20px;">
       <button id="generateBtn" onclick="generatePlan()" style="
         padding:14px 22px;
@@ -65,7 +62,6 @@
       </button>
     </div>
 
-    <!-- PLAN CARD -->
     <div id="result" style="
       margin-top:40px;
       padding:32px;
@@ -76,30 +72,25 @@
       display:none;
     "></div>
 
-    <!-- 🔒 PREMIUM ROOT (ISOLATED & SAFE) -->
     <div id="premium-root" hidden>
-
       <div class="premium-card">
-        <h3>🔒 Premium: Smart Grocery List</h3>
+        <h3>Premium: Smart Grocery List</h3>
         <p>
-          Automatically generated groceries based on your calories,
-          protein goals, and weekly plan.
+          Automatically generated groceries based on your calories
+          and weekly plan.
         </p>
         <button disabled>Upgrade to Unlock</button>
       </div>
-
     </div>
 
   </div>
 
-  <!-- Premium visibility toggle -->
   <script>
     if (window.PREMIUM_ENABLED) {
-      document.getElementById("premium-root").hidden = false;
+      document.getElementById("premium-root").removeAttribute("hidden");
     }
   </script>
 
-  <!-- CoreHabit logic -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -138,41 +129,41 @@
 
         resultEl.innerHTML = `
           <section style="margin-bottom:32px;">
-            <h2 style="font-size:22px;margin-bottom:10px;">Overview</h2>
-            <p style="line-height:1.7;">${data.overview}</p>
+            <h2>Overview</h2>
+            <p>${data.overview}</p>
           </section>
 
           <section style="margin-bottom:32px;">
-            <h2 style="font-size:22px;margin-bottom:10px;">Weekly Workout Split</h2>
-            <ul style="padding-left:20px;">
-              ${data.weekly_workout_split.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            <h2>Weekly Workout Split</h2>
+            <ul>
+              ${data.weekly_workout_split.map(i => `<li>${i}</li>`).join("")}
             </ul>
           </section>
 
           <section style="margin-bottom:32px;">
-            <h2 style="font-size:22px;margin-bottom:10px;">Sample Workout</h2>
-            <ul style="padding-left:20px;">
-              ${data.sample_workout.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            <h2>Sample Workout</h2>
+            <ul>
+              ${data.sample_workout.map(i => `<li>${i}</li>`).join("")}
             </ul>
           </section>
 
           <section style="margin-bottom:32px;">
-            <h2 style="font-size:22px;margin-bottom:10px;">Daily Nutrition Guidelines</h2>
-            <ul style="padding-left:20px;">
-              ${data.daily_nutrition_guidelines.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            <h2>Daily Nutrition Guidelines</h2>
+            <ul>
+              ${data.daily_nutrition_guidelines.map(i => `<li>${i}</li>`).join("")}
             </ul>
           </section>
 
           <section style="margin-bottom:32px;">
-            <h2 style="font-size:22px;margin-bottom:10px;">Sample Day of Eating</h2>
-            <ul style="padding-left:20px;">
-              ${data.sample_day_of_eating.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            <h2>Sample Day of Eating</h2>
+            <ul>
+              ${data.sample_day_of_eating.map(i => `<li>${i}</li>`).join("")}
             </ul>
           </section>
 
           <section>
-            <h2 style="font-size:22px;margin-bottom:10px;">Weekly Focus</h2>
-            <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
+            <h2>Weekly Focus</h2>
+            <p>${data.weekly_focus_tip}</p>
           </section>
         `;
 
