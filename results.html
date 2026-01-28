@@ -5,10 +5,12 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Premium feature flag -->
   <script>
-    window.PREMIUM_ENABLED = false;
+    window.PREMIUM_ENABLED = false; // flip to true to show Premium
   </script>
 
+  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
 </head>
@@ -23,6 +25,7 @@
   color:#ffffff;
 ">
 
+  <!-- PAGE CONTAINER -->
   <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
@@ -30,8 +33,10 @@
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
+    <!-- STATUS -->
     <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
+    <!-- BUTTONS -->
     <div style="margin-top:20px;">
       <button id="generateBtn" onclick="generatePlan()" style="
         padding:14px 22px;
@@ -62,6 +67,7 @@
       </button>
     </div>
 
+    <!-- FREE PLAN -->
     <div id="result" style="
       margin-top:40px;
       padding:32px;
@@ -72,12 +78,13 @@
       display:none;
     "></div>
 
-    <div id="premium-root" hidden>
+    <!-- PREMIUM SECTION -->
+    <div id="premium-root" hidden style="margin-top:40px;">
       <div class="premium-card">
-        <h3>Premium: Smart Grocery List</h3>
+        <h3>🔒 Premium: Smart Grocery List</h3>
         <p>
-          Automatically generated groceries based on your calories
-          and weekly plan.
+          Automatically generated groceries based on your calories,
+          protein goals, and weekly plan.
         </p>
         <button disabled>Upgrade to Unlock</button>
       </div>
@@ -85,12 +92,14 @@
 
   </div>
 
+  <!-- Premium toggle -->
   <script>
     if (window.PREMIUM_ENABLED) {
-      document.getElementById("premium-root").removeAttribute("hidden");
+      document.getElementById("premium-root").hidden = false;
     }
   </script>
 
+  <!-- Core logic -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
