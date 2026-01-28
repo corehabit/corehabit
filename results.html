@@ -4,11 +4,15 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script>
-  const PREMIUM_ENABLED = false;
-</script>
+
+  <!-- 🔒 Premium Feature Flag (GLOBAL & SAFE) -->
+  <script>
+    window.PREMIUM_ENABLED = false;
+  </script>
+
   <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/premium.css">
 </head>
 
 <body style="
@@ -74,7 +78,28 @@
       display:none;
     "></div>
 
+    <!-- 🔒 PREMIUM ROOT (ISOLATED & SAFE) -->
+    <div id="premium-root" hidden>
+
+      <div class="premium-card">
+        <h3>🔒 Premium: Smart Grocery List</h3>
+        <p>
+          Automatically generated groceries based on your calories,
+          protein goals, and weekly plan.
+        </p>
+        <button disabled>Upgrade to Unlock</button>
+      </div>
+
+    </div>
+
   </div>
+
+<script>
+  // Toggle Premium visibility safely
+  if (window.PREMIUM_ENABLED) {
+    document.getElementById("premium-root").hidden = false;
+  }
+</script>
 
 <script>
 async function generatePlan() {
