@@ -5,10 +5,13 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Global CoreHabit styles -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
-    /* PAGE BASE — MATCH HOMEPAGE EXACTLY */
+    /* ===============================
+       PAGE BASE (MATCH HOMEPAGE)
+       =============================== */
     .premium-page {
       font-family: inherit;
       background: #0b0f14;
@@ -24,9 +27,11 @@
       max-width: 760px;
     }
 
-    /* HERO */
+    /* ===============================
+       HERO
+       =============================== */
     .premium-hero {
-      margin-bottom: 64px;
+      margin-bottom: 56px;
     }
 
     .premium-hero h1 {
@@ -37,7 +42,7 @@
     }
 
     .premium-hero h1 span {
-      color: #f5c16c; /* GOLD */
+      color: #f5c16c; /* Premium gold */
     }
 
     .premium-hero p {
@@ -48,7 +53,9 @@
       margin-bottom: 28px;
     }
 
-    /* GOLD CTA — PREMIUM ACTION */
+    /* ===============================
+       GOLD CTA (PREMIUM ACTION)
+       =============================== */
     .premium-cta {
       display: inline-block;
       background: linear-gradient(135deg, #f5c16c, #e0a84f);
@@ -58,10 +65,12 @@
       font-weight: 600;
       border-radius: 999px;
       text-decoration: none;
-      box-shadow: 0 0 28px rgba(245, 193, 108, 0.45);
+      box-shadow: 0 0 26px rgba(245, 193, 108, 0.4);
     }
 
-    /* SECTIONS */
+    /* ===============================
+       SECTIONS
+       =============================== */
     .premium-section {
       margin-bottom: 64px;
     }
@@ -73,14 +82,15 @@
       margin-bottom: 20px;
     }
 
-    /* GRID */
+    /* ===============================
+       VALUE CARDS (TOP 3)
+       =============================== */
     .premium-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 18px;
     }
 
-    /* FEATURE CARDS */
     .premium-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -98,7 +108,50 @@
       color: #f5c16c;
     }
 
-    /* FINAL CTA */
+    /* ===============================
+       PREMIUM FEATURE TABS
+       =============================== */
+    .premium-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .premium-tab {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(245, 193, 108, 0.35);
+      border-radius: 14px;
+
+      padding: 18px 22px;
+    }
+
+    .premium-tab-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .premium-tab-content h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .premium-tab-content p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #cfd3db;
+    }
+
+    /* ===============================
+       FINAL CTA
+       =============================== */
     .final-cta {
       margin-top: 48px;
     }
@@ -109,7 +162,9 @@
       color: #9ca3af;
     }
 
-    /* MOBILE */
+    /* ===============================
+       MOBILE
+       =============================== */
     @media (max-width: 768px) {
       .premium-page {
         padding: 64px 24px;
@@ -130,13 +185,12 @@
       <section class="premium-hero">
         <h1>Upgrade to <span>CoreHabit Premium</span></h1>
         <p>
-          Everything you need to lose fat, build muscle, and stay consistent —
-          personalized, beginner-friendly, and updated as you progress.
+          Built for people who want real results — not generic plans.
         </p>
         <a href="#" class="premium-cta">Upgrade to Premium</a>
       </section>
 
-      <!-- VALUE -->
+      <!-- VALUE PILLARS -->
       <section class="premium-section">
         <div class="premium-grid">
           <div class="premium-card">
@@ -154,16 +208,63 @@
         </div>
       </section>
 
-      <!-- FEATURES -->
+      <!-- PREMIUM FEATURES (TABS) -->
       <section class="premium-section">
         <h2>What you get with Premium</h2>
-        <div class="premium-grid">
-          <div class="premium-card">Budget-based grocery lists</div>
-          <div class="premium-card">7-day personalized meal plans</div>
-          <div class="premium-card">Targeted muscle group workouts</div>
-          <div class="premium-card">Calories & macro targets</div>
-          <div class="premium-card">Weekly check-ins & plan updates</div>
-          <div class="premium-card">Progress tracking & history</div>
+
+        <div class="premium-tabs">
+          <div class="premium-tab">
+            <div class="premium-tab-icon">🛒</div>
+            <div class="premium-tab-content">
+              <h3>Budget-Based Grocery List</h3>
+              <p>
+                Weekly groceries auto-generated to match your calories,
+                macros, and budget level.
+              </p>
+            </div>
+          </div>
+
+          <div class="premium-tab">
+            <div class="premium-tab-icon">🍽️</div>
+            <div class="premium-tab-content">
+              <h3>7-Day Meal Plan</h3>
+              <p>
+                A full week of meals built from your targets and preferences,
+                updated as your plan changes.
+              </p>
+            </div>
+          </div>
+
+          <div class="premium-tab">
+            <div class="premium-tab-icon">🏋️‍♂️</div>
+            <div class="premium-tab-content">
+              <h3>Targeted Muscle Group Workouts</h3>
+              <p>
+                Optional muscle-focus programming that adapts your training
+                without sacrificing balance.
+              </p>
+            </div>
+          </div>
+
+          <div class="premium-tab">
+            <div class="premium-tab-icon">📊</div>
+            <div class="premium-tab-content">
+              <h3>Macro Targets & Progress Tracking</h3>
+              <p>
+                Exact calorie and macro targets with ongoing progress tracking.
+              </p>
+            </div>
+          </div>
+
+          <div class="premium-tab">
+            <div class="premium-tab-icon">🔄</div>
+            <div class="premium-tab-content">
+              <h3>Weekly Check-Ins & Plan Updates</h3>
+              <p>
+                Weekly feedback and automatic plan adjustments based on results.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
