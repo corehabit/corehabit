@@ -15,12 +15,12 @@
       background:
         radial-gradient(
           circle at top left,
-          rgba(124, 77, 255, 0.12),
-          transparent 40%
+          rgba(124, 77, 255, 0.14),
+          transparent 42%
         ),
         #0b0f14;
       min-height: 100vh;
-      color: #eaeaf0;
+      color: #f1f3f9;
       padding: 88px 64px;
     }
 
@@ -36,8 +36,9 @@
 
     .premium-hero h1 {
       font-size: 3.2rem;
-      line-height: 1.15;
+      line-height: 1.12;
       font-weight: 700;
+      letter-spacing: -0.02em;
       margin-bottom: 20px;
     }
 
@@ -48,7 +49,7 @@
     .premium-hero p {
       font-size: 1.05rem;
       line-height: 1.6;
-      opacity: 0.85;
+      color: #cfd3ff;
       max-width: 640px;
       margin-bottom: 28px;
     }
@@ -57,7 +58,7 @@
       display: inline-block;
       background: linear-gradient(135deg, #f5c16c, #e0a84f);
       color: #111;
-      padding: 12px 26px;
+      padding: 12px 28px;
       font-size: 1rem;
       font-weight: 600;
       border-radius: 999px;
@@ -70,10 +71,11 @@
     }
 
     .premium-section h2 {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
       margin-bottom: 22px;
-      opacity: 0.9;
     }
 
     /* GRIDS */
@@ -83,14 +85,24 @@
       gap: 20px;
     }
 
-    /* COREHABIT-STYLE PANELS */
+    /* COREHABIT BUBBLES (POP FIXED) */
     .premium-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 18px 20px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      padding: 18px 22px;
       line-height: 1.45;
-      transition: border-color 0.2s ease, background 0.2s ease;
+      position: relative;
+
+      box-shadow:
+        0 0 0 rgba(124, 77, 255, 0),
+        inset 0 0 0 rgba(255, 255, 255, 0);
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
     }
 
     .premium-card h3 {
@@ -98,11 +110,17 @@
       font-weight: 600;
       margin-bottom: 6px;
       color: #f5c16c;
+      text-shadow: 0 0 12px rgba(245, 193, 108, 0.25);
     }
 
     .premium-card:hover {
-      background: rgba(255, 255, 255, 0.045);
-      border-color: rgba(124, 77, 255, 0.4);
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(124, 77, 255, 0.5);
+
+      box-shadow:
+        0 0 0 1px rgba(124, 77, 255, 0.15),
+        0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
     /* COMPARISON TABLE */
