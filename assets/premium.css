@@ -1,13 +1,12 @@
 /* ============================
    CoreHabit Premium Styles
-   Integrated + Native Look
+   Clean & Integrated
    ============================ */
 
 #premium-root {
   margin-top: 56px;
 }
 
-/* Section heading */
 #premium-root > h2 {
   font-size: 22px;
   font-weight: 700;
@@ -22,16 +21,15 @@
   line-height: 1.6;
 }
 
-/* Premium feature cards */
+/* Premium cards */
 #premium-root .premium-card {
-  background: rgba(17, 24, 39, 0.75); /* matches free plan */
+  background: rgba(17, 24, 39, 0.75);
   border-radius: 16px;
   padding: 18px 22px;
   margin-bottom: 14px;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* Card titles */
 #premium-root .premium-card h3 {
   margin: 0 0 4px 0;
   font-size: 17px;
@@ -39,7 +37,6 @@
   color: #e5e7eb;
 }
 
-/* Card descriptions */
 #premium-root .premium-card p {
   margin: 0;
   font-size: 14.5px;
@@ -47,15 +44,11 @@
   color: #9ca3af;
 }
 
-/* ============================
-   Account CTA (Integrated)
-   ============================ */
-
+/* Account CTA */
 #premium-root .premium-account-cta {
   margin-top: 36px;
   padding-top: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  text-align: left;
 }
 
 #premium-root .premium-account-text {
@@ -65,7 +58,6 @@
   margin-bottom: 16px;
 }
 
-/* Buttons */
 #premium-root .premium-account-buttons {
   display: flex;
   gap: 12px;
