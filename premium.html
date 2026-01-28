@@ -5,90 +5,42 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Global CoreHabit styles -->
+  <!-- GLOBAL STYLES (SOURCE OF TRUTH) -->
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
     /* ===============================
-       PAGE BASE (MATCH HOMEPAGE)
+       LAYOUT ONLY — NO TEXT STYLES
        =============================== */
+
     .premium-page {
-      font-family: inherit;
       background: #0b0f14;
       min-height: 100vh;
-      color: #f5f5f5;
       padding: 88px 64px;
-
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     .premium-content {
       max-width: 760px;
     }
 
-    /* ===============================
-       HERO
-       =============================== */
-    .premium-hero {
-      margin-bottom: 56px;
-    }
-
-    .premium-hero h1 {
-      font-size: 3.2rem;
-      line-height: 1.1;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .premium-hero h1 span {
-      color: #f5c16c; /* Premium gold */
-    }
-
-    .premium-hero p {
-      font-size: 1rem;
-      line-height: 1.55;
-      color: #d1d5db;
-      max-width: 640px;
-      margin-bottom: 28px;
-    }
-
-    /* ===============================
-       GOLD CTA (PREMIUM ACTION)
-       =============================== */
+    /* GOLD CTA — PREMIUM ONLY */
     .premium-cta {
       display: inline-block;
       background: linear-gradient(135deg, #f5c16c, #e0a84f);
       color: #111;
       padding: 14px 28px;
-      font-size: 0.95rem;
-      font-weight: 600;
       border-radius: 999px;
       text-decoration: none;
+      font-weight: 600;
       box-shadow: 0 0 26px rgba(245, 193, 108, 0.4);
     }
 
-    /* ===============================
-       SECTIONS
-       =============================== */
-    .premium-section {
-      margin-bottom: 64px;
-    }
-
-    .premium-section h2 {
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 20px;
-    }
-
-    /* ===============================
-       VALUE CARDS (TOP 3)
-       =============================== */
+    /* VALUE CARDS (TOP 3) */
     .premium-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 18px;
+      margin-top: 32px;
     }
 
     .premium-card {
@@ -96,37 +48,24 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 14px;
       padding: 18px 22px;
-      font-size: 0.95rem;
-      line-height: 1.45;
       max-width: 240px;
     }
 
-    .premium-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #f5c16c;
-    }
-
-    /* ===============================
-       PREMIUM FEATURE TABS
-       =============================== */
+    /* PREMIUM FEATURE TABS */
     .premium-tabs {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      margin-top: 24px;
+      margin-top: 32px;
     }
 
     .premium-tab {
       display: flex;
       align-items: flex-start;
       gap: 14px;
-
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(245, 193, 108, 0.35);
       border-radius: 14px;
-
       padding: 18px 22px;
     }
 
@@ -136,42 +75,19 @@
       margin-top: 2px;
     }
 
-    .premium-tab-content h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 4px;
-    }
-
-    .premium-tab-content p {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: #cfd3db;
-    }
-
-    /* ===============================
-       FINAL CTA
-       =============================== */
     .final-cta {
       margin-top: 48px;
     }
 
     .trust-note {
       margin-top: 12px;
-      font-size: 0.85rem;
-      color: #9ca3af;
+      opacity: 0.7;
     }
 
-    /* ===============================
-       MOBILE
-       =============================== */
+    /* MOBILE */
     @media (max-width: 768px) {
       .premium-page {
         padding: 64px 24px;
-      }
-
-      .premium-hero h1 {
-        font-size: 2.2rem;
       }
     }
   </style>
@@ -181,17 +97,15 @@
   <main class="premium-page">
     <div class="premium-content">
 
-      <!-- HERO -->
-      <section class="premium-hero">
-        <h1>Upgrade to <span>CoreHabit Premium</span></h1>
-        <p>
-          Built for people who want real results — not generic plans.
-        </p>
+      <!-- HERO (NO CLASSES ON TEXT) -->
+      <section>
+        <h1>Upgrade to CoreHabit Premium</h1>
+        <p>Built for people who want real results, not generic plans.</p>
         <a href="#" class="premium-cta">Upgrade to Premium</a>
       </section>
 
       <!-- VALUE PILLARS -->
-      <section class="premium-section">
+      <section>
         <div class="premium-grid">
           <div class="premium-card">
             <h3>Done-for-you planning</h3>
@@ -208,61 +122,48 @@
         </div>
       </section>
 
-      <!-- PREMIUM FEATURES (TABS) -->
-      <section class="premium-section">
+      <!-- PREMIUM FEATURES -->
+      <section>
         <h2>What you get with Premium</h2>
 
         <div class="premium-tabs">
           <div class="premium-tab">
             <div class="premium-tab-icon">🛒</div>
-            <div class="premium-tab-content">
+            <div>
               <h3>Budget-Based Grocery List</h3>
-              <p>
-                Weekly groceries auto-generated to match your calories,
-                macros, and budget level.
-              </p>
+              <p>Weekly groceries auto-generated to match your calories, macros, and budget.</p>
             </div>
           </div>
 
           <div class="premium-tab">
             <div class="premium-tab-icon">🍽️</div>
-            <div class="premium-tab-content">
+            <div>
               <h3>7-Day Meal Plan</h3>
-              <p>
-                A full week of meals built from your targets and preferences,
-                updated as your plan changes.
-              </p>
+              <p>A full week of meals built from your targets and preferences.</p>
             </div>
           </div>
 
           <div class="premium-tab">
             <div class="premium-tab-icon">🏋️‍♂️</div>
-            <div class="premium-tab-content">
+            <div>
               <h3>Targeted Muscle Group Workouts</h3>
-              <p>
-                Optional muscle-focus programming that adapts your training
-                without sacrificing balance.
-              </p>
+              <p>Optional muscle-focus programming that adapts your training.</p>
             </div>
           </div>
 
           <div class="premium-tab">
             <div class="premium-tab-icon">📊</div>
-            <div class="premium-tab-content">
+            <div>
               <h3>Macro Targets & Progress Tracking</h3>
-              <p>
-                Exact calorie and macro targets with ongoing progress tracking.
-              </p>
+              <p>Exact calorie and macro targets with ongoing progress tracking.</p>
             </div>
           </div>
 
           <div class="premium-tab">
             <div class="premium-tab-icon">🔄</div>
-            <div class="premium-tab-content">
+            <div>
               <h3>Weekly Check-Ins & Plan Updates</h3>
-              <p>
-                Weekly feedback and automatic plan adjustments based on results.
-              </p>
+              <p>Weekly feedback and automatic plan adjustments.</p>
             </div>
           </div>
         </div>
