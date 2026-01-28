@@ -8,89 +8,86 @@
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
-    /* PAGE BASE — MATCH HOMEPAGE */
+    /* PAGE BASE — MATCH HOMEPAGE EXACTLY */
     .premium-page {
       font-family: inherit;
       background: #0b0f14;
       min-height: 100vh;
-      color: #f1f3f9;
+      color: #f5f5f5;
       padding: 88px 64px;
 
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* LEFT CONTENT RAIL */
     .premium-content {
       max-width: 760px;
     }
 
     /* HERO */
     .premium-hero {
-      margin-bottom: 72px;
+      margin-bottom: 64px;
     }
 
     .premium-hero h1 {
-      font-size: 3.4rem;
+      font-size: 3.2rem;
       line-height: 1.1;
       font-weight: 700;
-      letter-spacing: -0.025em;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .premium-hero h1 span {
-      color: #8b7bff;
+      color: #f5c16c; /* GOLD */
     }
 
     .premium-hero p {
-      font-size: 1.05rem;
-      line-height: 1.65;
-      color: #cfd3ff;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: #d1d5db;
       max-width: 640px;
       margin-bottom: 28px;
     }
 
-    /* CTA — INLINE, NOT STRETCHED */
+    /* GOLD CTA — PREMIUM ACTION */
     .premium-cta {
       display: inline-block;
-      background: linear-gradient(135deg, #8b7bff, #6f63ff);
-      color: #ffffff;
+      background: linear-gradient(135deg, #f5c16c, #e0a84f);
+      color: #111;
       padding: 14px 28px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border-radius: 999px;
       text-decoration: none;
-      box-shadow: 0 0 28px rgba(139, 123, 255, 0.45);
+      box-shadow: 0 0 28px rgba(245, 193, 108, 0.45);
     }
 
     /* SECTIONS */
     .premium-section {
-      margin-bottom: 72px;
+      margin-bottom: 64px;
     }
 
     .premium-section h2 {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 600;
       color: #ffffff;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     /* GRID */
     .premium-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 18px;
+      gap: 16px;
     }
 
-    /* BUBBLES */
+    /* FEATURE CARDS */
     .premium-card {
-      background: rgba(139, 123, 255, 0.06);
-      border: 1px solid rgba(139, 123, 255, 0.2);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
       padding: 18px 22px;
       font-size: 0.95rem;
       line-height: 1.45;
-      box-shadow: 0 0 18px rgba(139, 123, 255, 0.18);
       max-width: 240px;
     }
 
@@ -103,13 +100,13 @@
 
     /* FINAL CTA */
     .final-cta {
-      margin-top: 56px;
+      margin-top: 48px;
     }
 
     .trust-note {
-      margin-top: 14px;
+      margin-top: 12px;
       font-size: 0.85rem;
-      opacity: 0.7;
+      color: #9ca3af;
     }
 
     /* MOBILE */
@@ -119,7 +116,7 @@
       }
 
       .premium-hero h1 {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
       }
     }
   </style>
@@ -139,7 +136,7 @@
         <a href="#" class="premium-cta">Upgrade to Premium</a>
       </section>
 
-      <!-- VALUE PILLARS -->
+      <!-- VALUE -->
       <section class="premium-section">
         <div class="premium-grid">
           <div class="premium-card">
