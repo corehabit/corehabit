@@ -7,11 +7,8 @@
 
   <!-- 🔒 Premium Feature Flag (GLOBAL & SAFE) -->
   <script>
-    <script>
-  window.PREMIUM_ENABLED = false;
-  console.log("✅ Premium flag loaded", window.PREMIUM_ENABLED);
-</script>
-
+    window.PREMIUM_ENABLED = false;
+    console.log("✅ Premium flag loaded", window.PREMIUM_ENABLED);
   </script>
 
   <!-- Styles -->
@@ -98,102 +95,103 @@
 
   </div>
 
-<script>
-  // Toggle Premium visibility safely
-  if (window.PREMIUM_ENABLED) {
-    document.getElementById("premium-root").hidden = false;
-  }
-</script>
+  <!-- Premium visibility toggle -->
+  <script>
+    if (window.PREMIUM_ENABLED) {
+      document.getElementById("premium-root").hidden = false;
+    }
+  </script>
 
-<script>
-async function generatePlan() {
-  const statusEl = document.getElementById("status");
-  const resultEl = document.getElementById("result");
-  const generateBtn = document.getElementById("generateBtn");
-  const regenBtn = document.getElementById("regenBtn");
+  <!-- CoreHabit logic -->
+  <script>
+    async function generatePlan() {
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+      const generateBtn = document.getElementById("generateBtn");
+      const regenBtn = document.getElementById("regenBtn");
 
-  generateBtn.disabled = true;
-  generateBtn.textContent = "Generating...";
-  statusEl.textContent = "Creating a fresh CoreHabit plan...";
-  resultEl.style.display = "none";
-  resultEl.innerHTML = "";
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Generating...";
+      statusEl.textContent = "Creating a fresh CoreHabit plan...";
+      resultEl.style.display = "none";
+      resultEl.innerHTML = "";
 
-  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+      const onboardingRaw = localStorage.getItem("corehabit_onboarding");
 
-  if (!onboardingRaw) {
-    statusEl.textContent = "No onboarding data found.";
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
-    return;
-  }
+      if (!onboardingRaw) {
+        statusEl.textContent = "No onboarding data found.";
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate My Plan";
+        return;
+      }
 
-  const onboarding = JSON.parse(onboardingRaw);
+      const onboarding = JSON.parse(onboardingRaw);
 
-  try {
-    const response = await fetch("/.netlify/functions/generatePlan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ onboarding })
-    });
+      try {
+        const response = await fetch("/.netlify/functions/generatePlan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ onboarding })
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    statusEl.textContent = "";
-    resultEl.style.display = "block";
+        statusEl.textContent = "";
+        resultEl.style.display = "block";
 
-    resultEl.innerHTML = `
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Overview</h2>
-        <p style="line-height:1.7;">${data.overview}</p>
-      </section>
+        resultEl.innerHTML = `
+          <section style="margin-bottom:32px;">
+            <h2 style="font-size:22px;margin-bottom:10px;">Overview</h2>
+            <p style="line-height:1.7;">${data.overview}</p>
+          </section>
 
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Workout Split</h2>
-        <ul style="padding-left:20px;">
-          ${data.weekly_workout_split.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
+          <section style="margin-bottom:32px;">
+            <h2 style="font-size:22px;margin-bottom:10px;">Weekly Workout Split</h2>
+            <ul style="padding-left:20px;">
+              ${data.weekly_workout_split.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            </ul>
+          </section>
 
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Sample Workout</h2>
-        <ul style="padding-left:20px;">
-          ${data.sample_workout.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
+          <section style="margin-bottom:32px;">
+            <h2 style="font-size:22px;margin-bottom:10px;">Sample Workout</h2>
+            <ul style="padding-left:20px;">
+              ${data.sample_workout.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            </ul>
+          </section>
 
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Daily Nutrition Guidelines</h2>
-        <ul style="padding-left:20px;">
-          ${data.daily_nutrition_guidelines.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
+          <section style="margin-bottom:32px;">
+            <h2 style="font-size:22px;margin-bottom:10px;">Daily Nutrition Guidelines</h2>
+            <ul style="padding-left:20px;">
+              ${data.daily_nutrition_guidelines.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            </ul>
+          </section>
 
-      <section style="margin-bottom:32px;">
-        <h2 style="font-size:22px;margin-bottom:10px;">Sample Day of Eating</h2>
-        <ul style="padding-left:20px;">
-          ${data.sample_day_of_eating.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
-        </ul>
-      </section>
+          <section style="margin-bottom:32px;">
+            <h2 style="font-size:22px;margin-bottom:10px;">Sample Day of Eating</h2>
+            <ul style="padding-left:20px;">
+              ${data.sample_day_of_eating.map(i => `<li style="margin-bottom:8px;">${i}</li>`).join("")}
+            </ul>
+          </section>
 
-      <section>
-        <h2 style="font-size:22px;margin-bottom:10px;">Weekly Focus</h2>
-        <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
-      </section>
-    `;
+          <section>
+            <h2 style="font-size:22px;margin-bottom:10px;">Weekly Focus</h2>
+            <p style="line-height:1.7;">${data.weekly_focus_tip}</p>
+          </section>
+        `;
 
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
-    regenBtn.style.display = "inline-block";
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate My Plan";
+        regenBtn.style.display = "inline-block";
 
-  } catch (err) {
-    statusEl.textContent = "Something went wrong.";
-    resultEl.style.display = "block";
-    resultEl.textContent = err.message;
-    generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
-  }
-}
-</script>
+      } catch (err) {
+        statusEl.textContent = "Something went wrong.";
+        resultEl.style.display = "block";
+        resultEl.textContent = err.message;
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate My Plan";
+      }
+    }
+  </script>
 
 </body>
 </html>
