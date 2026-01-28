@@ -1,84 +1,137 @@
 /* ============================
    CoreHabit Premium Styles
-   Clean & Integrated
+   Elevated, Calm, Premium
    ============================ */
 
 #premium-root {
-  margin-top: 56px;
+  margin-top: 64px;
+  padding-top: 32px;
+  position: relative;
 }
 
+/* subtle premium glow divider */
+#premium-root::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 92, 255, 0.4),
+    transparent
+  );
+}
+
+/* Section heading */
 #premium-root > h2 {
-  font-size: 22px;
+  font-size: 23px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: #ffffff;
 }
 
+/* Section description */
 #premium-root > p {
   font-size: 15px;
   color: #9ca3af;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
   line-height: 1.6;
 }
 
-/* Premium cards */
+/* ============================
+   Premium feature cards
+   ============================ */
+
 #premium-root .premium-card {
-  background: rgba(17, 24, 39, 0.75);
-  border-radius: 16px;
-  padding: 18px 22px;
-  margin-bottom: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 39, 0.85),
+    rgba(17, 24, 39, 0.7)
+  );
+  border-radius: 18px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+/* micro-interaction */
+#premium-root .premium-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Card titles */
 #premium-root .premium-card h3 {
-  margin: 0 0 4px 0;
-  font-size: 17px;
+  margin: 0 0 6px 0;
+  font-size: 17.5px;
   font-weight: 600;
   color: #e5e7eb;
 }
 
+/* Card text */
 #premium-root .premium-card p {
   margin: 0;
   font-size: 14.5px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: #9ca3af;
 }
 
-/* Account CTA */
+/* ============================
+   Account CTA (Premium)
+   ============================ */
+
 #premium-root .premium-account-cta {
-  margin-top: 36px;
-  padding-top: 24px;
+  margin-top: 44px;
+  padding-top: 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* CTA text */
 #premium-root .premium-account-text {
   font-size: 14.5px;
   line-height: 1.6;
   color: #9ca3af;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
+/* Buttons */
 #premium-root .premium-account-buttons {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
 #premium-root .premium-primary-btn {
-  padding: 12px 20px;
+  padding: 13px 22px;
   border-radius: 999px;
   border: none;
-  background: #7c5cff;
+  background: linear-gradient(
+    135deg,
+    #7c5cff,
+    #9b8cff
+  );
   color: #ffffff;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124, 92, 255, 0.35);
 }
 
 #premium-root .premium-secondary-btn {
-  padding: 12px 20px;
+  padding: 13px 22px;
   border-radius: 999px;
-  border: 1px solid rgba(124, 92, 255, 0.6);
+  border: 1px solid rgba(124, 92, 255, 0.5);
   background: transparent;
   color: #7c5cff;
   font-weight: 600;
