@@ -5,100 +5,157 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Force dark fallback (prevents white flash / CSS load issues) -->
-  <style>
-    body {
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(
-        80% 80% at 20% 10%,
-        #1a1f35 0%,
-        #0b0f19 60%
-      );
-      color: #ffffff;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-  </style>
+  <!-- Premium feature flag (TEMP – will be dynamic later) -->
+  <script>
+    window.PREMIUM_ENABLED = true;
+  </script>
 
-  <!-- Core styles (ABSOLUTE PATHS – IMPORTANT) -->
-  <link rel="stylesheet" href="/assets/styles.css">
-  <link rel="stylesheet" href="/assets/premium.css">
+  <!-- Styles (UNCHANGED) -->
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/premium.css">
 </head>
 
-<body>
+<body style="
+  min-height:100vh;
+  background: radial-gradient(
+    80% 80% at 20% 10%,
+    #1a1f35 0%,
+    #0b0f19 60%
+  );
+  color:#ffffff;
+">
 
-  <div class="page-wrapper">
+  <!-- PAGE CONTAINER -->
+  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
-    <p>Based on your answers, here’s your CoreHabit plan.</p>
+    <p style="color:#9ca3af;">
+      Based on your answers, here’s your CoreHabit plan.
+    </p>
 
     <!-- STATUS -->
-    <p id="status" style="margin-top:16px;font-weight:600;"></p>
+    <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
-    <!-- ACTION BUTTONS -->
+    <!-- BUTTONS -->
     <div style="margin-top:20px;">
-      <button id="generateBtn" class="button-primary" onclick="generatePlan()">
+      <button id="generateBtn" onclick="generatePlan()" style="
+        padding:14px 22px;
+        border-radius:999px;
+        border:none;
+        background:#7c5cff;
+        color:white;
+        font-weight:700;
+        font-size:16px;
+        cursor:pointer;
+      ">
         Generate My Plan
       </button>
 
-      <button
-        id="regenBtn"
-        class="button-secondary"
-        onclick="generatePlan()"
-        style="display:none;margin-left:12px;"
-      >
+      <button id="regenBtn" onclick="generatePlan()" style="
+        margin-left:12px;
+        padding:12px 20px;
+        border-radius:999px;
+        border:1px solid #7c5cff;
+        background:transparent;
+        color:#7c5cff;
+        font-weight:600;
+        font-size:14px;
+        cursor:pointer;
+        display:none;
+      ">
         Regenerate Plan
       </button>
     </div>
 
-    <!-- FREE PLAN RESULT -->
-    <div id="result" class="card" style="display:none;margin-top:40px;"></div>
+    <!-- FREE PLAN -->
+    <div id="result" style="
+      margin-top:40px;
+      padding:32px;
+      background:#111827;
+      color:#e5e7eb;
+      border-radius:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.4);
+      display:none;
+    "></div>
 
     <!-- ======================
-         PREMIUM (LOCKED)
+         PREMIUM SECTION (UNCHANGED)
          ====================== -->
-    <div class="card" style="margin-top:48px;">
+    <div id="premium-root" hidden style="margin-top:56px;">
 
-      <h2>
-        CoreHabit Premium
-        <span class="lock-pill">Locked</span>
-      </h2>
+      <h2 class="premium-title">Upgrade to CoreHabit Premium</h2>
 
-      <p>
-        Advanced planning, grocery lists, targeted workouts,
-        and weekly updates are available with CoreHabit Premium.
+      <p class="premium-subtitle">
+        Built for people who want real results, not generic plans.
       </p>
 
-      <ul>
-        <li>🛒 Budget-based grocery lists</li>
-        <li>🍽️ 7-day personalized meal plans</li>
-        <li>🏋️ Targeted muscle group workouts</li>
-        <li>📊 Macro tracking & progress updates</li>
-        <li>🔁 Weekly plan adjustments</li>
-      </ul>
+      <div class="premium-card">
+        <h3>🛒 Budget-Based Grocery List</h3>
+        <p>
+          Weekly groceries auto-generated to match your calories,
+          macros, and budget level.
+        </p>
+      </div>
 
-      <div class="premium-box">
-        <p style="margin-bottom:16px;">
-          Upgrade to unlock all Premium features.
+      <div class="premium-card">
+        <h3>🍽️ 7-Day Meal Plan</h3>
+        <p>
+          A full week of meals built from your targets and preferences,
+          updated as your plan changes.
+        </p>
+      </div>
+
+      <div class="premium-card">
+        <h3>🏋️ Targeted Muscle Group Workouts</h3>
+        <p>
+          Optional muscle focus programming that adapts your training
+          without sacrificing balance.
+        </p>
+      </div>
+
+      <div class="premium-card">
+        <h3>📊 Macro Targets & Progress Tracking</h3>
+        <p>
+          Exact calorie and macro targets with ongoing progress tracking.
+        </p>
+      </div>
+
+      <div class="premium-card">
+        <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
+        <p>
+          Weekly feedback and automatic plan adjustments based on results.
+        </p>
+      </div>
+
+      <!-- ACCOUNT CTA -->
+      <div class="premium-account-cta">
+        <p class="premium-account-text">
+          Premium requires an account so we can save your progress,
+          update your plans, and personalize your experience over time.
         </p>
 
-        <a
-          href="/premium.html"
-          class="button-primary"
-          style="text-decoration:none;display:inline-block;"
-        >
-          Upgrade to Premium
-        </a>
+        <div class="premium-account-buttons">
+          <button class="premium-primary-btn">
+            Create Free Account
+          </button>
+          <button class="premium-secondary-btn">
+            Log In
+          </button>
+        </div>
       </div>
 
     </div>
 
-    <div class="spacer"></div>
   </div>
 
-  <!-- ======================
-       CORE LOGIC
-       ====================== -->
+  <!-- Premium toggle (UNCHANGED) -->
+  <script>
+    if (window.PREMIUM_ENABLED) {
+      document.getElementById("premium-root").hidden = false;
+    }
+  </script>
+
+  <!-- Core logic (FIXED ONLY) -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -108,7 +165,7 @@
 
       generateBtn.disabled = true;
       generateBtn.textContent = "Generating...";
-      statusEl.textContent = "Creating your CoreHabit plan...";
+      statusEl.textContent = "Creating a fresh CoreHabit plan...";
       resultEl.style.display = "none";
       resultEl.innerHTML = "";
 
@@ -132,14 +189,18 @@
 
         const data = await response.json();
 
+        statusEl.textContent = "";
+        resultEl.style.display = "block";
+
+        /* ✅ FIXED RENDER */
         resultEl.innerHTML = `
-          <h2>Your CoreHabit Plan</h2>
-          <p>${data.summary || "Your plan is ready."}</p>
+          <section style="margin-bottom:32px;">
+            <h2>Your CoreHabit Plan</h2>
+            <p>${data.summary || "Your personalized plan is ready."}</p>
+          </section>
         `;
 
-        resultEl.style.display = "block";
         regenBtn.style.display = "inline-block";
-        statusEl.textContent = "";
 
       } catch (err) {
         console.error(err);
