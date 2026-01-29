@@ -35,14 +35,30 @@
       padding: 32px 20px;
     }
 
-    h1 { font-size: 50px; line-height: 1.08; letter-spacing: -0.6px; }
-    h2 { font-size: 32px; letter-spacing: -0.3px; }
-    h3 { font-size: 20px; margin-bottom: 8px; }
-    p { color: var(--muted); max-width: 720px; }
+    h1 {
+      font-size: 50px;
+      line-height: 1.08;
+      margin-bottom: 20px;
+      letter-spacing: -0.6px;
+    }
 
-    .section { margin-bottom: 96px; }
+    h2 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      letter-spacing: -0.3px;
+    }
 
-    /* CTA */
+    h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    /* GOLD CTA */
     .premium-cta {
       display: inline-block;
       padding: 12px 22px;
@@ -54,9 +70,23 @@
       box-shadow: 0 10px 28px rgba(212,175,55,0.35);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
+
     .premium-cta:hover {
       transform: translateY(-2px);
       box-shadow: 0 16px 36px rgba(212,175,55,0.5);
+    }
+
+    /* PRICING BADGE */
+    .pricing-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--purple-soft);
+      color: var(--gold);
+      border: 1px solid rgba(212,175,55,0.4);
     }
 
     /* VALUE CARDS */
@@ -77,6 +107,7 @@
       box-shadow: 0 8px 22px rgba(124,92,255,0.18);
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
+
     .premium-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 14px 34px rgba(124,92,255,0.32);
@@ -102,56 +133,20 @@
       box-shadow: 0 8px 22px rgba(124,92,255,0.16);
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
+
     .premium-tab:hover {
       transform: translateY(-3px);
       box-shadow: 0 14px 34px rgba(124,92,255,0.28);
       border-color: rgba(212,175,55,0.6);
     }
 
-    /* PRICING TOGGLE */
-    .pricing-box {
-      max-width: 420px;
-      background: var(--panel);
-      border-radius: 20px;
-      padding: 32px;
-      border: 1px solid rgba(212,175,55,0.35);
-      box-shadow: 0 18px 40px rgba(124,92,255,0.25);
+    .premium-tab-icon {
+      font-size: 22px;
+      margin-top: 2px;
     }
 
-    .pricing-toggle {
-      display: flex;
-      background: rgba(255,255,255,0.05);
-      border-radius: 999px;
-      padding: 6px;
-      margin-bottom: 28px;
-    }
-
-    .toggle-btn {
-      flex: 1;
-      text-align: center;
-      padding: 10px 0;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      color: var(--muted);
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    .toggle-btn.active {
-      background: linear-gradient(135deg, #d4af37, #f0d58c);
-      color: #1a1a1a;
-    }
-
-    .price {
-      font-size: 44px;
-      font-weight: 800;
-      margin: 8px 0;
-    }
-
-    .price span {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--muted);
+    .section {
+      margin-bottom: 96px;
     }
 
     @media (max-width: 600px) {
@@ -168,6 +163,7 @@
       <h1>Upgrade to CoreHabit Premium</h1>
       <p>Built for people who want real results, not generic plans.</p>
       <a href="#" class="premium-cta">Upgrade to Premium</a>
+      <div class="pricing-badge">$19.99 / month · $149.99 / year</div>
     </section>
 
     <!-- VALUE -->
@@ -191,50 +187,50 @@
     <!-- FEATURES -->
     <section class="section">
       <h2>What you get with Premium</h2>
+
       <div class="premium-tabs">
-        <div class="premium-tab"><h3>7-Day Meal Plans</h3></div>
-        <div class="premium-tab"><h3>Budget Grocery Lists</h3></div>
-        <div class="premium-tab"><h3>Targeted Workouts</h3></div>
-        <div class="premium-tab"><h3>Progress Tracking</h3></div>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="section">
-      <h2>Simple pricing</h2>
-
-      <div class="pricing-box">
-        <div class="pricing-toggle">
-          <div class="toggle-btn active" data-plan="monthly">Monthly</div>
-          <div class="toggle-btn" data-plan="yearly">Yearly</div>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🛒</div>
+          <div>
+            <h3>Budget-Based Grocery List</h3>
+            <p>Weekly groceries auto-generated to match your calories and budget.</p>
+          </div>
         </div>
 
-        <div class="price" id="price">$19<span>/month</span></div>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🍽️</div>
+          <div>
+            <h3>7-Day Meal Plan</h3>
+            <p>A full week of meals built from your preferences.</p>
+          </div>
+        </div>
 
-        <p>Cancel anytime. No contracts.</p>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🏋️‍♂️</div>
+          <div>
+            <h3>Targeted Muscle Group Workouts</h3>
+            <p>Optional muscle focus without sacrificing balance.</p>
+          </div>
+        </div>
 
-        <a href="#" class="premium-cta">Start Premium</a>
+        <div class="premium-tab">
+          <div class="premium-tab-icon">📊</div>
+          <div>
+            <h3>Macro Targets & Progress Tracking</h3>
+            <p>Exact targets with ongoing tracking.</p>
+          </div>
+        </div>
+
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🔄</div>
+          <div>
+            <h3>Weekly Check-Ins & Plan Updates</h3>
+            <p>Automatic adjustments based on results.</p>
+          </div>
+        </div>
       </div>
     </section>
 
   </div>
-
-  <script>
-    const buttons = document.querySelectorAll('.toggle-btn');
-    const price = document.getElementById('price');
-
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        if (btn.dataset.plan === 'monthly') {
-          price.innerHTML = '$19<span>/month</span>';
-        } else {
-          price.innerHTML = '$149<span>/year</span>';
-        }
-      });
-    });
-  </script>
 </body>
 </html>
