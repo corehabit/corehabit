@@ -2,9 +2,29 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Normalize subscription data so all events
+ * produce the same shape of record.
+ */
+function normalizeSubscription({
+  email,
+  customerId,
+  subscriptionId,
+  plan,
+  status,
+}) {
+  return {
+    email,
+    customerId,
+    subscriptionId,
+    plan,
+    status,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export async function handler(event) {
   const sig = event.headers["stripe-signature"];
-
   let stripeEvent;
 
   try {
@@ -14,62 +34,116 @@ export async function handler(event) {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
-    console.error("Webhook signature verification failed.", err.message);
+    console.error("❌ Webhook signature verification failed:", err.message);
     return {
       statusCode: 400,
       body: `Webhook Error: ${err.message}`,
     };
   }
 
-  // 🔔 Handle events
-  switch (stripeEvent.type) {
+  try {
+    switch (stripeEvent.type) {
 
-    case "checkout.session.completed": {
-      const session = stripeEvent.data.object;
+      /**
+       * Fired when a user completes checkout successfully
+       * (monthly or annual).
+       */
+      case "checkout.session.completed": {
+        const session = stripeEvent.data.object;
 
-      // Identify plan
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
-      const priceId = lineItems.data[0].price.id;
+        // Fetch line items to determine which price was purchased
+        const lineItems = await stripe.checkout.sessions.listLineItems(
+          session.id,
+          { limit: 1 }
+        );
 
-      const plan =
-        priceId === process.env.STRIPE_PRICE_MONTHLY
-          ? "monthly"
-          : "annual";
+        const priceId = lineItems.data[0]?.price?.id;
 
-      // TODO: save to database
-      console.log("NEW PREMIUM USER:", {
-        email: session.customer_details.email,
-        customerId: session.customer,
-        subscriptionId: session.subscription,
-        plan,
-        status: "active",
-      });
+        const plan =
+          priceId === process.env.STRIPE_PRICE_MONTHLY
+            ? "monthly"
+            : priceId === process.env.STRIPE_PRICE_ANNUAL
+            ? "annual"
+            : "unknown";
 
-      break;
+        const record = normalizeSubscription({
+          email: session.customer_details?.email || null,
+          customerId: session.customer,
+          subscriptionId: session.subscription,
+          plan,
+          status: "active",
+        });
+
+        console.log("✅ PREMIUM ACTIVATED:", record);
+
+        // 🔜 Later: persist record to database / KV store
+        break;
+      }
+
+      /**
+       * Fired when a subscription changes state
+       * (active, past_due, unpaid, paused, etc.)
+       */
+      case "customer.subscription.updated": {
+        const subscription = stripeEvent.data.object;
+
+        const priceId = subscription.items.data[0]?.price?.id;
+
+        const plan =
+          priceId === process.env.STRIPE_PRICE_MONTHLY
+            ? "monthly"
+            : priceId === process.env.STRIPE_PRICE_ANNUAL
+            ? "annual"
+            : "unknown";
+
+        const record = normalizeSubscription({
+          email: null, // Stripe does not always include email here
+          customerId: subscription.customer,
+          subscriptionId: subscription.id,
+          plan,
+          status: subscription.status,
+        });
+
+        console.log("🔄 SUBSCRIPTION UPDATED:", record);
+
+        // 🔜 Later: update stored subscription status
+        break;
+      }
+
+      /**
+       * Fired when a subscription is canceled or expires
+       */
+      case "customer.subscription.deleted": {
+        const subscription = stripeEvent.data.object;
+
+        const record = normalizeSubscription({
+          email: null,
+          customerId: subscription.customer,
+          subscriptionId: subscription.id,
+          plan: null,
+          status: "canceled",
+        });
+
+        console.log("⛔ PREMIUM CANCELED:", record);
+
+        // 🔜 Later: revoke premium access
+        break;
+      }
+
+      default:
+        console.log("ℹ️ Unhandled event type:", stripeEvent.type);
     }
 
-    case "customer.subscription.deleted": {
-      const subscription = stripeEvent.data.object;
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ received: true }),
+    };
 
-      // TODO: mark user as inactive
-      console.log("SUBSCRIPTION CANCELED:", subscription.id);
-      break;
-    }
-
-    case "customer.subscription.updated": {
-      const subscription = stripeEvent.data.object;
-
-      // TODO: update status (past_due, active, etc.)
-      console.log("SUBSCRIPTION UPDATED:", subscription.id);
-      break;
-    }
-
-    default:
-      console.log(`Unhandled event type ${stripeEvent.type}`);
+  } catch (err) {
+    console.error("🔥 Webhook handler error:", err);
+    return {
+      statusCode: 500,
+      body: "Webhook handler failed",
+    };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ received: true }),
-  };
 }
