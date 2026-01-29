@@ -62,9 +62,6 @@
       margin-bottom: 96px;
     }
 
-    /* ======================
-       TOP CTA (SMALLER)
-       ====================== */
     .top-cta-row {
       display: flex;
       gap: 16px;
@@ -84,7 +81,6 @@
       font-weight: 800;
     }
 
-    /* GOLD CTA */
     .premium-cta {
       background: linear-gradient(135deg, #d4af37, #f0d58c);
       color: #1a1a1a;
@@ -98,14 +94,9 @@
       box-shadow: 0 16px 36px rgba(212,175,55,0.5);
     }
 
-    /* PRICING BADGE (TOP) */
     .pricing-badge {
       background:
-        linear-gradient(
-          180deg,
-          rgba(124,92,255,0.18),
-          rgba(124,92,255,0.08)
-        ),
+        linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.08)),
         var(--panel);
       color: var(--gold);
       border: 1px solid rgba(212,175,55,0.6);
@@ -114,7 +105,6 @@
         inset 0 0 0 1px rgba(255,255,255,0.05);
     }
 
-    /* VALUE CARDS */
     .premium-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -132,7 +122,6 @@
       box-shadow: 0 8px 22px rgba(124,92,255,0.18);
     }
 
-    /* FEATURE TABS */
     .premium-tabs {
       display: flex;
       flex-direction: column;
@@ -157,14 +146,9 @@
       margin-top: 2px;
     }
 
-    /* FINAL PANEL */
     .final-upgrade-panel {
       background:
-        linear-gradient(
-          180deg,
-          rgba(124,92,255,0.18),
-          rgba(124,92,255,0.06)
-        ),
+        linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.06)),
         var(--panel);
       border: 1px solid rgba(212,175,55,0.55);
       border-radius: 24px;
@@ -179,7 +163,6 @@
       margin-top: 24px;
     }
 
-    /* RESTORE FINAL CTA PILL */
     .final-upgrade-panel .premium-cta {
       border-radius: 999px;
       padding: 18px 36px;
@@ -199,11 +182,7 @@
       font-weight: 800;
       color: var(--gold);
       background:
-        linear-gradient(
-          180deg,
-          rgba(124,92,255,0.20),
-          rgba(124,92,255,0.08)
-        ),
+        linear-gradient(180deg, rgba(124,92,255,0.20), rgba(124,92,255,0.08)),
         var(--panel);
       border: 1px solid rgba(212,175,55,0.6);
     }
@@ -225,18 +204,21 @@
 <body>
   <div class="container">
 
-    <!-- HERO -->
     <section class="section">
       <h1>Upgrade to CoreHabit Premium</h1>
       <p>Built for people who want real results, not generic plans.</p>
 
       <div class="top-cta-row">
-        <a href="#" class="premium-cta top-pill">Upgrade to Premium</a>
+        <a
+          href="https://buy.stripe.com/test_eVq4gAcmGdec97o7yE3Nm00"
+          class="premium-cta top-pill"
+        >
+          Upgrade to Premium
+        </a>
         <div class="pricing-badge top-pill">$19.99 / month · $149.99 / year</div>
       </div>
     </section>
 
-    <!-- VALUE -->
     <section class="section">
       <div class="premium-grid">
         <div class="premium-card">
@@ -254,7 +236,6 @@
       </div>
     </section>
 
-    <!-- FEATURES -->
     <section class="section">
       <h2>What you get with Premium</h2>
 
@@ -301,14 +282,18 @@
       </div>
     </section>
 
-    <!-- FINAL -->
     <section class="section">
       <div class="final-upgrade-panel">
         <h2>Ready to upgrade?</h2>
         <p>Unlock advanced planning, tracking, and personalization.</p>
 
         <div class="final-cta-row">
-          <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
+          <a
+            href="https://buy.stripe.com/test_eVq4gAcmGdec97o7yE3Nm00"
+            class="premium-cta"
+          >
+            Unlock CoreHabit Premium
+          </a>
           <div class="pricing-badge-large">$19.99 / month · $149.99 / year</div>
         </div>
       </div>
