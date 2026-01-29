@@ -63,7 +63,7 @@
     }
 
     /* ======================
-       TOP CTA SIZE (REFINED)
+       TOP CTA (SMALLER)
        ====================== */
     .top-cta-row {
       display: flex;
@@ -98,7 +98,7 @@
       box-shadow: 0 16px 36px rgba(212,175,55,0.5);
     }
 
-    /* PRICING BADGE */
+    /* PRICING BADGE (TOP) */
     .pricing-badge {
       background:
         linear-gradient(
@@ -179,6 +179,15 @@
       margin-top: 24px;
     }
 
+    /* RESTORE FINAL CTA PILL */
+    .final-upgrade-panel .premium-cta {
+      border-radius: 999px;
+      padding: 18px 36px;
+      min-width: 280px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
     .pricing-badge-large {
       display: inline-flex;
       align-items: center;
@@ -202,7 +211,8 @@
     @media (max-width: 600px) {
       h1 { font-size: 36px; }
       .top-pill,
-      .pricing-badge-large {
+      .pricing-badge-large,
+      .final-upgrade-panel .premium-cta {
         width: 100%;
       }
       .final-upgrade-panel {
