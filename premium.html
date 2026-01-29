@@ -67,6 +67,7 @@
       gap: 16px;
       margin-top: 26px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .top-pill {
@@ -79,6 +80,7 @@
       border-radius: 999px;
       font-size: 16px;
       font-weight: 800;
+      position: relative;
     }
 
     .premium-cta {
@@ -103,6 +105,21 @@
       box-shadow:
         0 14px 34px rgba(124,92,255,0.3),
         inset 0 0 0 1px rgba(255,255,255,0.05);
+      text-decoration: none;
+    }
+
+    .most-popular {
+      position: absolute;
+      top: -12px;
+      right: -6px;
+      background: linear-gradient(135deg, #7c5cff, #9b87ff);
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.6px;
+      box-shadow: 0 6px 16px rgba(124,92,255,0.45);
     }
 
     .premium-grid {
@@ -161,6 +178,7 @@
       gap: 20px;
       flex-wrap: wrap;
       margin-top: 24px;
+      align-items: center;
     }
 
     .final-upgrade-panel .premium-cta {
@@ -185,6 +203,17 @@
         linear-gradient(180deg, rgba(124,92,255,0.20), rgba(124,92,255,0.08)),
         var(--panel);
       border: 1px solid rgba(212,175,55,0.6);
+      position: relative;
+      text-decoration: none;
+    }
+
+    .savings-text {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 6px;
+      text-align: center;
     }
 
     @media (max-width: 600px) {
@@ -210,7 +239,7 @@
       <p>Built for people who want real results, not generic plans.</p>
 
       <div class="top-cta-row">
-        <!-- PRIMARY: MONTHLY -->
+        <!-- MONTHLY PRIMARY -->
         <a
           href="https://buy.stripe.com/test_3cI7sMfyS0rq83k2ek3Nm02"
           class="premium-cta top-pill"
@@ -218,14 +247,19 @@
           Start Monthly — $19.99
         </a>
 
-        <!-- SECONDARY: ANNUAL -->
+        <!-- ANNUAL SECONDARY -->
         <a
           href="https://buy.stripe.com/test_bJefZibiCca897oaKQ3Nm01"
           class="pricing-badge top-pill"
         >
-          Go Annual — $149.99 (Best Value)
+          <span class="most-popular">MOST POPULAR</span>
+          Go Annual — $149.99
         </a>
       </div>
+
+      <span class="savings-text">
+        Save $89.89 per year compared to monthly
+      </span>
     </section>
 
     <!-- VALUE -->
@@ -297,10 +331,10 @@
     <section class="section">
       <div class="final-upgrade-panel">
         <h2>Ready to upgrade?</h2>
-        <p>Unlock advanced planning, tracking, and personalization.</p>
+        <p>Flexible monthly or save big with the annual plan.</p>
 
         <div class="final-cta-row">
-          <!-- MONTHLY PRIMARY -->
+          <!-- MONTHLY -->
           <a
             href="https://buy.stripe.com/test_3cI7sMfyS0rq83k2ek3Nm02"
             class="premium-cta"
@@ -308,14 +342,19 @@
             Start Monthly — $19.99
           </a>
 
-          <!-- ANNUAL SECONDARY -->
+          <!-- ANNUAL -->
           <a
             href="https://buy.stripe.com/test_bJefZibiCca897oaKQ3Nm01"
             class="pricing-badge-large"
           >
-            Go Annual — Save Big
+            <span class="most-popular">MOST POPULAR</span>
+            Go Annual — $149.99
           </a>
         </div>
+
+        <span class="savings-text">
+          Save $89.89 per year compared to monthly
+        </span>
       </div>
     </section>
 
