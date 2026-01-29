@@ -58,6 +58,10 @@
       max-width: 720px;
     }
 
+    .section {
+      margin-bottom: 96px;
+    }
+
     /* GOLD CTA */
     .premium-cta {
       display: inline-block;
@@ -89,9 +93,8 @@
       border: 1px solid rgba(212,175,55,0.4);
     }
 
-    /* ⬇⬇⬇ ONLY CHANGE IS HERE ⬇⬇⬇ */
     .pricing-badge-large {
-      margin-top: 24px;
+      margin-top: 20px;
       padding: 26px 32px;
       border-radius: 20px;
       background:
@@ -114,7 +117,6 @@
       color: var(--gold);
       letter-spacing: -0.2px;
     }
-    /* ⬆⬆⬆ END ONLY CHANGE ⬆⬆⬆ */
 
     /* VALUE CARDS */
     .premium-grid {
@@ -172,12 +174,29 @@
       margin-top: 2px;
     }
 
-    .section {
-      margin-bottom: 96px;
+    /* ⬇⬇⬇ NEW: FINAL UPGRADE PANEL ⬇⬇⬇ */
+    .final-upgrade-panel {
+      background:
+        linear-gradient(
+          180deg,
+          rgba(124,92,255,0.18),
+          rgba(124,92,255,0.06)
+        ),
+        var(--panel);
+      border: 1px solid rgba(212,175,55,0.55);
+      border-radius: 24px;
+      padding: 48px 48px 56px;
+      box-shadow:
+        0 24px 48px rgba(124,92,255,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
     }
+    /* ⬆⬆⬆ END NEW PANEL ⬆⬆⬆ */
 
     @media (max-width: 600px) {
       h1 { font-size: 36px; }
+      .final-upgrade-panel {
+        padding: 36px 24px 40px;
+      }
     }
   </style>
 </head>
@@ -258,13 +277,15 @@
       </div>
     </section>
 
-    <!-- FINAL CTA + BOXED PRICING -->
+    <!-- FINAL UPGRADE PANEL -->
     <section class="section">
-      <h2>Ready to upgrade?</h2>
-      <p>Unlock advanced planning, tracking, and personalization.</p>
-      <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
-      <div class="pricing-badge-large">
-        <span>$19.99 / month · $149.99 / year</span>
+      <div class="final-upgrade-panel">
+        <h2>Ready to upgrade?</h2>
+        <p>Unlock advanced planning, tracking, and personalization.</p>
+        <a href="#" class="premium-cta">Unlock CoreHabit Premium</a>
+        <div class="pricing-badge-large">
+          <span>$19.99 / month · $149.99 / year</span>
+        </div>
       </div>
     </section>
 
