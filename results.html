@@ -5,24 +5,37 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="./assets/styles.css">
+  <!-- Force dark fallback (prevents white flash / CSS load issues) -->
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: radial-gradient(
+        80% 80% at 20% 10%,
+        #1a1f35 0%,
+        #0b0f19 60%
+      );
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+  </style>
+
+  <!-- Core styles (ABSOLUTE PATHS – IMPORTANT) -->
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/premium.css">
 </head>
 
 <body>
 
-  <!-- PAGE CONTAINER -->
   <div class="page-wrapper">
 
     <h1>Your Personalized Plan</h1>
-    <p>
-      Based on your answers, here’s your CoreHabit plan.
-    </p>
+    <p>Based on your answers, here’s your CoreHabit plan.</p>
 
     <!-- STATUS -->
-    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+    <p id="status" style="margin-top:16px;font-weight:600;"></p>
 
-    <!-- BUTTONS -->
+    <!-- ACTION BUTTONS -->
     <div style="margin-top:20px;">
       <button id="generateBtn" class="button-primary" onclick="generatePlan()">
         Generate My Plan
@@ -32,105 +45,60 @@
         id="regenBtn"
         class="button-secondary"
         onclick="generatePlan()"
-        style="margin-left:12px;display:none;"
+        style="display:none;margin-left:12px;"
       >
         Regenerate Plan
       </button>
     </div>
 
-    <!-- FREE PLAN -->
+    <!-- FREE PLAN RESULT -->
     <div id="result" class="card" style="display:none;margin-top:40px;"></div>
 
     <!-- ======================
-         PREMIUM GATED SECTION
+         PREMIUM (LOCKED)
          ====================== -->
+    <div class="card" style="margin-top:48px;">
 
-    <!-- LOCK MESSAGE (FREE USERS) -->
-    <div id="premium-locked" class="premium-box" style="display:none;">
-      <h3>
+      <h2>
         CoreHabit Premium
         <span class="lock-pill">Locked</span>
-      </h3>
+      </h2>
+
       <p>
-        Advanced planning, grocery lists, targeted workouts, and weekly
-        updates are available with CoreHabit Premium.
+        Advanced planning, grocery lists, targeted workouts,
+        and weekly updates are available with CoreHabit Premium.
       </p>
-      <a href="/premium.html" class="button-primary">
-        Upgrade to Premium
-      </a>
-    </div>
 
-    <!-- PREMIUM FEATURES (PREMIUM USERS ONLY) -->
-    <div id="premium-unlocked" style="display:none;margin-top:48px;">
+      <ul>
+        <li>🛒 Budget-based grocery lists</li>
+        <li>🍽️ 7-day personalized meal plans</li>
+        <li>🏋️ Targeted muscle group workouts</li>
+        <li>📊 Macro tracking & progress updates</li>
+        <li>🔁 Weekly plan adjustments</li>
+      </ul>
 
-      <h2>CoreHabit Premium</h2>
-      <p>Everything unlocked for your goals.</p>
-
-      <div class="card">
-        <h3>🛒 Budget-Based Grocery List</h3>
-        <p>
-          Weekly groceries auto-generated to match your calories,
-          macros, and budget.
+      <div class="premium-box">
+        <p style="margin-bottom:16px;">
+          Upgrade to unlock all Premium features.
         </p>
-      </div>
 
-      <div class="card">
-        <h3>🍽️ 7-Day Meal Plan</h3>
-        <p>
-          A full week of meals built from your targets and preferences,
-          updated as your plan changes.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>🏋️ Targeted Muscle Group Workouts</h3>
-        <p>
-          Optional muscle focus programming without sacrificing balance.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>📊 Macro Targets & Progress Tracking</h3>
-        <p>
-          Exact calorie and macro targets with ongoing progress tracking.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
-        <p>
-          Automatic adjustments based on progress and feedback.
-        </p>
+        <a
+          href="/premium.html"
+          class="button-primary"
+          style="text-decoration:none;display:inline-block;"
+        >
+          Upgrade to Premium
+        </a>
       </div>
 
     </div>
 
+    <div class="spacer"></div>
   </div>
 
   <!-- ======================
-       PREMIUM GATING LOGIC
+       CORE LOGIC
        ====================== -->
-  <script>
-    /*
-      TEMPORARY PREMIUM CHECK
-      -----------------------
-      For now:
-      - false = free user
-      - true  = premium user
-
-      Later, this will be replaced by:
-      fetch("/.netlify/functions/check-premium")
-    */
-    const isPremium = false; // 🔁 change to true to test
-
-    if (isPremium) {
-      document.getElementById("premium-unlocked").style.display = "block";
-    } else {
-      document.getElementById("premium-locked").style.display = "block";
-    }
-  </script>
-
-  <!-- CORE PLAN LOGIC (UNCHANGED) -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -140,7 +108,7 @@
 
       generateBtn.disabled = true;
       generateBtn.textContent = "Generating...";
-      statusEl.textContent = "Creating a fresh CoreHabit plan...";
+      statusEl.textContent = "Creating your CoreHabit plan...";
       resultEl.style.display = "none";
       resultEl.innerHTML = "";
 
@@ -164,22 +132,22 @@
 
         const data = await response.json();
 
-        statusEl.textContent = "";
-        resultEl.style.display = "block";
-        regenBtn.style.display = "inline-block";
-        generateBtn.textContent = "Generate My Plan";
-        generateBtn.disabled = false;
-
         resultEl.innerHTML = `
-          <h3>Your Core Plan</h3>
-          <p>${data.summary || "Your personalized plan is ready."}</p>
+          <h2>Your CoreHabit Plan</h2>
+          <p>${data.summary || "Your plan is ready."}</p>
         `;
 
+        resultEl.style.display = "block";
+        regenBtn.style.display = "inline-block";
+        statusEl.textContent = "";
+
       } catch (err) {
-        statusEl.textContent = "Something went wrong. Please try again.";
-        generateBtn.disabled = false;
-        generateBtn.textContent = "Generate My Plan";
+        console.error(err);
+        statusEl.textContent = "Something went wrong generating your plan.";
       }
+
+      generateBtn.disabled = false;
+      generateBtn.textContent = "Generate My Plan";
     }
   </script>
 
