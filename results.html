@@ -155,7 +155,7 @@
     }
   </script>
 
-  <!-- Core logic (ONLY ADDING DEBUG OUTPUT) -->
+  <!-- Core logic (ONLY ADDITIONS BELOW) -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -192,25 +192,50 @@
         statusEl.textContent = "";
         resultEl.style.display = "block";
 
-        /* 🔍 DEBUG ADD (does NOT change layout logic) */
+        /* 🔥 NEW: Clean plan renderer (no JSON blob) */
         resultEl.innerHTML = `
           <section style="margin-bottom:32px;">
             <h2>Your CoreHabit Plan</h2>
-            <p>${data.summary || "Your personalized plan is ready."}</p>
-
-            <pre style="
-              margin-top:20px;
-              padding:16px;
-              background:#020617;
-              border-radius:12px;
-              font-size:13px;
-              color:#e5e7eb;
-              overflow:auto;
-              max-height:360px;
-            ">
-${JSON.stringify(data, null, 2)}
-            </pre>
+            <p>${data.overview || "Your personalized plan is ready."}</p>
           </section>
+
+          ${data.weekly_workout_split ? `
+          <section>
+            <h3>Weekly Workout Split</h3>
+            <ul>
+              ${data.weekly_workout_split.map(day => `<li>${day}</li>`).join("")}
+            </ul>
+          </section>` : ""}
+
+          ${data.sample_workout ? `
+          <section>
+            <h3>Sample Workout</h3>
+            <ul>
+              ${data.sample_workout.map(item => `<li>${item}</li>`).join("")}
+            </ul>
+          </section>` : ""}
+
+          ${data.daily_nutrition_guidelines ? `
+          <section>
+            <h3>Daily Nutrition Guidelines</h3>
+            <ul>
+              ${data.daily_nutrition_guidelines.map(item => `<li>${item}</li>`).join("")}
+            </ul>
+          </section>` : ""}
+
+          ${data.sample_day_of_eating ? `
+          <section>
+            <h3>Sample Day of Eating</h3>
+            <ul>
+              ${data.sample_day_of_eating.map(item => `<li>${item}</li>`).join("")}
+            </ul>
+          </section>` : ""}
+
+          ${data.weekly_focus_tip ? `
+          <section>
+            <h3>Weekly Focus Tip</h3>
+            <p>${data.weekly_focus_tip}</p>
+          </section>` : ""}
         `;
 
         regenBtn.style.display = "inline-block";
