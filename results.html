@@ -155,7 +155,7 @@
     }
   </script>
 
-  <!-- Core logic (FIXED ONLY) -->
+  <!-- Core logic (ONLY ADDING DEBUG OUTPUT) -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -192,11 +192,24 @@
         statusEl.textContent = "";
         resultEl.style.display = "block";
 
-        /* ✅ FIXED RENDER */
+        /* 🔍 DEBUG ADD (does NOT change layout logic) */
         resultEl.innerHTML = `
           <section style="margin-bottom:32px;">
             <h2>Your CoreHabit Plan</h2>
             <p>${data.summary || "Your personalized plan is ready."}</p>
+
+            <pre style="
+              margin-top:20px;
+              padding:16px;
+              background:#020617;
+              border-radius:12px;
+              font-size:13px;
+              color:#e5e7eb;
+              overflow:auto;
+              max-height:360px;
+            ">
+${JSON.stringify(data, null, 2)}
+            </pre>
           </section>
         `;
 
