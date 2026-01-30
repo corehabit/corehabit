@@ -225,3 +225,30 @@ body:not(.is-premium) #premium-root .premium-card {
 body:not(.is-premium) #premium-root .premium-card h3 {
   filter: none;
 }
+/* ============================
+   🎯 Premium Preview — Readable but Locked
+   ============================ */
+
+/* Reduce blur so text is readable */
+body:not(.is-premium) #premium-root .premium-card {
+  filter: blur(2px);
+  opacity: 0.9;
+}
+
+/* Make titles fully readable */
+body:not(.is-premium) #premium-root .premium-card h3 {
+  color: #ffffff;
+  opacity: 1;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Make descriptions readable but slightly softened */
+body:not(.is-premium) #premium-root .premium-card p {
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+/* Ensure overlay still blocks interaction */
+body:not(.is-premium) #premium-root .premium-card {
+  pointer-events: none;
+}
