@@ -158,7 +158,7 @@
 
   </div>
 
-  <!-- Premium toggle (UNCHANGED) -->
+  <!-- Premium toggle (UNCHANGED, legacy) -->
   <script>
     if (window.PREMIUM_ENABLED) {
       document.getElementById("premium-root").hidden = false;
@@ -207,7 +207,6 @@
             <h2>Your CoreHabit Plan</h2>
             <p>${data.overview || "Your personalized plan is ready."}</p>
           </section>
-
           ${data.weekly_workout_split ? `
           <section>
             <h3>Weekly Workout Split</h3>
@@ -215,7 +214,6 @@
               ${data.weekly_workout_split.map(day => `<li>${day}</li>`).join("")}
             </ul>
           </section>` : ""}
-
           ${data.sample_workout ? `
           <section>
             <h3>Sample Workout</h3>
@@ -223,7 +221,6 @@
               ${data.sample_workout.map(item => `<li>${item}</li>`).join("")}
             </ul>
           </section>` : ""}
-
           ${data.daily_nutrition_guidelines ? `
           <section>
             <h3>Daily Nutrition Guidelines</h3>
@@ -231,7 +228,6 @@
               ${data.daily_nutrition_guidelines.map(item => `<li>${item}</li>`).join("")}
             </ul>
           </section>` : ""}
-
           ${data.sample_day_of_eating ? `
           <section>
             <h3>Sample Day of Eating</h3>
@@ -239,7 +235,6 @@
               ${data.sample_day_of_eating.map(item => `<li>${item}</li>`).join("")}
             </ul>
           </section>` : ""}
-
           ${data.weekly_focus_tip ? `
           <section>
             <h3>Weekly Focus Tip</h3>
@@ -258,25 +253,34 @@
       generateBtn.textContent = "Generate My Plan";
     }
   </script>
-<script>
-  async function checkPremiumStatus() {
-    const sessionId = localStorage.getItem("corehabit_session_id");
 
-    if (!sessionId) return false;
+  <!-- ✅ STEP 5B: Backend premium check -->
+  <script>
+    async function checkPremiumStatus() {
+      const sessionId = localStorage.getItem("corehabit_session_id");
+      if (!sessionId) return false;
 
-    try {
-      const res = await fetch("/.netlify/functions/checkPremium", {
-        method: "POST",
-        body: JSON.stringify({ sessionId }),
-      });
-
-      const data = await res.json();
-      return data.isPremium === true;
-    } catch (err) {
-      console.error("Premium check failed:", err);
-      return false;
+      try {
+        const res = await fetch("/.netlify/functions/checkPremium", {
+          method: "POST",
+          body: JSON.stringify({ sessionId }),
+        });
+        const data = await res.json();
+        return data.isPremium === true;
+      } catch (err) {
+        console.error("Premium check failed:", err);
+        return false;
+      }
     }
-  }
-</script>
+  </script>
+
+  <!-- ✅ STEP 5C: REAL premium gating (added, not replacing anything) -->
+  <script>
+    checkPremiumStatus().then(isPremium => {
+      document.getElementById("premium-root").hidden = !isPremium;
+      document.body.classList.toggle("is-premium", isPremium);
+    });
+  </script>
+
 </body>
 </html>
