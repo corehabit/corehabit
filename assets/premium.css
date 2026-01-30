@@ -252,3 +252,25 @@ body:not(.is-premium) #premium-root .premium-card p {
 body:not(.is-premium) #premium-root .premium-card {
   pointer-events: none;
 }
+/* ============================
+   🎯 Premium Preview — FINAL TUNING
+   ============================ */
+
+/* Barely-there blur: readable, still gated */
+body:not(.is-premium) #premium-root .premium-card {
+  filter: blur(1px);
+  opacity: 0.92;
+}
+
+/* Keep titles crisp */
+body:not(.is-premium) #premium-root .premium-card h3 {
+  color: #ffffff;
+  opacity: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Body copy fully readable but slightly softened */
+body:not(.is-premium) #premium-root .premium-card p {
+  color: #e5e7eb;
+  opacity: 0.92;
+}
