@@ -152,10 +152,21 @@
         </div>
 
       </div>
+
+      <!-- ✅ ADDED: Customer Portal Button -->
+      <div style="margin-top:24px;">
+        <button
+          class="premium-secondary-btn"
+          onclick="openCustomerPortal()">
+          Manage Subscription
+        </button>
+      </div>
+
     </div>
+
   </div>
 
-  <!-- 🔔 Premium unlock toast (ADDED) -->
+  <!-- 🔔 Premium unlock toast -->
   <div id="premium-toast" aria-live="polite">
     ✨ Premium Unlocked
   </div>
@@ -216,7 +227,7 @@
     }
   </script>
 
-  <!-- Premium check + toast trigger (UPDATED, additive) -->
+  <!-- Premium status check (UNCHANGED) -->
   <script>
     async function checkPremiumStatus() {
       const sessionId = localStorage.getItem("corehabit_session_id");
@@ -242,18 +253,33 @@
       if (isPremium && !wasPremium) {
         const toast = document.getElementById("premium-toast");
         toast.classList.add("show");
-
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2500);
+        setTimeout(() => toast.classList.remove("show"), 2500);
       }
     });
   </script>
 
+  <!-- ✅ STEP 4: Customer Portal redirect (ADDED) -->
+  <script>
+    async function openCustomerPortal() {
+      const customerId = localStorage.getItem("corehabit_customer_id");
+
+      if (!customerId) {
+        alert("Unable to load subscription details.");
+        return;
+      }
+
+      const res = await fetch("/.netlify/functions/createPortalSession", {
+        method: "POST",
+        body: JSON.stringify({ customerId }),
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    }
+  </script>
+
 </body>
 </html>
-<button
-  class="premium-secondary-btn"
-  onclick="openCustomerPortal()">
-  Manage Subscription
-</button>
