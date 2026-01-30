@@ -199,3 +199,29 @@
     0 8px 20px rgba(212, 175, 55, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
+/* ============================
+   ✨ Premium Preview Readability Boost
+   ============================ */
+
+/* Make feature titles pop for free users */
+body:not(.is-premium) #premium-root .premium-card h3 {
+  color: #ffffff;
+  opacity: 0.95;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Slightly soften body text but keep it readable */
+body:not(.is-premium) #premium-root .premium-card p {
+  color: #d1d5db;
+  opacity: 0.85;
+}
+
+/* Reduce blur just enough to tease structure */
+body:not(.is-premium) #premium-root .premium-card {
+  filter: blur(4px);
+}
+
+/* Make emojis/icons stand out more */
+body:not(.is-premium) #premium-root .premium-card h3 {
+  filter: none;
+}
