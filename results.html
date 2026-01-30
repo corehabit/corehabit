@@ -10,6 +10,16 @@
     window.PREMIUM_ENABLED = true;
   </script>
 
+  <!-- ✅ STEP 3: Capture Stripe session_id after checkout -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+
+    if (sessionId) {
+      localStorage.setItem("corehabit_session_id", sessionId);
+    }
+  </script>
+
   <!-- Styles (UNCHANGED) -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
@@ -155,7 +165,7 @@
     }
   </script>
 
-  <!-- Core logic (ONLY ADDITIONS BELOW) -->
+  <!-- Core logic (UNCHANGED) -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -192,7 +202,6 @@
         statusEl.textContent = "";
         resultEl.style.display = "block";
 
-        /* 🔥 NEW: Clean plan renderer (no JSON blob) */
         resultEl.innerHTML = `
           <section style="margin-bottom:32px;">
             <h2>Your CoreHabit Plan</h2>
