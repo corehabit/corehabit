@@ -5,12 +5,12 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Premium feature flag (TEMP – will be dynamic later) -->
+  <!-- Premium feature flag (TEMP – legacy, ignored now) -->
   <script>
     window.PREMIUM_ENABLED = true;
   </script>
 
-  <!-- ✅ STEP 3: Capture Stripe session_id after checkout -->
+  <!-- STEP 3: Capture Stripe session_id after checkout -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
@@ -20,7 +20,7 @@
     }
   </script>
 
-  <!-- Styles (UNCHANGED) -->
+  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
 </head>
@@ -89,81 +89,75 @@
     "></div>
 
     <!-- ======================
-         PREMIUM SECTION (UNCHANGED)
+         PREMIUM SECTION (ALWAYS VISIBLE)
          ====================== -->
-    <div id="premium-root" hidden style="margin-top:56px;">
+    <div id="premium-root" style="margin-top:56px;">
 
-      <h2 class="premium-title">Upgrade to CoreHabit Premium</h2>
+      <h2 class="premium-title">CoreHabit Premium</h2>
 
       <p class="premium-subtitle">
-        Built for people who want real results, not generic plans.
+        Everything you need to accelerate results — personalized and adaptive.
       </p>
 
-      <div class="premium-card">
-        <h3>🛒 Budget-Based Grocery List</h3>
-        <p>
-          Weekly groceries auto-generated to match your calories,
-          macros, and budget level.
-        </p>
-      </div>
+      <div class="premium-lock-wrapper">
 
-      <div class="premium-card">
-        <h3>🍽️ 7-Day Meal Plan</h3>
-        <p>
-          A full week of meals built from your targets and preferences,
-          updated as your plan changes.
-        </p>
-      </div>
+        <!-- PREMIUM FEATURES (PREVIEW VISIBLE TO ALL) -->
 
-      <div class="premium-card">
-        <h3>🏋️ Targeted Muscle Group Workouts</h3>
-        <p>
-          Optional muscle focus programming that adapts your training
-          without sacrificing balance.
-        </p>
-      </div>
-
-      <div class="premium-card">
-        <h3>📊 Macro Targets & Progress Tracking</h3>
-        <p>
-          Exact calorie and macro targets with ongoing progress tracking.
-        </p>
-      </div>
-
-      <div class="premium-card">
-        <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
-        <p>
-          Weekly feedback and automatic plan adjustments based on results.
-        </p>
-      </div>
-
-      <!-- ACCOUNT CTA -->
-      <div class="premium-account-cta">
-        <p class="premium-account-text">
-          Premium requires an account so we can save your progress,
-          update your plans, and personalize your experience over time.
-        </p>
-
-        <div class="premium-account-buttons">
-          <button class="premium-primary-btn">
-            Create Free Account
-          </button>
-          <button class="premium-secondary-btn">
-            Log In
-          </button>
+        <div class="premium-card">
+          <h3>🛒 Budget-Based Grocery List</h3>
+          <p>
+            Weekly groceries auto-generated to match your calories,
+            macros, and budget level.
+          </p>
         </div>
+
+        <div class="premium-card">
+          <h3>🍽️ 7-Day Meal Plan</h3>
+          <p>
+            A full week of meals built from your targets and preferences,
+            updated as your plan changes.
+          </p>
+        </div>
+
+        <div class="premium-card">
+          <h3>🏋️ Targeted Muscle Group Workouts</h3>
+          <p>
+            Optional muscle focus programming that adapts your training
+            without sacrificing balance.
+          </p>
+        </div>
+
+        <div class="premium-card">
+          <h3>📊 Macro Targets & Progress Tracking</h3>
+          <p>
+            Exact calorie and macro targets with ongoing progress tracking.
+          </p>
+        </div>
+
+        <div class="premium-card">
+          <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
+          <p>
+            Weekly feedback and automatic plan adjustments based on results.
+          </p>
+        </div>
+
+        <!-- 🔒 LOCK OVERLAY (FREE USERS ONLY) -->
+        <div class="premium-locked-overlay">
+          <h3>Unlock CoreHabit Premium</h3>
+          <p>
+            Get grocery lists, meal plans, advanced workouts,
+            and progress tracking personalized to you.
+          </p>
+          <a href="/premium.html" class="premium-primary-btn">
+            Upgrade to Premium
+          </a>
+        </div>
+
       </div>
 
     </div>
 
   </div>
-
-  <!-- Premium toggle (UNCHANGED, legacy) -->
-  <script>
-    if (window.PREMIUM_ENABLED) {
-      document.getElementById("premium-root").hidden = false;
-    }
-  </script>
 
   <!-- Core logic (UNCHANGED) -->
   <script>
@@ -254,7 +248,7 @@
     }
   </script>
 
-  <!-- ✅ STEP 5B: Backend premium check -->
+  <!-- STEP 5: Premium status check -->
   <script>
     async function checkPremiumStatus() {
       const sessionId = localStorage.getItem("corehabit_session_id");
@@ -272,12 +266,8 @@
         return false;
       }
     }
-  </script>
 
-  <!-- ✅ STEP 5C: REAL premium gating (added, not replacing anything) -->
-  <script>
     checkPremiumStatus().then(isPremium => {
-      document.getElementById("premium-root").hidden = !isPremium;
       document.body.classList.toggle("is-premium", isPremium);
     });
   </script>
