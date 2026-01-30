@@ -133,3 +133,17 @@
   opacity: 1;
   transform: translateY(0);
 }
+/* ============================
+   Fix: Gold CTA inside lock overlay
+   ============================ */
+
+#premium-root .premium-locked-overlay .premium-primary-btn {
+  background: linear-gradient(
+    135deg,
+    #d4af37,
+    #f0d58c
+  );
+  color: #1a1a1a;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.45);
+  text-decoration: none;
+}
