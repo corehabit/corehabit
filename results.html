@@ -258,6 +258,25 @@
       generateBtn.textContent = "Generate My Plan";
     }
   </script>
+<script>
+  async function checkPremiumStatus() {
+    const sessionId = localStorage.getItem("corehabit_session_id");
 
+    if (!sessionId) return false;
+
+    try {
+      const res = await fetch("/.netlify/functions/checkPremium", {
+        method: "POST",
+        body: JSON.stringify({ sessionId }),
+      });
+
+      const data = await res.json();
+      return data.isPremium === true;
+    } catch (err) {
+      console.error("Premium check failed:", err);
+      return false;
+    }
+  }
+</script>
 </body>
 </html>
