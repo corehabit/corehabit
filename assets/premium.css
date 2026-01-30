@@ -147,3 +147,33 @@
   font-size: 14px;
   cursor: pointer;
 }
+
+/* ============================
+   🔒 Premium Lock Overlay (ADDED)
+   ============================ */
+
+#premium-root .premium-lock-wrapper {
+  position: relative;
+}
+
+#premium-root .premium-locked-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 32px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  z-index: 10;
+}
+
+/* Hide overlay for premium users */
+.is-premium #premium-root .premium-locked-overlay {
+  display: none;
+}
