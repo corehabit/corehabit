@@ -153,10 +153,10 @@
 
       </div>
 
-      <!-- ✅ ADDED: Customer Portal Button -->
-      <div style="margin-top:24px;">
+      <!-- ✅ Manage Subscription (styled + intentional) -->
+      <div class="premium-manage-wrapper">
         <button
-          class="premium-secondary-btn"
+          class="premium-secondary-btn premium-manage-btn"
           onclick="openCustomerPortal()">
           Manage Subscription
         </button>
@@ -171,7 +171,7 @@
     ✨ Premium Unlocked
   </div>
 
-  <!-- Core logic (UNCHANGED) -->
+  <!-- Core logic -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -227,7 +227,7 @@
     }
   </script>
 
-  <!-- Premium status check (UNCHANGED) -->
+  <!-- Premium status check -->
   <script>
     async function checkPremiumStatus() {
       const sessionId = localStorage.getItem("corehabit_session_id");
@@ -258,7 +258,7 @@
     });
   </script>
 
-  <!-- ✅ STEP 4: Customer Portal redirect (ADDED) -->
+  <!-- Customer Portal redirect -->
   <script>
     async function openCustomerPortal() {
       const customerId = localStorage.getItem("corehabit_customer_id");
