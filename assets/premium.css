@@ -177,3 +177,22 @@
 .is-premium #premium-root .premium-locked-overlay {
   display: none;
 }
+/* ============================
+   ✨ Premium Unlock Animation
+   ============================ */
+
+/* Initial state for locked overlay */
+#premium-root .premium-locked-overlay {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+/* When user becomes premium, animate overlay away */
+.is-premium #premium-root .premium-locked-overlay {
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
