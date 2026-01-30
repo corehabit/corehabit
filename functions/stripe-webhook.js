@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { markPremium } from "./premiumStore"; // ✅ NEW
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -50,6 +51,9 @@ export async function handler(event) {
        */
       case "checkout.session.completed": {
         const session = stripeEvent.data.object;
+
+        // ✅ NEW: mark this checkout session as premium
+        markPremium(session.id);
 
         // Fetch line items to determine which price was purchased
         const lineItems = await stripe.checkout.sessions.listLineItems(
