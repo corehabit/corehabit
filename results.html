@@ -5,18 +5,11 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Premium feature flag (TEMP – legacy, ignored now) -->
-  <script>
-    window.PREMIUM_ENABLED = true;
-  </script>
-
-  <!-- Capture Stripe session_id after checkout -->
+  <!-- Capture checkout success -->
   <script>
     const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-
-    if (sessionId) {
-      localStorage.setItem("corehabit_session_id", sessionId);
+    if (params.get("checkout") === "success") {
+      console.log("✅ Checkout completed");
     }
   </script>
 
@@ -122,14 +115,15 @@
         <div class="premium-locked-overlay">
           <h3>Unlock CoreHabit Premium</h3>
           <p>Get grocery lists, meal plans, advanced workouts, and progress tracking.</p>
-          <a href="/premium.html" class="premium-primary-btn">
+
+          <button class="premium-primary-btn" onclick="upgradeToPremium()">
             Upgrade to Premium
-          </a>
+          </button>
         </div>
 
       </div>
 
-      <!-- Manage Subscription (premium only) -->
+      <!-- Manage Subscription -->
       <div class="premium-manage-wrapper" id="manage-subscription" hidden>
         <button
           class="premium-secondary-btn premium-manage-btn"
@@ -146,6 +140,7 @@
     ✨ Premium Unlocked
   </div>
 
+  <!-- Generate Plan -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -171,25 +166,39 @@
         const response = await fetch("/.netlify/functions/generatePlan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ onboarding: JSON.parse(onboardingRaw) })
+          body: JSON.stringify({
+            onboarding: JSON.parse(onboardingRaw),
+            customerId: localStorage.getItem("corehabit_customer_id")
+          })
         });
 
-        const data = await response.json();
+        const responseData = await response.json();
+        const data = responseData.plan;
+        const isPremium = responseData.isPremium === true;
+
+        document.body.classList.toggle("is-premium", isPremium);
+        if (isPremium) {
+          document.getElementById("manage-subscription").hidden = false;
+          const toast = document.getElementById("premium-toast");
+          toast.classList.add("show");
+          setTimeout(() => toast.classList.remove("show"), 2500);
+        }
+
         statusEl.textContent = "";
         resultEl.style.display = "block";
 
         resultEl.innerHTML = `
           <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-          ${data.weekly_workout_split ? `<section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>` : ""}
-          ${data.sample_workout ? `<section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.daily_nutrition_guidelines ? `<section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.sample_day_of_eating ? `<section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.weekly_focus_tip ? `<section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>` : ""}
+          <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+          <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+          <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+          <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+          <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
         `;
 
         regenBtn.style.display = "inline-block";
 
-      } catch {
+      } catch (err) {
         statusEl.textContent = "Something went wrong generating your plan.";
       }
 
@@ -198,34 +207,30 @@
     }
   </script>
 
+  <!-- Upgrade -->
   <script>
-    async function checkPremiumStatus() {
-      const sessionId = localStorage.getItem("corehabit_session_id");
-      if (!sessionId) return false;
+    async function upgradeToPremium() {
+      const priceId = "YOUR_STRIPE_PRICE_ID"; // replace with real price ID
 
-      try {
-        const res = await fetch("/.netlify/functions/checkPremium", {
-          method: "POST",
-          body: JSON.stringify({ sessionId }),
-        });
-        const data = await res.json();
-        return data.isPremium === true;
-      } catch {
-        return false;
+      const res = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: localStorage.getItem("corehabit_customer_id"),
+          priceId
+        }),
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to start checkout.");
       }
     }
-
-    checkPremiumStatus().then(isPremium => {
-      document.body.classList.toggle("is-premium", isPremium);
-      if (isPremium) {
-        document.getElementById("manage-subscription").hidden = false;
-        const toast = document.getElementById("premium-toast");
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 2500);
-      }
-    });
   </script>
 
+  <!-- Manage Subscription -->
   <script>
     async function openCustomerPortal(event) {
       const btn = event.target;
@@ -234,10 +239,7 @@
 
       const customerId = localStorage.getItem("corehabit_customer_id");
       if (!customerId) {
-        alert(
-          "We can’t find your subscription in this browser.\n\n" +
-          "Try opening the Stripe confirmation email."
-        );
+        alert("No subscription found in this browser.");
         btn.disabled = false;
         btn.textContent = "Manage Subscription";
         return;
