@@ -5,15 +5,6 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Capture checkout success -->
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("checkout") === "success") {
-      console.log("✅ Checkout completed");
-    }
-  </script>
-
-  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
 </head>
@@ -28,189 +19,174 @@
   color:#ffffff;
 ">
 
-  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
+<div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
-    <h1>Your Personalized Plan</h1>
-    <p style="color:#9ca3af;">
-      Based on your answers, here’s your CoreHabit plan.
+  <h1>Your Personalized Plan</h1>
+  <p style="color:#9ca3af;">
+    Based on your answers, here’s your CoreHabit plan.
+  </p>
+
+  <p id="status" style="margin-top:20px;font-weight:600;"></p>
+
+  <div style="margin-top:20px;">
+    <button id="generateBtn" onclick="generatePlan()" style="
+      padding:14px 22px;
+      border-radius:999px;
+      border:none;
+      background:#7c5cff;
+      color:white;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+    ">
+      Generate My Plan
+    </button>
+
+    <button id="regenBtn" onclick="generatePlan()" style="
+      margin-left:12px;
+      padding:12px 20px;
+      border-radius:999px;
+      border:1px solid #7c5cff;
+      background:transparent;
+      color:#7c5cff;
+      font-weight:600;
+      font-size:14px;
+      cursor:pointer;
+      display:none;
+    ">
+      Regenerate Plan
+    </button>
+  </div>
+
+  <div id="result" style="
+    margin-top:40px;
+    padding:32px;
+    background:#111827;
+    color:#e5e7eb;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    display:none;
+  "></div>
+
+  <!-- PREMIUM -->
+  <div id="premium-root" style="margin-top:56px;">
+
+    <h2 class="premium-title">CoreHabit Premium</h2>
+    <p class="premium-subtitle">
+      Everything you need to accelerate results — personalized and adaptive.
     </p>
 
-    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+    <div class="premium-lock-wrapper">
 
-    <div style="margin-top:20px;">
-      <button id="generateBtn" onclick="generatePlan()" style="
-        padding:14px 22px;
-        border-radius:999px;
-        border:none;
-        background:#7c5cff;
-        color:white;
-        font-weight:700;
-        font-size:16px;
-        cursor:pointer;
-      ">
-        Generate My Plan
-      </button>
+      <div class="premium-card"><h3>🛒 Grocery Lists</h3></div>
+      <div class="premium-card"><h3>🍽️ 7-Day Meal Plans</h3></div>
+      <div class="premium-card"><h3>🏋️ Muscle-Focused Training</h3></div>
+      <div class="premium-card"><h3>📊 Macro Targets</h3></div>
+      <div class="premium-card"><h3>🔁 Weekly Updates</h3></div>
 
-      <button id="regenBtn" onclick="generatePlan()" style="
-        margin-left:12px;
-        padding:12px 20px;
-        border-radius:999px;
-        border:1px solid #7c5cff;
-        background:transparent;
-        color:#7c5cff;
-        font-weight:600;
-        font-size:14px;
-        cursor:pointer;
-        display:none;
-      ">
-        Regenerate Plan
-      </button>
-    </div>
-
-    <div id="result" style="
-      margin-top:40px;
-      padding:32px;
-      background:#111827;
-      color:#e5e7eb;
-      border-radius:20px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.4);
-      display:none;
-    "></div>
-
-    <!-- PREMIUM -->
-    <div id="premium-root" style="margin-top:56px;">
-
-      <h2 class="premium-title">CoreHabit Premium</h2>
-      <p class="premium-subtitle">
-        Everything you need to accelerate results — personalized and adaptive.
-      </p>
-
-      <div class="premium-lock-wrapper">
-
-        <div class="premium-card">
-          <h3>🛒 Budget-Based Grocery List</h3>
-          <p>Weekly groceries auto-generated to match your calories, macros, and budget.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🍽️ 7-Day Meal Plan</h3>
-          <p>A full week of meals built from your targets and preferences.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🏋️ Targeted Muscle Group Workouts</h3>
-          <p>Optional muscle focus programming that adapts your training.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>📊 Macro Targets & Progress Tracking</h3>
-          <p>Exact calorie and macro targets with ongoing progress tracking.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
-          <p>Weekly feedback and automatic plan adjustments.</p>
-        </div>
-
-        <div class="premium-locked-overlay">
-          <h3>Unlock CoreHabit Premium</h3>
-          <p>Get grocery lists, meal plans, advanced workouts, and progress tracking.</p>
-
-          <button class="premium-primary-btn" onclick="upgradeToPremium()">
-            Upgrade to Premium
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Manage Subscription -->
-      <div class="premium-manage-wrapper" id="manage-subscription" hidden>
-        <button
-          class="premium-secondary-btn premium-manage-btn"
-          onclick="openCustomerPortal(event)">
-          Manage Subscription
+      <div class="premium-locked-overlay">
+        <h3>Unlock CoreHabit Premium</h3>
+        <p>Advanced plans, meals, groceries, and progress tracking.</p>
+        <button class="premium-primary-btn" onclick="upgradeToPremium()">
+          Upgrade to Premium
         </button>
       </div>
 
     </div>
 
+    <div class="premium-manage-wrapper" id="manage-subscription" hidden>
+      <button class="premium-secondary-btn premium-manage-btn"
+        onclick="openCustomerPortal(event)">
+        Manage Subscription
+      </button>
+    </div>
+
   </div>
+</div>
 
-  <div id="premium-toast" aria-live="polite">
-    ✨ Premium Unlocked
-  </div>
+<div id="premium-toast">✨ Premium Unlocked</div>
 
-  <!-- Generate Plan -->
-  <script>
-    async function generatePlan() {
-      const statusEl = document.getElementById("status");
-      const resultEl = document.getElementById("result");
-      const generateBtn = document.getElementById("generateBtn");
-      const regenBtn = document.getElementById("regenBtn");
+<!-- ========================= -->
+<!-- CORE LOGIC SCRIPTS -->
+<!-- ========================= -->
 
-      generateBtn.disabled = true;
-      generateBtn.textContent = "Generating...";
-      statusEl.textContent = "Creating a fresh CoreHabit plan...";
-      resultEl.style.display = "none";
-      resultEl.innerHTML = "";
+<script>
+  async function generatePlan() {
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const generateBtn = document.getElementById("generateBtn");
+    const regenBtn = document.getElementById("regenBtn");
 
-      const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-      if (!onboardingRaw) {
-        statusEl.textContent = "No onboarding data found.";
-        generateBtn.disabled = false;
-        generateBtn.textContent = "Generate My Plan";
-        return;
-      }
+    generateBtn.disabled = true;
+    generateBtn.textContent = "Generating…";
+    statusEl.textContent = "Creating your CoreHabit plan…";
+    resultEl.style.display = "none";
+    resultEl.innerHTML = "";
 
-      try {
-        const response = await fetch("/.netlify/functions/generatePlan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            onboarding: JSON.parse(onboardingRaw),
-            customerId: localStorage.getItem("corehabit_customer_id")
-          })
-        });
-
-        const responseData = await response.json();
-        const data = responseData.plan;
-        const isPremium = responseData.isPremium === true;
-
-        document.body.classList.toggle("is-premium", isPremium);
-        if (isPremium) {
-          document.getElementById("manage-subscription").hidden = false;
-          const toast = document.getElementById("premium-toast");
-          toast.classList.add("show");
-          setTimeout(() => toast.classList.remove("show"), 2500);
-        }
-
-        statusEl.textContent = "";
-        resultEl.style.display = "block";
-
-        resultEl.innerHTML = `
-          <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-          <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
-          <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-          <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-          <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-          <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
-        `;
-
-        regenBtn.style.display = "inline-block";
-
-      } catch (err) {
-        statusEl.textContent = "Something went wrong generating your plan.";
-      }
-
+    const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+    if (!onboardingRaw) {
+      statusEl.textContent = "No onboarding data found.";
       generateBtn.disabled = false;
       generateBtn.textContent = "Generate My Plan";
+      return;
     }
-  </script>
 
-  <!-- Upgrade -->
-  <script>
-    async function upgradeToPremium() {
-      const priceId = "price_1Suo3PL0p80VWf6ll3JE5WqS"; // replace with real price ID
+    try {
+      const res = await fetch("/.netlify/functions/generatePlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          onboarding: JSON.parse(onboardingRaw),
+          customerId: localStorage.getItem("corehabit_customer_id")
+        })
+      });
+
+      const responseData = await res.json();
+
+      if (!responseData || !responseData.plan) {
+        throw new Error("Plan not returned");
+      }
+
+      const data = responseData.plan;
+      const isPremium = responseData.isPremium === true;
+
+      document.body.classList.toggle("is-premium", isPremium);
+      document.getElementById("manage-subscription").hidden = !isPremium;
+
+      if (isPremium) {
+        const toast = document.getElementById("premium-toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+
+      statusEl.textContent = "";
+      resultEl.style.display = "block";
+
+      resultEl.innerHTML = `
+        <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
+        <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+        <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
+      `;
+
+      regenBtn.style.display = "inline-block";
+
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Something went wrong generating your plan.";
+    }
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+  }
+</script>
+
+<script>
+  async function upgradeToPremium() {
+    try {
+      const priceId = "price_XXXX"; // 🔴 REPLACE WITH REAL STRIPE PRICE ID
 
       const res = await fetch("/.netlify/functions/createCheckoutSession", {
         method: "POST",
@@ -218,47 +194,46 @@
         body: JSON.stringify({
           customerId: localStorage.getItem("corehabit_customer_id"),
           priceId
-        }),
+        })
       });
 
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Failed to start checkout.");
-      }
-    }
-  </script>
-
-  <!-- Manage Subscription -->
-  <script>
-    async function openCustomerPortal(event) {
-      const btn = event.target;
-      btn.disabled = true;
-      btn.textContent = "Opening billing…";
-
-      const customerId = localStorage.getItem("corehabit_customer_id");
-      if (!customerId) {
-        alert("No subscription found in this browser.");
-        btn.disabled = false;
-        btn.textContent = "Manage Subscription";
-        return;
-      }
-
-      const res = await fetch("/.netlify/functions/createPortalSession", {
-        method: "POST",
-        body: JSON.stringify({ customerId }),
-      });
+      if (!res.ok) throw new Error("Checkout failed");
 
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (!data.url) throw new Error("No checkout URL");
 
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = "Manage Subscription";
-      }, 5000);
+      window.location.href = data.url;
+
+    } catch (err) {
+      console.error("Upgrade error:", err);
+      alert("Upgrade failed. Check console.");
     }
-  </script>
+  }
+</script>
+
+<script>
+  async function openCustomerPortal(event) {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "Opening billing…";
+
+    const customerId = localStorage.getItem("corehabit_customer_id");
+    if (!customerId) {
+      alert("No subscription found.");
+      btn.disabled = false;
+      btn.textContent = "Manage Subscription";
+      return;
+    }
+
+    const res = await fetch("/.netlify/functions/createPortalSession", {
+      method: "POST",
+      body: JSON.stringify({ customerId })
+    });
+
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  }
+</script>
 
 </body>
 </html>
