@@ -1,55 +1,22 @@
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
-
-async function hasActiveSubscription(customerId) {
-  if (!customerId) return false;
-
-  const subs = await stripe.subscriptions.list({
-    customer: customerId,
-    status: "active",
-    limit: 1,
-  });
-
-  return subs.data.length > 0;
-}
-
-export const handler = async function (event) {
+export async function handler(event) {
   try {
-    // Only allow POST
     if (event.httpMethod !== "POST") {
-      return {
-        statusCode: 405,
-        body: "Method Not Allowed",
-      };
+      return { statusCode: 405, body: "Method Not Allowed" };
     }
 
-    // Parse request body
     const body = JSON.parse(event.body || "{}");
     const onboarding = body.onboarding;
-    const customerId = body.customerId || null;
 
     if (!onboarding) {
-      return {
-        statusCode: 400,
-        body: "Missing onboarding data",
-      };
+      return { statusCode: 400, body: "Missing onboarding data" };
     }
 
-    // 🔐 SERVER-SIDE PREMIUM CHECK
-    const isPremium = await hasActiveSubscription(customerId);
+    // TEMP: premium flag comes from caller (until Stripe anchoring is finalized)
+    const isPremium = body.isPremium === true;
 
-    // ---- PREMIUM INPUT (SAFE DEFAULT FOR FREE USERS) ----
-    const focusMuscle =
-      isPremium ? onboarding.focus_muscle || "none" : "none";
-
-    // --- STRICT STRUCTURED PROMPT ---
     const systemPrompt =
       "You are CoreHabit, a fitness and nutrition coaching engine. " +
-      "You MUST respond with valid JSON only. " +
-      "Do NOT include markdown, explanations, or extra text.";
+      "You MUST respond with valid JSON only.";
 
     const userPrompt =
       "Using the onboarding data below, return a JSON object with EXACTLY this structure:\n\n" +
@@ -61,80 +28,54 @@ export const handler = async function (event) {
       '  "sample_day_of_eating": string[],\n' +
       '  "weekly_focus_tip": string\n' +
       "}\n\n" +
-
-      // ---- MUSCLE FOCUS RULES (PREMIUM-GATED) ----
-      "Muscle focus rules:\n" +
-      "- Selected muscle: \"" + focusMuscle + "\"\n" +
-      "- If the selected muscle is \"none\", create a fully balanced beginner program.\n" +
-      "- If a muscle is selected, SLIGHTLY prioritize it while maintaining full-body balance.\n" +
-      "- Do NOT dramatically increase volume.\n" +
-      "- Keep everything beginner-safe and sustainable.\n" +
-      "- Use gym or home exercises based on the user's training location.\n\n" +
-
       "Onboarding data:\n" +
       JSON.stringify(onboarding, null, 2);
 
-    // --- OPENAI CALL ---
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + process.env.OPENAI_API_KEY,
-          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           temperature: 0.4,
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-        }),
+            { role: "user", content: userPrompt }
+          ]
+        })
       }
     );
 
     const data = await response.json();
 
-    if (data.error) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ openaiError: data.error }),
-      };
-    }
-
     if (!data.choices || !data.choices[0]) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ rawOpenAIResponse: data }),
-      };
+      throw new Error("Invalid OpenAI response");
     }
 
-    let parsedPlan;
+    let plan;
     try {
-      parsedPlan = JSON.parse(data.choices[0].message.content);
-    } catch (err) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: "AI did not return valid JSON",
-          raw: data.choices[0].message.content,
-        }),
-      };
+      plan = JSON.parse(data.choices[0].message.content);
+    } catch {
+      throw new Error("AI returned invalid JSON");
     }
 
-    // ✅ FINAL RESPONSE (AUTHORITY = SERVER)
     return {
       statusCode: 200,
       body: JSON.stringify({
         isPremium,
-        plan: parsedPlan,
-      }),
+        plan
+      })
     };
-  } catch (error) {
+
+  } catch (err) {
+    console.error("generatePlan error:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: err.message })
     };
   }
-};
+}
