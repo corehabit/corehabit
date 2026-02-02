@@ -1,26 +1,49 @@
-exports.handler = async function (event) {
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
+
+async function hasActiveSubscription(customerId) {
+  if (!customerId) return false;
+
+  const subs = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "active",
+    limit: 1,
+  });
+
+  return subs.data.length > 0;
+}
+
+export const handler = async function (event) {
   try {
     // Only allow POST
     if (event.httpMethod !== "POST") {
       return {
         statusCode: 405,
-        body: "Method Not Allowed"
+        body: "Method Not Allowed",
       };
     }
 
     // Parse request body
     const body = JSON.parse(event.body || "{}");
     const onboarding = body.onboarding;
+    const customerId = body.customerId || null;
 
     if (!onboarding) {
       return {
         statusCode: 400,
-        body: "Missing onboarding data"
+        body: "Missing onboarding data",
       };
     }
 
-    // ---- PREMIUM DATA (SAFE DEFAULT) ----
-    const focusMuscle = onboarding.focus_muscle || "none";
+    // 🔐 SERVER-SIDE PREMIUM CHECK
+    const isPremium = await hasActiveSubscription(customerId);
+
+    // ---- PREMIUM INPUT (SAFE DEFAULT FOR FREE USERS) ----
+    const focusMuscle =
+      isPremium ? onboarding.focus_muscle || "none" : "none";
 
     // --- STRICT STRUCTURED PROMPT ---
     const systemPrompt =
@@ -39,7 +62,7 @@ exports.handler = async function (event) {
       '  "weekly_focus_tip": string\n' +
       "}\n\n" +
 
-      // ---- PREMIUM MUSCLE FOCUS INSTRUCTIONS ----
+      // ---- MUSCLE FOCUS RULES (PREMIUM-GATED) ----
       "Muscle focus rules:\n" +
       "- Selected muscle: \"" + focusMuscle + "\"\n" +
       "- If the selected muscle is \"none\", create a fully balanced beginner program.\n" +
@@ -57,42 +80,36 @@ exports.handler = async function (event) {
       {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + process.env.OPENAI_API_KEY,
-          "Content-Type": "application/json"
+          Authorization: "Bearer " + process.env.OPENAI_API_KEY,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
           temperature: 0.4,
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ]
-        })
+            { role: "user", content: userPrompt },
+          ],
+        }),
       }
     );
 
     const data = await response.json();
 
-    // --- PASS THROUGH OPENAI ERRORS ---
     if (data.error) {
       return {
         statusCode: 500,
-        body: JSON.stringify({
-          openaiError: data.error
-        })
+        body: JSON.stringify({ openaiError: data.error }),
       };
     }
 
     if (!data.choices || !data.choices[0]) {
       return {
         statusCode: 500,
-        body: JSON.stringify({
-          rawOpenAIResponse: data
-        })
+        body: JSON.stringify({ rawOpenAIResponse: data }),
       };
     }
 
-    // --- PARSE AI JSON SAFELY ---
     let parsedPlan;
     try {
       parsedPlan = JSON.parse(data.choices[0].message.content);
@@ -101,23 +118,23 @@ exports.handler = async function (event) {
         statusCode: 500,
         body: JSON.stringify({
           error: "AI did not return valid JSON",
-          raw: data.choices[0].message.content
-        })
+          raw: data.choices[0].message.content,
+        }),
       };
     }
 
-    // --- RETURN CLEAN STRUCTURED DATA ---
+    // ✅ FINAL RESPONSE (AUTHORITY = SERVER)
     return {
       statusCode: 200,
-      body: JSON.stringify(parsedPlan)
+      body: JSON.stringify({
+        isPremium,
+        plan: parsedPlan,
+      }),
     };
-
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: error.message
-      })
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };
