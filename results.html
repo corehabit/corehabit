@@ -10,7 +10,7 @@
     window.PREMIUM_ENABLED = true;
   </script>
 
-  <!-- STEP 3: Capture Stripe session_id after checkout -->
+  <!-- Capture Stripe session_id after checkout -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
@@ -35,7 +35,6 @@
   color:#ffffff;
 ">
 
-  <!-- PAGE CONTAINER -->
   <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
     <h1>Your Personalized Plan</h1>
@@ -43,10 +42,8 @@
       Based on your answers, here’s your CoreHabit plan.
     </p>
 
-    <!-- STATUS -->
     <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
-    <!-- BUTTONS -->
     <div style="margin-top:20px;">
       <button id="generateBtn" onclick="generatePlan()" style="
         padding:14px 22px;
@@ -77,7 +74,6 @@
       </button>
     </div>
 
-    <!-- FREE PLAN -->
     <div id="result" style="
       margin-top:40px;
       padding:32px;
@@ -88,13 +84,10 @@
       display:none;
     "></div>
 
-    <!-- ======================
-         PREMIUM SECTION
-         ====================== -->
+    <!-- PREMIUM -->
     <div id="premium-root" style="margin-top:56px;">
 
       <h2 class="premium-title">CoreHabit Premium</h2>
-
       <p class="premium-subtitle">
         Everything you need to accelerate results — personalized and adaptive.
       </p>
@@ -103,49 +96,32 @@
 
         <div class="premium-card">
           <h3>🛒 Budget-Based Grocery List</h3>
-          <p>
-            Weekly groceries auto-generated to match your calories,
-            macros, and budget level.
-          </p>
+          <p>Weekly groceries auto-generated to match your calories, macros, and budget.</p>
         </div>
 
         <div class="premium-card">
           <h3>🍽️ 7-Day Meal Plan</h3>
-          <p>
-            A full week of meals built from your targets and preferences,
-            updated as your plan changes.
-          </p>
+          <p>A full week of meals built from your targets and preferences.</p>
         </div>
 
         <div class="premium-card">
           <h3>🏋️ Targeted Muscle Group Workouts</h3>
-          <p>
-            Optional muscle focus programming that adapts your training
-            without sacrificing balance.
-          </p>
+          <p>Optional muscle focus programming that adapts your training.</p>
         </div>
 
         <div class="premium-card">
           <h3>📊 Macro Targets & Progress Tracking</h3>
-          <p>
-            Exact calorie and macro targets with ongoing progress tracking.
-          </p>
+          <p>Exact calorie and macro targets with ongoing progress tracking.</p>
         </div>
 
         <div class="premium-card">
           <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
-          <p>
-            Weekly feedback and automatic plan adjustments based on results.
-          </p>
+          <p>Weekly feedback and automatic plan adjustments.</p>
         </div>
 
-        <!-- LOCK OVERLAY -->
         <div class="premium-locked-overlay">
           <h3>Unlock CoreHabit Premium</h3>
-          <p>
-            Get grocery lists, meal plans, advanced workouts,
-            and progress tracking personalized to you.
-          </p>
+          <p>Get grocery lists, meal plans, advanced workouts, and progress tracking.</p>
           <a href="/premium.html" class="premium-primary-btn">
             Upgrade to Premium
           </a>
@@ -153,11 +129,11 @@
 
       </div>
 
-      <!-- Manage Subscription -->
-      <div class="premium-manage-wrapper">
+      <!-- Manage Subscription (premium only) -->
+      <div class="premium-manage-wrapper" id="manage-subscription" hidden>
         <button
           class="premium-secondary-btn premium-manage-btn"
-          onclick="openCustomerPortal()">
+          onclick="openCustomerPortal(event)">
           Manage Subscription
         </button>
       </div>
@@ -166,12 +142,10 @@
 
   </div>
 
-  <!-- 🔔 Premium unlock toast -->
   <div id="premium-toast" aria-live="polite">
     ✨ Premium Unlocked
   </div>
 
-  <!-- Core logic -->
   <script>
     async function generatePlan() {
       const statusEl = document.getElementById("status");
@@ -186,7 +160,6 @@
       resultEl.innerHTML = "";
 
       const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-
       if (!onboardingRaw) {
         statusEl.textContent = "No onboarding data found.";
         generateBtn.disabled = false;
@@ -194,69 +167,29 @@
         return;
       }
 
-      const onboarding = JSON.parse(onboardingRaw);
-
       try {
         const response = await fetch("/.netlify/functions/generatePlan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ onboarding })
+          body: JSON.stringify({ onboarding: JSON.parse(onboardingRaw) })
         });
 
         const data = await response.json();
-
         statusEl.textContent = "";
         resultEl.style.display = "block";
 
         resultEl.innerHTML = `
-          <section style="margin-bottom:32px;">
-            <h2>Your CoreHabit Plan</h2>
-            <p>${data.overview || "Your personalized plan is ready."}</p>
-          </section>
-
-          ${data.weekly_workout_split ? `
-          <section style="margin-bottom:24px;">
-            <h3>Weekly Workout Split</h3>
-            <ul>
-              ${data.weekly_workout_split.map(day => `<li>${day}</li>`).join("")}
-            </ul>
-          </section>` : ""}
-
-          ${data.sample_workout ? `
-          <section style="margin-bottom:24px;">
-            <h3>Sample Workout</h3>
-            <ul>
-              ${data.sample_workout.map(item => `<li>${item}</li>`).join("")}
-            </ul>
-          </section>` : ""}
-
-          ${data.daily_nutrition_guidelines ? `
-          <section style="margin-bottom:24px;">
-            <h3>Daily Nutrition Guidelines</h3>
-            <ul>
-              ${data.daily_nutrition_guidelines.map(item => `<li>${item}</li>`).join("")}
-            </ul>
-          </section>` : ""}
-
-          ${data.sample_day_of_eating ? `
-          <section style="margin-bottom:24px;">
-            <h3>Sample Day of Eating</h3>
-            <ul>
-              ${data.sample_day_of_eating.map(item => `<li>${item}</li>`).join("")}
-            </ul>
-          </section>` : ""}
-
-          ${data.weekly_focus_tip ? `
-          <section style="margin-bottom:24px;">
-            <h3>Weekly Focus Tip</h3>
-            <p>${data.weekly_focus_tip}</p>
-          </section>` : ""}
+          <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
+          ${data.weekly_workout_split ? `<section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>` : ""}
+          ${data.sample_workout ? `<section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
+          ${data.daily_nutrition_guidelines ? `<section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
+          ${data.sample_day_of_eating ? `<section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
+          ${data.weekly_focus_tip ? `<section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>` : ""}
         `;
 
         regenBtn.style.display = "inline-block";
 
-      } catch (err) {
-        console.error(err);
+      } catch {
         statusEl.textContent = "Something went wrong generating your plan.";
       }
 
@@ -265,7 +198,6 @@
     }
   </script>
 
-  <!-- Premium status check -->
   <script>
     async function checkPremiumStatus() {
       const sessionId = localStorage.getItem("corehabit_session_id");
@@ -278,17 +210,15 @@
         });
         const data = await res.json();
         return data.isPremium === true;
-      } catch (err) {
-        console.error("Premium check failed:", err);
+      } catch {
         return false;
       }
     }
 
     checkPremiumStatus().then(isPremium => {
-      const wasPremium = document.body.classList.contains("is-premium");
       document.body.classList.toggle("is-premium", isPremium);
-
-      if (isPremium && !wasPremium) {
+      if (isPremium) {
+        document.getElementById("manage-subscription").hidden = false;
         const toast = document.getElementById("premium-toast");
         toast.classList.add("show");
         setTimeout(() => toast.classList.remove("show"), 2500);
@@ -296,13 +226,20 @@
     });
   </script>
 
-  <!-- Customer Portal redirect -->
   <script>
-    async function openCustomerPortal() {
-      const customerId = localStorage.getItem("corehabit_customer_id");
+    async function openCustomerPortal(event) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = "Opening billing…";
 
+      const customerId = localStorage.getItem("corehabit_customer_id");
       if (!customerId) {
-        alert("Unable to load subscription details.");
+        alert(
+          "We can’t find your subscription in this browser.\n\n" +
+          "Try opening the Stripe confirmation email."
+        );
+        btn.disabled = false;
+        btn.textContent = "Manage Subscription";
         return;
       }
 
@@ -312,10 +249,12 @@
       });
 
       const data = await res.json();
+      if (data.url) window.location.href = data.url;
 
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "Manage Subscription";
+      }, 5000);
     }
   </script>
 
