@@ -7,7 +7,7 @@
 
   <link rel="stylesheet" href="/assets/styles.css" />
 
-  <!-- Stripe Pricing Table -->
+  <!-- Stripe Pricing Table (TEST MODE ONLY) -->
   <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
 
   <style>
@@ -17,7 +17,6 @@
       --text: #e9eef5;
       --muted: #a9b6c6;
       --purple: #7c5cff;
-      --purple-soft: rgba(124,92,255,0.12);
       --gold: #d4af37;
       --border: rgba(255,255,255,0.08);
     }
@@ -48,12 +47,6 @@
     h2 {
       font-size: 32px;
       margin-bottom: 16px;
-      letter-spacing: -0.3px;
-    }
-
-    h3 {
-      font-size: 20px;
-      margin-bottom: 8px;
     }
 
     p {
@@ -63,66 +56,6 @@
 
     .section {
       margin-bottom: 96px;
-    }
-
-    .top-cta-row {
-      display: flex;
-      gap: 16px;
-      margin-top: 26px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .top-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 30px;
-      min-width: 260px;
-      height: 56px;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 800;
-      position: relative;
-    }
-
-    .premium-cta {
-      background: linear-gradient(135deg, #d4af37, #f0d58c);
-      color: #1a1a1a;
-      text-decoration: none;
-      box-shadow: 0 10px 28px rgba(212,175,55,0.35);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .premium-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 36px rgba(212,175,55,0.5);
-    }
-
-    .pricing-badge {
-      background:
-        linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.08)),
-        var(--panel);
-      color: var(--gold);
-      border: 1px solid rgba(212,175,55,0.6);
-      box-shadow:
-        0 14px 34px rgba(124,92,255,0.3),
-        inset 0 0 0 1px rgba(255,255,255,0.05);
-      text-decoration: none;
-    }
-
-    .most-popular {
-      position: absolute;
-      top: -12px;
-      right: -6px;
-      background: linear-gradient(135deg, #7c5cff, #9b87ff);
-      color: white;
-      font-size: 11px;
-      font-weight: 900;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.6px;
-      box-shadow: 0 6px 16px rgba(124,92,255,0.45);
     }
 
     .premium-grid {
@@ -142,30 +75,6 @@
       box-shadow: 0 8px 22px rgba(124,92,255,0.18);
     }
 
-    .premium-tabs {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      margin-top: 32px;
-    }
-
-    .premium-tab {
-      display: flex;
-      gap: 16px;
-      background:
-        linear-gradient(180deg, rgba(124,92,255,0.12), rgba(124,92,255,0.03)),
-        var(--panel);
-      border: 1px solid rgba(212,175,55,0.35);
-      border-radius: 16px;
-      padding: 22px 26px;
-      box-shadow: 0 8px 22px rgba(124,92,255,0.16);
-    }
-
-    .premium-tab-icon {
-      font-size: 22px;
-      margin-top: 2px;
-    }
-
     .final-upgrade-panel {
       background:
         linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.06)),
@@ -174,15 +83,6 @@
       border-radius: 24px;
       padding: 48px;
       box-shadow: 0 24px 48px rgba(124,92,255,0.35);
-    }
-
-    .savings-text {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-top: 6px;
-      text-align: center;
     }
 
     .stripe-checkout-wrapper {
@@ -214,22 +114,7 @@
     <!-- HERO -->
     <section class="section">
       <h1>Upgrade to CoreHabit Premium</h1>
-      <p>Built for people who want real results, not generic plans.</p>
-
-      <div class="top-cta-row">
-        <a href="https://buy.stripe.com/test_3cI7sMfyS0rq83k2ek3Nm02" class="premium-cta top-pill">
-          Start Monthly — $19.99
-        </a>
-
-        <a href="https://buy.stripe.com/test_bJefZibiCca897oaKQ3Nm01" class="pricing-badge top-pill">
-          <span class="most-popular">MOST POPULAR</span>
-          Go Annual — $149.99
-        </a>
-      </div>
-
-      <span class="savings-text">
-        Save $89.89 per year compared to monthly
-      </span>
+      <p>Everything you need to lose fat, build muscle, and stay consistent — without overthinking.</p>
     </section>
 
     <!-- VALUE -->
@@ -237,20 +122,20 @@
       <div class="premium-grid">
         <div class="premium-card">
           <h3>Done-for-you planning</h3>
-          <p>No guessing. No overthinking. Your nutrition and training handled.</p>
+          <p>Your workouts and meals generated automatically.</p>
         </div>
         <div class="premium-card">
-          <h3>Built for beginners</h3>
-          <p>Simple meals, clear workouts, realistic expectations.</p>
+          <h3>Beginner-first design</h3>
+          <p>No extremes, no confusion, no fake fitness advice.</p>
         </div>
         <div class="premium-card">
-          <h3>Adapts with you</h3>
-          <p>Your plan updates as your body and habits change.</p>
+          <h3>Progress that adapts</h3>
+          <p>Your plan evolves as your body and habits change.</p>
         </div>
       </div>
     </section>
 
-    <!-- FINAL -->
+    <!-- PRICING -->
     <section class="section">
       <div class="final-upgrade-panel">
         <h2>Choose your plan</h2>
@@ -258,7 +143,7 @@
         <div class="stripe-checkout-wrapper">
           <stripe-pricing-table
             pricing-table-id="prctbl_1SwqvTL0p80VWf6l478dj4T9"
-            publishable-key="pk_test_51SujieL0p80VWf6l3p5mEJZT1uTJf7LYSDlge9R2BcoB7kZLbrkXfrX49Cz0SmdSKbYvOiELMbIavJMWpWZKY0000enPPWd">
+            publishable-key="pk_test_51SujieL0p80VWf6lI3p5mEJIZTu1TJf7LYSDlge9R2Bcob7k2ZlbrkXfrX49CzOSmdSKbYvOiELMbIavJMwPWzKY00UOenPPWd">
           </stripe-pricing-table>
         </div>
 
