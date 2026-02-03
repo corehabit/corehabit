@@ -17,7 +17,39 @@
 
     if (sessionId) {
       localStorage.setItem("corehabit_session_id", sessionId);
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
 
+  if (sessionId) {
+    localStorage.setItem("corehabit_session_id", sessionId);
+
+    fetch("/.netlify/functions/getCustomerFromSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.customerId) {
+          localStorage.setItem("corehabit_customer_id", data.customerId);
+
+          // ✅ SHOW SUCCESS FEEDBACK
+          const toast = document.getElementById("premium-toast");
+          if (toast) {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateY(0)";
+            setTimeout(() => {
+              toast.style.opacity = "0";
+            }, 4000);
+          }
+
+          console.log("✅ Premium unlocked:", data.customerId);
+        }
+      })
+      .catch(err => console.error("Customer lookup failed:", err));
+  }
+</script>
       // 🔑 Convert session → customerId (CRITICAL)
       fetch("/.netlify/functions/getCustomerFromSession", {
         method: "POST",
