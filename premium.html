@@ -184,6 +184,28 @@
       margin-top: 6px;
       text-align: center;
     }
+
+    /* ===== Stripe Checkout Polish (ADDED) ===== */
+    .stripe-checkout-wrapper {
+      max-width: 640px;
+      margin: 32px auto 0;
+      padding: 24px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(124,92,255,0.10), rgba(124,92,255,0.03)),
+        var(--panel);
+      border: 1px solid rgba(124,92,255,0.35);
+      box-shadow:
+        0 20px 45px rgba(0,0,0,0.45),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    stripe-pricing-table {
+      --accent-color: #7c5cff;
+      --text-color: #e9eef5;
+      --background-color: transparent;
+      --border-radius: 14px;
+    }
   </style>
 </head>
 
@@ -281,10 +303,13 @@
       <div class="final-upgrade-panel">
         <h2>Choose your plan</h2>
 
-        <stripe-pricing-table
-          pricing-table-id="prctbl_1SwpqNL0p80VWf6lcZwDS9il"
-          publishable-key="pk_live_51SujieL0p80VWf6lL9cnUXK0V3qwpY4opRrz7iuLxedcgvBhfxov6QCql65Eq0P9lANajymDwFD22RkacC062Iny00mTXs692Y">
-        </stripe-pricing-table>
+        <div class="stripe-checkout-wrapper">
+          <stripe-pricing-table
+            pricing-table-id="prctbl_1SwpqNL0p80VWf6lcZwDS9il"
+            publishable-key="pk_live_51SujieL0p80VWf6lL9cnUXK0V3qwpY4opRrz7iuLxedcgvBhfxov6QCql65Eq0P9lANajymDwFD22RkacC062Iny00mTXs692Y">
+          </stripe-pricing-table>
+        </div>
+
       </div>
     </section>
 
