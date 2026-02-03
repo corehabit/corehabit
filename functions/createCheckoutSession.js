@@ -1,51 +1,33 @@
-import Stripe from "stripe";
+const Stripe = require("stripe");
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export async function handler(event) {
+exports.handler = async (event) => {
   try {
-    if (event.httpMethod !== "POST") {
-      return {
-        statusCode: 405,
-        body: "Method Not Allowed",
-      };
-    }
-
-    const { customerId, priceId } = JSON.parse(event.body || "{}");
-
-    if (!priceId) {
-      return {
-        statusCode: 400,
-        body: "Missing priceId",
-      };
-    }
+    const { priceId } = JSON.parse(event.body);
+    const origin = event.headers.origin;
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      payment_method_types: ["card"],
       line_items: [
         {
           price: priceId,
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
-      customer: customerId || undefined,
-      success_url: `${process.env.URL}/results.html?session_id={CHECKOUT_SESSION_ID}`,
-cancel_url: `${process.env.URL}/results.html`,
+      success_url: `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/results.html`
+    });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ url: session.url }),
+      body: JSON.stringify({ url: session.url })
     };
   } catch (err) {
     console.error("Checkout error:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: "Failed to create checkout session",
-      }),
+      body: JSON.stringify({ error: err.message })
     };
   }
-}
+};
