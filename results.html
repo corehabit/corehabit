@@ -17,6 +17,21 @@
 
     if (sessionId) {
       localStorage.setItem("corehabit_session_id", sessionId);
+
+      // 🔑 Convert session → customerId (CRITICAL)
+      fetch("/.netlify/functions/getCustomerFromSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.customerId) {
+            localStorage.setItem("corehabit_customer_id", data.customerId);
+            console.log("✅ customerId stored:", data.customerId);
+          }
+        })
+        .catch(err => console.error("Customer lookup failed:", err));
     }
   </script>
 
@@ -35,109 +50,77 @@
   color:#ffffff;
 ">
 
-  <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
+<div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
-    <h1>Your Personalized Plan</h1>
-    <p style="color:#9ca3af;">
-      Based on your answers, here’s your CoreHabit plan.
+  <h1>Your Personalized Plan</h1>
+  <p style="color:#9ca3af;">
+    Based on your answers, here’s your CoreHabit plan.
+  </p>
+
+  <p id="status" style="margin-top:20px;font-weight:600;"></p>
+
+  <div style="margin-top:20px;">
+    <button id="generateBtn" onclick="generatePlan()" style="
+      padding:14px 22px;
+      border-radius:999px;
+      border:none;
+      background:#7c5cff;
+      color:white;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+    ">
+      Generate My Plan
+    </button>
+
+    <button id="regenBtn" onclick="generatePlan()" style="
+      margin-left:12px;
+      padding:12px 20px;
+      border-radius:999px;
+      border:1px solid #7c5cff;
+      background:transparent;
+      color:#7c5cff;
+      font-weight:600;
+      font-size:14px;
+      cursor:pointer;
+      display:none;
+    ">
+      Regenerate Plan
+    </button>
+  </div>
+
+  <div id="result" style="
+    margin-top:40px;
+    padding:32px;
+    background:#111827;
+    color:#e5e7eb;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    display:none;
+  "></div>
+
+  <!-- PREMIUM -->
+  <div id="premium-root" style="margin-top:56px;">
+
+    <h2 class="premium-title">CoreHabit Premium</h2>
+    <p class="premium-subtitle">
+      Everything you need to accelerate results — personalized and adaptive.
     </p>
 
-    <p id="status" style="margin-top:20px;font-weight:600;"></p>
+    <div class="premium-lock-wrapper">
 
-    <div style="margin-top:20px;">
-      <button id="generateBtn" onclick="generatePlan()" style="
-        padding:14px 22px;
-        border-radius:999px;
-        border:none;
-        background:#7c5cff;
-        color:white;
-        font-weight:700;
-        font-size:16px;
-        cursor:pointer;
-      ">
-        Generate My Plan
-      </button>
+      <div class="premium-card"><h3>🛒 Grocery Lists</h3></div>
+      <div class="premium-card"><h3>🍽️ 7-Day Meal Plans</h3></div>
+      <div class="premium-card"><h3>🏋️ Muscle Focus Workouts</h3></div>
+      <div class="premium-card"><h3>📊 Macro Targets</h3></div>
+      <div class="premium-card"><h3>🔁 Weekly Updates</h3></div>
 
-      <button id="regenBtn" onclick="generatePlan()" style="
-        margin-left:12px;
-        padding:12px 20px;
-        border-radius:999px;
-        border:1px solid #7c5cff;
-        background:transparent;
-        color:#7c5cff;
-        font-weight:600;
-        font-size:14px;
-        cursor:pointer;
-        display:none;
-      ">
-        Regenerate Plan
-      </button>
-    </div>
+      <div class="premium-locked-overlay">
+        <h3>Unlock CoreHabit Premium</h3>
+        <p>Advanced plans, meals, groceries, and progress tracking.</p>
 
-    <div id="result" style="
-      margin-top:40px;
-      padding:32px;
-      background:#111827;
-      color:#e5e7eb;
-      border-radius:20px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.4);
-      display:none;
-    "></div>
-
-    <!-- PREMIUM -->
-    <div id="premium-root" style="margin-top:56px;">
-
-      <h2 class="premium-title">CoreHabit Premium</h2>
-      <p class="premium-subtitle">
-        Everything you need to accelerate results — personalized and adaptive.
-      </p>
-
-      <div class="premium-lock-wrapper">
-
-        <div class="premium-card">
-          <h3>🛒 Budget-Based Grocery List</h3>
-          <p>Weekly groceries auto-generated to match your calories, macros, and budget.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🍽️ 7-Day Meal Plan</h3>
-          <p>A full week of meals built from your targets and preferences.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🏋️ Targeted Muscle Group Workouts</h3>
-          <p>Optional muscle focus programming that adapts your training.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>📊 Macro Targets & Progress Tracking</h3>
-          <p>Exact calorie and macro targets with ongoing progress tracking.</p>
-        </div>
-
-        <div class="premium-card">
-          <h3>🔁 Weekly Check-Ins & Plan Updates</h3>
-          <p>Weekly feedback and automatic plan adjustments.</p>
-        </div>
-
-        <!-- 🔒 LOCKED OVERLAY -->
-        <div class="premium-locked-overlay">
-          <h3>Unlock CoreHabit Premium</h3>
-          <p>Get grocery lists, meal plans, advanced workouts, and progress tracking.</p>
-
-          <!-- ✅ ONLY CHANGE: button now triggers checkout -->
-          <button class="premium-primary-btn" onclick="startCheckout()">
-            Upgrade to Premium
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Manage Subscription (premium only) -->
-      <div class="premium-manage-wrapper" id="manage-subscription" hidden>
-        <button
-          class="premium-secondary-btn premium-manage-btn"
-          onclick="openCustomerPortal(event)">
-          Manage Subscription
+        <button class="premium-primary-btn" onclick="startCheckout()">
+          Upgrade to Premium
         </button>
       </div>
 
@@ -145,82 +128,97 @@
 
   </div>
 
-  <div id="premium-toast" aria-live="polite">
-    ✨ Premium Unlocked
-  </div>
+</div>
 
-  <!-- Generate Plan -->
-  <script>
-    async function generatePlan() {
-      const statusEl = document.getElementById("status");
-      const resultEl = document.getElementById("result");
-      const generateBtn = document.getElementById("generateBtn");
-      const regenBtn = document.getElementById("regenBtn");
+<div id="premium-toast" aria-live="polite">✨ Premium Unlocked</div>
 
-      generateBtn.disabled = true;
-      generateBtn.textContent = "Generating...";
-      statusEl.textContent = "Creating a fresh CoreHabit plan...";
-      resultEl.style.display = "none";
-      resultEl.innerHTML = "";
+<!-- ========================= -->
+<!-- Generate Plan -->
+<!-- ========================= -->
+<script>
+  async function generatePlan() {
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const generateBtn = document.getElementById("generateBtn");
+    const regenBtn = document.getElementById("regenBtn");
 
-      const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-      if (!onboardingRaw) {
-        statusEl.textContent = "No onboarding data found.";
-        generateBtn.disabled = false;
-        generateBtn.textContent = "Generate My Plan";
-        return;
-      }
+    generateBtn.disabled = true;
+    generateBtn.textContent = "Generating...";
+    statusEl.textContent = "Creating your CoreHabit plan...";
+    resultEl.style.display = "none";
+    resultEl.innerHTML = "";
 
-      try {
-        const response = await fetch("/.netlify/functions/generatePlan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ onboarding: JSON.parse(onboardingRaw) })
-        });
-
-        const data = await response.json();
-        statusEl.textContent = "";
-        resultEl.style.display = "block";
-
-        resultEl.innerHTML = `
-          <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-          ${data.weekly_workout_split ? `<section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>` : ""}
-          ${data.sample_workout ? `<section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.daily_nutrition_guidelines ? `<section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.sample_day_of_eating ? `<section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>` : ""}
-          ${data.weekly_focus_tip ? `<section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>` : ""}
-        `;
-
-        regenBtn.style.display = "inline-block";
-
-      } catch {
-        statusEl.textContent = "Something went wrong generating your plan.";
-      }
-
+    const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+    if (!onboardingRaw) {
+      statusEl.textContent = "No onboarding data found.";
       generateBtn.disabled = false;
       generateBtn.textContent = "Generate My Plan";
+      return;
     }
-  </script>
 
-  <!-- ✅ NEW: START STRIPE CHECKOUT -->
-  <script>
-    async function startCheckout() {
-      try {
-        const res = await fetch("/.netlify/functions/createCheckoutSession", {
-          method: "POST",
-        });
-        const data = await res.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          alert("Failed to start checkout.");
-        }
-      } catch (err) {
-        console.error("Checkout error:", err);
-        alert("Checkout failed.");
-      }
+    try {
+      const response = await fetch("/.netlify/functions/generatePlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          onboarding: JSON.parse(onboardingRaw),
+          isPremium: !!localStorage.getItem("corehabit_customer_id")
+        })
+      });
+
+      const responseData = await response.json();
+      const data = responseData.plan;
+
+      statusEl.textContent = "";
+      resultEl.style.display = "block";
+
+      resultEl.innerHTML = `
+        <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
+        <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+        <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
+      `;
+
+      regenBtn.style.display = "inline-block";
+
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Something went wrong generating your plan.";
     }
-  </script>
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+  }
+</script>
+
+<!-- ========================= -->
+<!-- Stripe Checkout -->
+<!-- ========================= -->
+<script>
+  async function startCheckout() {
+    try {
+      const res = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS" // 🔴 REPLACE WITH REAL PRICE ID
+        })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to start checkout.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Checkout failed.");
+    }
+  }
+</script>
 
 </body>
 </html>
