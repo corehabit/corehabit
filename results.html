@@ -119,9 +119,24 @@
         <h3>Unlock CoreHabit Premium</h3>
         <p>Advanced plans, meals, groceries, and progress tracking.</p>
 
-        <button class="premium-primary-btn" onclick="startCheckout()">
-          Upgrade to Premium
-        </button>
+        <!-- 🔥 NEW: Monthly + Annual buttons -->
+        <div style="display:flex;gap:16px;justify-content:center;margin-top:24px;">
+          <button
+            class="premium-primary-btn"
+            onclick="startCheckoutWithPrice('price_1Suo3PL0p80VWf6ll3JE5WqS')"
+          >
+            Monthly — $19.99/mo
+          </button>
+
+          <button
+            class="premium-primary-btn"
+            style="background:gold;color:black;"
+            onclick="startCheckoutWithPrice('price_ANNUAL_ID_HERE')"
+          >
+            Annual — $149.99/yr (Save 38%)
+          </button>
+        </div>
+
       </div>
 
     </div>
@@ -194,7 +209,7 @@
 </script>
 
 <!-- ========================= -->
-<!-- Stripe Checkout -->
+<!-- Stripe Checkout (EXISTING – untouched) -->
 <!-- ========================= -->
 <script>
   async function startCheckout() {
@@ -203,8 +218,33 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS" // 🔴 REPLACE WITH REAL PRICE ID
+          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS"
         })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to start checkout.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Checkout failed.");
+    }
+  }
+</script>
+
+<!-- ========================= -->
+<!-- Stripe Checkout (NEW – multi-plan) -->
+<!-- ========================= -->
+<script>
+  async function startCheckoutWithPrice(priceId) {
+    try {
+      const res = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId })
       });
 
       const data = await res.json();
