@@ -32,9 +32,8 @@ export async function handler(event) {
         },
       ],
       customer: customerId || undefined,
-      success_url: `${process.env.URL}/results.html?checkout=success`,
-      cancel_url: `${process.env.URL}/results.html?checkout=cancel`,
-    });
+      success_url: `${process.env.URL}/results.html?session_id={CHECKOUT_SESSION_ID}`,
+cancel_url: `${process.env.URL}/results.html`,
 
     return {
       statusCode: 200,
