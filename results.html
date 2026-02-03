@@ -234,6 +234,27 @@
     if (data.url) window.location.href = data.url;
   }
 </script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
 
+  if (sessionId) {
+    fetch("/.netlify/functions/getCustomerFromSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.customerId) {
+          localStorage.setItem("corehabit_customer_id", data.customerId);
+          console.log("✅ customerId stored:", data.customerId);
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch customerId:", err);
+      });
+  }
+</script>
 </body>
 </html>
