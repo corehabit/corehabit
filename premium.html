@@ -18,7 +18,6 @@
       --muted: #a9b6c6;
       --purple: #7c5cff;
       --gold: #d4af37;
-      --border: rgba(255,255,255,0.08);
     }
 
     body {
@@ -49,6 +48,11 @@
       margin-bottom: 16px;
     }
 
+    h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
     p {
       color: var(--muted);
       max-width: 720px;
@@ -58,6 +62,7 @@
       margin-bottom: 96px;
     }
 
+    /* FEATURE CARDS */
     .premium-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -75,6 +80,32 @@
       box-shadow: 0 8px 22px rgba(124,92,255,0.18);
     }
 
+    /* FEATURE LIST */
+    .premium-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 32px;
+    }
+
+    .premium-tab {
+      display: flex;
+      gap: 16px;
+      background:
+        linear-gradient(180deg, rgba(124,92,255,0.12), rgba(124,92,255,0.03)),
+        var(--panel);
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 16px;
+      padding: 22px 26px;
+      box-shadow: 0 8px 22px rgba(124,92,255,0.16);
+    }
+
+    .premium-tab-icon {
+      font-size: 22px;
+      margin-top: 2px;
+    }
+
+    /* PRICING PANEL */
     .final-upgrade-panel {
       background:
         linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.06)),
@@ -94,9 +125,6 @@
         linear-gradient(180deg, rgba(124,92,255,0.10), rgba(124,92,255,0.03)),
         var(--panel);
       border: 1px solid rgba(124,92,255,0.35);
-      box-shadow:
-        0 20px 45px rgba(0,0,0,0.45),
-        inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
     stripe-pricing-table {
@@ -114,23 +142,65 @@
     <!-- HERO -->
     <section class="section">
       <h1>Upgrade to CoreHabit Premium</h1>
-      <p>Everything you need to lose fat, build muscle, and stay consistent — without overthinking.</p>
+      <p>
+        Built for beginners who want real results — without restrictive diets,
+        confusing workouts, or guesswork.
+      </p>
     </section>
 
-    <!-- VALUE -->
+    <!-- CORE VALUE -->
     <section class="section">
       <div class="premium-grid">
         <div class="premium-card">
           <h3>Done-for-you planning</h3>
-          <p>Your workouts and meals generated automatically.</p>
+          <p>Your workouts and meals are generated instantly based on your goals.</p>
         </div>
         <div class="premium-card">
-          <h3>Beginner-first design</h3>
-          <p>No extremes, no confusion, no fake fitness advice.</p>
+          <h3>Beginner-first approach</h3>
+          <p>No extremes. No fake fitness advice. Just what actually works.</p>
         </div>
         <div class="premium-card">
-          <h3>Progress that adapts</h3>
-          <p>Your plan evolves as your body and habits change.</p>
+          <h3>Adapts as you progress</h3>
+          <p>Your plan evolves as your habits, strength, and body change.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FULL FEATURE LIST -->
+    <section class="section">
+      <h2>What you get with Premium</h2>
+
+      <div class="premium-tabs">
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🥗</div>
+          <div>
+            <h3>Personalized meal plans</h3>
+            <p>High-protein, realistic meals tailored to your preferences.</p>
+          </div>
+        </div>
+
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🏋️‍♂️</div>
+          <div>
+            <h3>Custom workout programs</h3>
+            <p>Gym or home workouts designed for your experience level.</p>
+          </div>
+        </div>
+
+        <div class="premium-tab">
+          <div class="premium-tab-icon">📊</div>
+          <div>
+            <h3>Progress-based adjustments</h3>
+            <p>Calories, volume, and focus update automatically as you improve.</p>
+          </div>
+        </div>
+
+        <div class="premium-tab">
+          <div class="premium-tab-icon">🛒</div>
+          <div>
+            <h3>Grocery lists & budgeting</h3>
+            <p>Simple shopping lists that save time and money.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -143,7 +213,7 @@
         <div class="stripe-checkout-wrapper">
           <stripe-pricing-table
             pricing-table-id="prctbl_1SwqvTL0p80VWf6l478dj4T9"
-            publishable-key="pk_test_51SujieL0p80VWf6lI3p5mEJIZTu1TJf7LYSDlge9R2Bcob7k2ZlbrkXfrX49CzOSmdSKbYvOiELMbIavJMwPWzKY00UOenPPWd">
+            publishable-key="pk_test_51SujieL0p80VWf6l3p5mEJIZTu1TJf7LYSDlge9R2Bcob7k2ZlbrkXfrX49CzOSmdSKbYvOiELMbIavJMwPWzKY000UenPPWd">
           </stripe-pricing-table>
         </div>
 
