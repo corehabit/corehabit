@@ -15,7 +15,7 @@ exports.handler = async (event) => {
           quantity: 1
         }
       ],
-      success_url: `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/results.html?session_id={CHECKOUT_SESSION_ID}&success=true`,
       cancel_url: `${origin}/results.html`
     });
 
