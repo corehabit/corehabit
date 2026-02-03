@@ -119,22 +119,23 @@
         <h3>Unlock CoreHabit Premium</h3>
         <p>Advanced plans, meals, groceries, and progress tracking.</p>
 
-        <!-- ✅ Monthly + Annual buttons -->
-        <div style="display:flex;gap:16px;justify-content:center;margin-top:24px;">
-          <button
-            class="premium-primary-btn"
-            onclick="startCheckoutWithPrice('price_1Suo3PL0p80VWf6ll3JE5WqS')"
-          >
-            Monthly — $19.99/mo
-          </button>
+        <!-- ORIGINAL BUTTON (KEPT — NOT REMOVED) -->
+        <button
+          class="premium-primary-btn"
+          onclick="startCheckout()"
+          style="display:none;"
+        >
+          Upgrade to Premium
+        </button>
 
-          <button
-            class="premium-primary-btn"
-            style="background:gold;color:black;"
-            onclick="startCheckoutWithPrice('price_1Sum6uL0p80VWf6lUCuAr60T')"
-          >
-            Annual — $149.99/yr (Save 38%)
-          </button>
+        <!-- NEW: STRIPE PRICING TABLE (ADDED) -->
+        <div style="margin-top:32px;">
+          <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+
+          <stripe-pricing-table
+            pricing-table-id="prctbl_1SwpqNL0p80VWf6lcZwDS9il"
+            publishable-key="pk_live_51SujieL0p80VWf6lL9cnUXK0V3qwpY4opRrz7iuLxedcgvBhfxov6QCql65Eq0P9lANajymDwFD22RkacC062Iny00mTXs692Y">
+          </stripe-pricing-table>
         </div>
 
       </div>
@@ -209,7 +210,7 @@
 </script>
 
 <!-- ========================= -->
-<!-- Stripe Checkout (EXISTING – untouched) -->
+<!-- Stripe Checkout (LEGACY – KEPT) -->
 <!-- ========================= -->
 <script>
   async function startCheckout() {
@@ -220,31 +221,6 @@
         body: JSON.stringify({
           priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS"
         })
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Failed to start checkout.");
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Checkout failed.");
-    }
-  }
-</script>
-
-<!-- ========================= -->
-<!-- Stripe Checkout (NEW – multi-plan) -->
-<!-- ========================= -->
-<script>
-  async function startCheckoutWithPrice(priceId) {
-    try {
-      const res = await fetch("/.netlify/functions/createCheckoutSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId })
       });
 
       const data = await res.json();
