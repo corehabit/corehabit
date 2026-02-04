@@ -5,11 +5,65 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PREMIUM SUCCESS HANDLER (ADDED) -->
+  <!-- Premium feature flag (TEMP – legacy, ignored now) -->
+  <script>
+    window.PREMIUM_ENABLED = true;
+  </script>
+
+  <!-- Capture Stripe session_id after checkout -->
   <script>
     const params = new URLSearchParams(window.location.search);
-    if (params.get("premium") === "success") {
-      localStorage.setItem("corehabit_premium", "true");
+    const sessionId = params.get("session_id");
+
+    if (sessionId) {
+      localStorage.setItem("corehabit_session_id", sessionId);
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
+
+  if (sessionId) {
+    localStorage.setItem("corehabit_session_id", sessionId);
+
+    fetch("/.netlify/functions/getCustomerFromSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.customerId) {
+          localStorage.setItem("corehabit_customer_id", data.customerId);
+
+          // ✅ SHOW SUCCESS FEEDBACK
+          const toast = document.getElementById("premium-toast");
+          if (toast) {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateY(0)";
+            setTimeout(() => {
+              toast.style.opacity = "0";
+            }, 4000);
+          }
+
+          console.log("✅ Premium unlocked:", data.customerId);
+        }
+      })
+      .catch(err => console.error("Customer lookup failed:", err));
+  }
+</script>
+      // 🔑 Convert session → customerId (CRITICAL)
+      fetch("/.netlify/functions/getCustomerFromSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.customerId) {
+            localStorage.setItem("corehabit_customer_id", data.customerId);
+            console.log("✅ customerId stored:", data.customerId);
+          }
+        })
+        .catch(err => console.error("Customer lookup failed:", err));
     }
   </script>
 
@@ -38,11 +92,31 @@
   <p id="status" style="margin-top:20px;font-weight:600;"></p>
 
   <div style="margin-top:20px;">
-    <button id="generateBtn" onclick="generatePlan()" class="primary-btn">
+    <button id="generateBtn" onclick="generatePlan()" style="
+      padding:14px 22px;
+      border-radius:999px;
+      border:none;
+      background:#7c5cff;
+      color:white;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+    ">
       Generate My Plan
     </button>
 
-    <button id="regenBtn" onclick="generatePlan()" class="secondary-btn" style="display:none;">
+    <button id="regenBtn" onclick="generatePlan()" style="
+      margin-left:12px;
+      padding:12px 20px;
+      border-radius:999px;
+      border:1px solid #7c5cff;
+      background:transparent;
+      color:#7c5cff;
+      font-weight:600;
+      font-size:14px;
+      cursor:pointer;
+      display:none;
+    ">
       Regenerate Plan
     </button>
   </div>
@@ -60,13 +134,7 @@
   <!-- PREMIUM -->
   <div id="premium-root" style="margin-top:56px;">
 
-    <h2 class="premium-title">
-      CoreHabit Premium
-      <span id="premium-badge" class="premium-badge" style="display:none;">
-        PREMIUM
-      </span>
-    </h2>
-
+    <h2 class="premium-title">CoreHabit Premium</h2>
     <p class="premium-subtitle">
       Everything you need to accelerate results — personalized and adaptive.
     </p>
@@ -79,12 +147,29 @@
       <div class="premium-card"><h3>📊 Macro Targets</h3></div>
       <div class="premium-card"><h3>🔁 Weekly Updates</h3></div>
 
-      <div id="premium-locked-overlay" class="premium-locked-overlay">
+      <div class="premium-locked-overlay">
         <h3>Unlock CoreHabit Premium</h3>
         <p>Advanced plans, meals, groceries, and progress tracking.</p>
-        <a href="/premium.html" class="premium-primary-btn">
+
+        <!-- ORIGINAL BUTTON (KEPT — NOT REMOVED) -->
+        <button
+          class="premium-primary-btn"
+          onclick="startCheckout()"
+          style="display:none;"
+        >
           Upgrade to Premium
-        </a>
+        </button>
+
+        <!-- NEW: STRIPE PRICING TABLE (ADDED) -->
+        <div style="margin-top:32px;">
+          <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+
+          <stripe-pricing-table
+            pricing-table-id="prctbl_1SwpqNL0p80VWf6lcZwDS9il"
+            publishable-key="pk_live_51SujieL0p80VWf6lL9cnUXK0V3qwpY4opRrz7iuLxedcgvBhfxov6QCql65Eq0P9lANajymDwFD22RkacC062Iny00mTXs692Y">
+          </stripe-pricing-table>
+        </div>
+
       </div>
 
     </div>
@@ -95,62 +180,91 @@
 
 <div id="premium-toast" aria-live="polite">✨ Premium Unlocked</div>
 
-<!-- PREMIUM UNLOCK TOGGLE (ADDED) -->
-<script>
-  if (localStorage.getItem("corehabit_premium") === "true") {
-    const overlay = document.getElementById("premium-locked-overlay");
-    if (overlay) overlay.style.display = "none";
-
-    const badge = document.getElementById("premium-badge");
-    if (badge) badge.style.display = "inline-block";
-
-    const toast = document.getElementById("premium-toast");
-    toast.style.opacity = "1";
-    setTimeout(() => toast.style.opacity = "0", 4000);
-  }
-</script>
-
-<!-- GENERATE PLAN (UNCHANGED LOGIC) -->
+<!-- ========================= -->
+<!-- Generate Plan -->
+<!-- ========================= -->
 <script>
   async function generatePlan() {
     const statusEl = document.getElementById("status");
     const resultEl = document.getElementById("result");
+    const generateBtn = document.getElementById("generateBtn");
     const regenBtn = document.getElementById("regenBtn");
 
+    generateBtn.disabled = true;
+    generateBtn.textContent = "Generating...";
     statusEl.textContent = "Creating your CoreHabit plan...";
     resultEl.style.display = "none";
+    resultEl.innerHTML = "";
 
     const onboardingRaw = localStorage.getItem("corehabit_onboarding");
     if (!onboardingRaw) {
       statusEl.textContent = "No onboarding data found.";
+      generateBtn.disabled = false;
+      generateBtn.textContent = "Generate My Plan";
       return;
     }
 
-    const response = await fetch("/.netlify/functions/generatePlan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        onboarding: JSON.parse(onboardingRaw),
-        isPremium: localStorage.getItem("corehabit_premium") === "true"
-      })
-    });
+    try {
+      const response = await fetch("/.netlify/functions/generatePlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          onboarding: JSON.parse(onboardingRaw),
+          isPremium: !!localStorage.getItem("corehabit_customer_id")
+        })
+      });
 
-    const responseData = await response.json();
-    const data = responseData.plan;
+      const responseData = await response.json();
+      const data = responseData.plan;
 
-    resultEl.style.display = "block";
-    statusEl.textContent = "";
+      statusEl.textContent = "";
+      resultEl.style.display = "block";
 
-    resultEl.innerHTML = `
-      <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-      <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
-      <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
-    `;
+      resultEl.innerHTML = `
+        <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
+        <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+        <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+        <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
+      `;
 
-    regenBtn.style.display = "inline-block";
+      regenBtn.style.display = "inline-block";
+
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Something went wrong generating your plan.";
+    }
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate My Plan";
+  }
+</script>
+
+<!-- ========================= -->
+<!-- Stripe Checkout (LEGACY – KEPT) -->
+<!-- ========================= -->
+<script>
+  async function startCheckout() {
+    try {
+      const res = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS"
+        })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to start checkout.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Checkout failed.");
+    }
   }
 </script>
 
