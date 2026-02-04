@@ -60,21 +60,7 @@
       .catch(err => console.error("Customer lookup failed:", err));
   }
 </script>
-      // 🔑 Convert session → customerId (CRITICAL)
-      fetch("/.netlify/functions/getCustomerFromSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.customerId) {
-            localStorage.setItem("corehabit_customer_id", data.customerId);
-            console.log("✅ customerId stored:", data.customerId);
-          }
-        })
-        .catch(err => console.error("Customer lookup failed:", err));
-    }
+     
   </script>
 
   <!-- Styles -->
