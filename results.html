@@ -301,35 +301,23 @@
 
   const overlay = document.querySelector(".premium-locked-overlay");
   const badge = document.getElementById("premium-badge");
+  const lockWrapper = document.querySelector("#premium-root .premium-lock-wrapper");
 
   if (isPremium) {
-    // Premium user: hide upgrade UI, show badge
+    // Hide upgrade overlay
     if (overlay) overlay.style.display = "none";
-    if (badge) badge.style.display = "inline-block";
-  } else {
-    // Free user: show upgrade UI, hide badge
-    if (overlay) overlay.style.display = "block";
-    if (badge) badge.style.display = "none";
-  }
-</script>
-  <script>
-  const isPremium = localStorage.getItem("corehabit_premium") === "true";
 
-  const overlay = document.querySelector(".premium-locked-overlay");
-  const badge = document.getElementById("premium-badge");
-  const premiumCards = document.querySelectorAll(".premium-card");
-
-  if (isPremium) {
-    // Unlock UI
-    if (overlay) overlay.style.display = "none";
+    // Show premium badge
     if (badge) badge.style.display = "inline-block";
 
-    // ✅ Remove blur / lock styles from cards
-    premiumCards.forEach(card => {
-      card.style.filter = "none";
-      card.style.opacity = "1";
-      card.style.pointerEvents = "auto";
-    });
+    // ✅ REMOVE ALL LOCK EFFECTS
+    if (lockWrapper) {
+      lockWrapper.style.filter = "none";
+      lockWrapper.style.backdropFilter = "none";
+      lockWrapper.style.webkitBackdropFilter = "none";
+      lockWrapper.style.opacity = "1";
+      lockWrapper.style.pointerEvents = "auto";
+    }
   } else {
     // Free user state
     if (overlay) overlay.style.display = "block";
