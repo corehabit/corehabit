@@ -312,5 +312,29 @@
     if (badge) badge.style.display = "none";
   }
 </script>
+  <script>
+  const isPremium = localStorage.getItem("corehabit_premium") === "true";
+
+  const overlay = document.querySelector(".premium-locked-overlay");
+  const badge = document.getElementById("premium-badge");
+  const premiumCards = document.querySelectorAll(".premium-card");
+
+  if (isPremium) {
+    // Unlock UI
+    if (overlay) overlay.style.display = "none";
+    if (badge) badge.style.display = "inline-block";
+
+    // ✅ Remove blur / lock styles from cards
+    premiumCards.forEach(card => {
+      card.style.filter = "none";
+      card.style.opacity = "1";
+      card.style.pointerEvents = "auto";
+    });
+  } else {
+    // Free user state
+    if (overlay) overlay.style.display = "block";
+    if (badge) badge.style.display = "none";
+  }
+</script>
 </body>
 </html>
