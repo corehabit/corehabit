@@ -144,7 +144,24 @@
   <!-- PREMIUM -->
   <div id="premium-root" style="margin-top:56px;">
 
-    <h2 class="premium-title">CoreHabit Premium</h2>
+    <h2 class="premium-title">
+  CoreHabit Premium
+  <span
+    id="premium-badge"
+    style="
+      margin-left:10px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:#7c5cff;
+      color:white;
+      display:none;
+    "
+  >
+    ACTIVE
+  </span>
+</h2>
     <p class="premium-subtitle">
       Everything you need to accelerate results — personalized and adaptive.
     </p>
@@ -280,12 +297,12 @@
   }
 </script>
 <script>
-  // ✅ Unlock Premium UI if user has premium
   if (localStorage.getItem("corehabit_premium") === "true") {
     const overlay = document.querySelector(".premium-locked-overlay");
-    if (overlay) {
-      overlay.style.display = "none";
-    }
+    if (overlay) overlay.style.display = "none";
+
+    const badge = document.getElementById("premium-badge");
+    if (badge) badge.style.display = "inline-block";
   }
 </script>
 </body>
