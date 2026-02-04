@@ -5,165 +5,135 @@
   <title>CoreHabit Premium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- <link rel="stylesheet" href="/assets/styles.css" /> -->
-
-  <!-- Stripe Pricing Table (TEST MODE ONLY) -->
+  <!-- Stripe Pricing Table -->
   <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
 
   <style>
-    stripe-pricing-table {
-  display: block !important;
-  min-height: 420px;
-  width: 100%;
-}
-
-.stripe-checkout-wrapper {
-  min-height: 460px;
-}
-    .premium-card {
-  background: linear-gradient(
-    180deg,
-    rgba(124, 92, 255, 0.22),
-    rgba(124, 92, 255, 0.08)
-  );
-  border: 1.5px solid rgba(212, 175, 55, 0.85);
-  border-radius: 18px;
-  padding: 28px;
-  box-shadow:
-    0 10px 28px rgba(124, 92, 255, 0.35),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.premium-card h3 {
-  color: #f5e6b3;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-
-.premium-card p {
-  color: #e6e9ff;
-  font-size: 15px;
-  line-height: 1.5;
-}
     :root {
       --bg: #0b0f14;
-      --panel: #111827;
-      --text: #e9eef5;
-      --muted: #a9b6c6;
+      --panel: #0f1320;
+      --text: #eef1ff;
+      --muted: #aab0ff;
       --purple: #7c5cff;
       --gold: #d4af37;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background:
-        radial-gradient(800px 400px at 15% -10%, rgba(124,92,255,0.22), transparent 60%),
+        radial-gradient(900px 420px at 20% -10%, rgba(124,92,255,0.25), transparent 60%),
         var(--bg);
       color: var(--text);
       line-height: 1.6;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 32px 20px;
+      padding: 48px 20px 80px;
     }
 
     h1 {
-      font-size: 50px;
-      line-height: 1.08;
-      margin-bottom: 16px;
+      font-size: 48px;
+      margin-bottom: 12px;
       letter-spacing: -0.6px;
     }
 
     h2 {
       font-size: 32px;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     h3 {
-      font-size: 20px;
-      margin-bottom: 8px;
+      font-size: 18px;
+      margin: 0 0 6px;
     }
 
     p {
+      margin: 0;
       color: var(--muted);
-      max-width: 720px;
     }
 
     .section {
       margin-bottom: 96px;
     }
 
-    /* FEATURE CARDS */
-    .premium-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      margin: 40px 0;
-    }
+    /* =========================
+       PREMIUM FEATURE LIST
+       ========================= */
 
-    .premium-card {
-      background:
-        linear-gradient(180deg, rgba(124,92,255,0.14), rgba(124,92,255,0.04)),
-        var(--panel);
-      border-radius: 18px;
-      padding: 26px;
-      border: 1px solid rgba(212,175,55,0.3);
-      box-shadow: 0 8px 22px rgba(124,92,255,0.18);
-    }
-
-    /* FEATURE LIST */
-    .premium-tabs {
+    .premium-feature-list {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 22px;
       margin-top: 32px;
     }
 
-    .premium-tab {
+    .premium-feature {
       display: flex;
-      gap: 16px;
-      background:
-        linear-gradient(180deg, rgba(124,92,255,0.12), rgba(124,92,255,0.03)),
-        var(--panel);
-      border: 1px solid rgba(212,175,55,0.35);
-      border-radius: 16px;
-      padding: 22px 26px;
-      box-shadow: 0 8px 22px rgba(124,92,255,0.16);
+      gap: 18px;
+      align-items: flex-start;
+      padding: 24px 26px;
+      border-radius: 18px;
+
+      background: radial-gradient(
+        120% 120% at 20% 0%,
+        rgba(124,92,255,0.20),
+        rgba(10,10,20,0.88)
+      );
+
+      border: 1.5px solid rgba(212,175,55,0.65);
+
+      box-shadow:
+        0 10px 28px rgba(124,92,255,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
     }
 
-    .premium-tab-icon {
+    .premium-feature .icon {
       font-size: 22px;
       margin-top: 2px;
+      flex-shrink: 0;
     }
 
-    /* PRICING PANEL */
-    .final-upgrade-panel {
+    .premium-feature p {
+      font-size: 14.5px;
+      color: #cfd4ff;
+    }
+
+    /* =========================
+       PRICING SECTION
+       ========================= */
+
+    .pricing-panel {
       background:
-        linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.06)),
-        var(--panel);
-      border: 1px solid rgba(212,175,55,0.55);
-      border-radius: 24px;
+        linear-gradient(180deg, rgba(124,92,255,0.18), rgba(124,92,255,0.06));
+      border: 1.5px solid rgba(212,175,55,0.55);
+      border-radius: 26px;
       padding: 48px;
       box-shadow: 0 24px 48px rgba(124,92,255,0.35);
     }
 
-    .stripe-checkout-wrapper {
-      max-width: 640px;
-      margin: 32px auto 0;
+    .stripe-wrapper {
+      margin-top: 24px;
       padding: 24px;
       border-radius: 20px;
-      background:
-        linear-gradient(180deg, rgba(124,92,255,0.10), rgba(124,92,255,0.03)),
-        var(--panel);
+      background: rgba(15,19,40,0.6);
       border: 1px solid rgba(124,92,255,0.35);
+      min-height: 480px;
     }
 
     stripe-pricing-table {
+      display: block !important;
+      width: 100%;
+      min-height: 420px;
+
       --accent-color: #7c5cff;
-      --text-color: #e9eef5;
+      --text-color: #eef1ff;
       --background-color: transparent;
       --border-radius: 14px;
     }
@@ -177,63 +147,53 @@
     <section class="section">
       <h1>Upgrade to CoreHabit Premium</h1>
       <p>
-        Built for beginners who want real results — without restrictive diets,
-        confusing workouts, or guesswork.
+        Everything you need to lose fat, build muscle, and stay consistent —
+        without restrictive diets or confusing workouts.
       </p>
     </section>
 
-    <!-- CORE VALUE -->
-    <section class="section">
-      <div class="premium-grid">
-        <div class="premium-card">
-          <h3>Done-for-you planning</h3>
-          <p>Your workouts and meals are generated instantly based on your goals.</p>
-        </div>
-        <div class="premium-card">
-          <h3>Beginner-first approach</h3>
-          <p>No extremes. No fake fitness advice. Just what actually works.</p>
-        </div>
-        <div class="premium-card">
-          <h3>Adapts as you progress</h3>
-          <p>Your plan evolves as your habits, strength, and body change.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FULL FEATURE LIST -->
+    <!-- FEATURES -->
     <section class="section">
       <h2>What you get with Premium</h2>
 
-      <div class="premium-tabs">
-        <div class="premium-tab">
-          <div class="premium-tab-icon">🥗</div>
+      <div class="premium-feature-list">
+        <div class="premium-feature">
+          <span class="icon">🛒</span>
           <div>
-            <h3>Personalized meal plans</h3>
-            <p>High-protein, realistic meals tailored to your preferences.</p>
+            <h3>Budget-Based Grocery List</h3>
+            <p>Weekly groceries auto-generated to match your calories, macros, and budget level.</p>
           </div>
         </div>
 
-        <div class="premium-tab">
-          <div class="premium-tab-icon">🏋️‍♂️</div>
+        <div class="premium-feature">
+          <span class="icon">🍽️</span>
           <div>
-            <h3>Custom workout programs</h3>
-            <p>Gym or home workouts designed for your experience level.</p>
+            <h3>7-Day Meal Plan</h3>
+            <p>A full week of meals built from your targets and preferences.</p>
           </div>
         </div>
 
-        <div class="premium-tab">
-          <div class="premium-tab-icon">📊</div>
+        <div class="premium-feature">
+          <span class="icon">🏋️‍♂️</span>
           <div>
-            <h3>Progress-based adjustments</h3>
-            <p>Calories, volume, and focus update automatically as you improve.</p>
+            <h3>Targeted Muscle Group Workouts</h3>
+            <p>Optional muscle focus programming that adapts your training without imbalance.</p>
           </div>
         </div>
 
-        <div class="premium-tab">
-          <div class="premium-tab-icon">🛒</div>
+        <div class="premium-feature">
+          <span class="icon">📊</span>
           <div>
-            <h3>Grocery lists & budgeting</h3>
-            <p>Simple shopping lists that save time and money.</p>
+            <h3>Macro Targets & Progress Tracking</h3>
+            <p>Exact calorie and macro targets with ongoing progress tracking.</p>
+          </div>
+        </div>
+
+        <div class="premium-feature">
+          <span class="icon">🔁</span>
+          <div>
+            <h3>Weekly Check-Ins & Plan Updates</h3>
+            <p>Automatic weekly adjustments based on your results.</p>
           </div>
         </div>
       </div>
@@ -241,16 +201,16 @@
 
     <!-- PRICING -->
     <section class="section">
-      <div class="final-upgrade-panel">
+      <div class="pricing-panel">
         <h2>Choose your plan</h2>
-<p style="color: white;">Stripe should appear below ↓</p>
-        <div class="stripe-checkout-wrapper">
+        <p>Stripe should appear below ↓</p>
+
+        <div class="stripe-wrapper">
           <stripe-pricing-table
-            pricing-table-id="prctbl_1SwqvTL0p80VWf6l478dj4T9"
+            pricing-table-id="REPLACE_WITH_NEW_PRCTBL_ID"
             publishable-key="pk_test_51SujieL0p80VWf6l3p5mEJIZTu1TJf7LYSDlge9R2Bcob7k2ZlbrkXfrX49CzOSmdSKbYvOiELMbIavJMwPWzKY000UenPPWd">
           </stripe-pricing-table>
         </div>
-
       </div>
     </section>
 
