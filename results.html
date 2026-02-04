@@ -297,12 +297,19 @@
   }
 </script>
 <script>
-  if (localStorage.getItem("corehabit_premium") === "true") {
-    const overlay = document.querySelector(".premium-locked-overlay");
-    if (overlay) overlay.style.display = "none";
+  const isPremium = localStorage.getItem("corehabit_premium") === "true";
 
-    const badge = document.getElementById("premium-badge");
+  const overlay = document.querySelector(".premium-locked-overlay");
+  const badge = document.getElementById("premium-badge");
+
+  if (isPremium) {
+    // Premium user: hide upgrade UI, show badge
+    if (overlay) overlay.style.display = "none";
     if (badge) badge.style.display = "inline-block";
+  } else {
+    // Free user: show upgrade UI, hide badge
+    if (overlay) overlay.style.display = "block";
+    if (badge) badge.style.display = "none";
   }
 </script>
 </body>
