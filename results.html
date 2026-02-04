@@ -301,25 +301,21 @@
 
   const overlay = document.querySelector(".premium-locked-overlay");
   const badge = document.getElementById("premium-badge");
-  const lockWrapper = document.querySelector("#premium-root .premium-lock-wrapper");
+  const cards = document.querySelectorAll(".premium-card");
 
   if (isPremium) {
-    // Hide upgrade overlay
+    // Hide upgrade UI
     if (overlay) overlay.style.display = "none";
-
-    // Show premium badge
     if (badge) badge.style.display = "inline-block";
 
-    // ✅ REMOVE ALL LOCK EFFECTS
-    if (lockWrapper) {
-      lockWrapper.style.filter = "none";
-      lockWrapper.style.backdropFilter = "none";
-      lockWrapper.style.webkitBackdropFilter = "none";
-      lockWrapper.style.opacity = "1";
-      lockWrapper.style.pointerEvents = "auto";
-    }
+    // 🔓 FORCE UNLOCK PREMIUM CARDS
+    cards.forEach(card => {
+      card.style.filter = "none";
+      card.style.opacity = "1";
+      card.style.transform = "none";
+      card.style.pointerEvents = "auto";
+    });
   } else {
-    // Free user state
     if (overlay) overlay.style.display = "block";
     if (badge) badge.style.display = "none";
   }
