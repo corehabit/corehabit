@@ -4,7 +4,17 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+  // ✅ Persist Premium unlock after successful Stripe redirect
+  const params = new URLSearchParams(window.location.search);
 
+  if (params.get("premium") === "success") {
+    localStorage.setItem("corehabit_premium", "true");
+
+    // Optional: clean URL so it looks nice after reload
+    window.history.replaceState({}, document.title, "/results.html");
+  }
+</script>
   <!-- Premium feature flag (TEMP – legacy, ignored now) -->
   <script>
     window.PREMIUM_ENABLED = true;
@@ -210,7 +220,9 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           onboarding: JSON.parse(onboardingRaw),
-          isPremium: !!localStorage.getItem("corehabit_customer_id")
+          isPremium:
+  localStorage.getItem("corehabit_premium") === "true" ||
+  !!localStorage.getItem("corehabit_customer_id")
         })
       });
 
