@@ -5,7 +5,7 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Handle Premium redirect -->
+  <!-- PREMIUM SUCCESS HANDLER (ADDED) -->
   <script>
     const params = new URLSearchParams(window.location.search);
     if (params.get("premium") === "success") {
@@ -13,13 +13,18 @@
     }
   </script>
 
+  <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
 </head>
 
 <body style="
   min-height:100vh;
-  background: radial-gradient(80% 80% at 20% 10%, #1a1f35 0%, #0b0f19 60%);
+  background: radial-gradient(
+    80% 80% at 20% 10%,
+    #1a1f35 0%,
+    #0b0f19 60%
+  );
   color:#ffffff;
 ">
 
@@ -57,16 +62,9 @@
 
     <h2 class="premium-title">
       CoreHabit Premium
-      <span id="premium-badge" style="
-        display:none;
-        margin-left:12px;
-        padding:6px 12px;
-        border-radius:999px;
-        font-size:11px;
-        font-weight:900;
-        background:linear-gradient(135deg,#d4af37,#f0d58c);
-        color:#1a1a1a;
-      ">PREMIUM</span>
+      <span id="premium-badge" class="premium-badge" style="display:none;">
+        PREMIUM
+      </span>
     </h2>
 
     <p class="premium-subtitle">
@@ -97,20 +95,22 @@
 
 <div id="premium-toast" aria-live="polite">✨ Premium Unlocked</div>
 
-<!-- PREMIUM TOGGLE -->
+<!-- PREMIUM UNLOCK TOGGLE (ADDED) -->
 <script>
   if (localStorage.getItem("corehabit_premium") === "true") {
-    document.getElementById("premium-locked-overlay").style.display = "none";
-    document.getElementById("premium-badge").style.display = "inline-block";
+    const overlay = document.getElementById("premium-locked-overlay");
+    if (overlay) overlay.style.display = "none";
+
+    const badge = document.getElementById("premium-badge");
+    if (badge) badge.style.display = "inline-block";
 
     const toast = document.getElementById("premium-toast");
     toast.style.opacity = "1";
-    toast.style.transform = "translateY(0)";
     setTimeout(() => toast.style.opacity = "0", 4000);
   }
 </script>
 
-<!-- GENERATE PLAN -->
+<!-- GENERATE PLAN (UNCHANGED LOGIC) -->
 <script>
   async function generatePlan() {
     const statusEl = document.getElementById("status");
