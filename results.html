@@ -324,5 +324,21 @@
     if (badge) badge.style.display = "none";
   }
 </script>
+  <script>
+  const isPremium = localStorage.getItem("corehabit_premium") === "true";
+
+  if (isPremium) {
+    // 🔓 Kill any ::before blur overlay on premium wrapper
+    const style = document.createElement("style");
+    style.innerHTML = `
+      #premium-root .premium-lock-wrapper::before {
+        display: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+</script>
 </body>
 </html>
