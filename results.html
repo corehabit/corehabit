@@ -5,65 +5,11 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Premium feature flag (TEMP – legacy, ignored now) -->
-  <script>
-    window.PREMIUM_ENABLED = true;
-  </script>
-
-  <!-- Capture Stripe session_id after checkout -->
+  <!-- Handle Premium success redirect -->
   <script>
     const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-
-    if (sessionId) {
-      localStorage.setItem("corehabit_session_id", sessionId);
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get("session_id");
-
-  if (sessionId) {
-    localStorage.setItem("corehabit_session_id", sessionId);
-
-    fetch("/.netlify/functions/getCustomerFromSession", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.customerId) {
-          localStorage.setItem("corehabit_customer_id", data.customerId);
-
-          // ✅ SHOW SUCCESS FEEDBACK
-          const toast = document.getElementById("premium-toast");
-          if (toast) {
-            toast.style.opacity = "1";
-            toast.style.transform = "translateY(0)";
-            setTimeout(() => {
-              toast.style.opacity = "0";
-            }, 4000);
-          }
-
-          console.log("✅ Premium unlocked:", data.customerId);
-        }
-      })
-      .catch(err => console.error("Customer lookup failed:", err));
-  }
-</script>
-      // 🔑 Convert session → customerId (CRITICAL)
-      fetch("/.netlify/functions/getCustomerFromSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.customerId) {
-            localStorage.setItem("corehabit_customer_id", data.customerId);
-            console.log("✅ customerId stored:", data.customerId);
-          }
-        })
-        .catch(err => console.error("Customer lookup failed:", err));
+    if (params.get("premium") === "success") {
+      localStorage.setItem("corehabit_premium", "true");
     }
   </script>
 
@@ -147,29 +93,17 @@
       <div class="premium-card"><h3>📊 Macro Targets</h3></div>
       <div class="premium-card"><h3>🔁 Weekly Updates</h3></div>
 
-      <div class="premium-locked-overlay">
+      <!-- LOCKED OVERLAY -->
+      <div id="premium-locked-overlay" class="premium-locked-overlay">
         <h3>Unlock CoreHabit Premium</h3>
         <p>Advanced plans, meals, groceries, and progress tracking.</p>
 
-        <!-- ORIGINAL BUTTON (KEPT — NOT REMOVED) -->
-        <button
+        <a
+          href="/premium.html"
           class="premium-primary-btn"
-          onclick="startCheckout()"
-          style="display:none;"
         >
           Upgrade to Premium
-        </button>
-
-        <!-- NEW: STRIPE PRICING TABLE (ADDED) -->
-        <div style="margin-top:32px;">
-          <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-
-          <stripe-pricing-table
-            pricing-table-id="prctbl_1SwpqNL0p80VWf6lcZwDS9il"
-            publishable-key="pk_live_51SujieL0p80VWf6lL9cnUXK0V3qwpY4opRrz7iuLxedcgvBhfxov6QCql65Eq0P9lANajymDwFD22RkacC062Iny00mTXs692Y">
-          </stripe-pricing-table>
-        </div>
-
+        </a>
       </div>
 
     </div>
@@ -178,7 +112,38 @@
 
 </div>
 
-<div id="premium-toast" aria-live="polite">✨ Premium Unlocked</div>
+<div id="premium-toast" aria-live="polite" style="
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:#7c5cff;
+  color:white;
+  padding:14px 20px;
+  border-radius:999px;
+  font-weight:700;
+  opacity:0;
+  transition:opacity 0.3s ease, transform 0.3s ease;
+  transform:translateY(10px);
+">
+  ✨ Premium Unlocked
+</div>
+
+<!-- ========================= -->
+<!-- Premium Unlock UI -->
+<!-- ========================= -->
+<script>
+  if (localStorage.getItem("corehabit_premium") === "true") {
+    const overlay = document.getElementById("premium-locked-overlay");
+    if (overlay) overlay.style.display = "none";
+
+    const toast = document.getElementById("premium-toast");
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+    setTimeout(() => {
+      toast.style.opacity = "0";
+    }, 4000);
+  }
+</script>
 
 <!-- ========================= -->
 <!-- Generate Plan -->
@@ -210,7 +175,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           onboarding: JSON.parse(onboardingRaw),
-          isPremium: !!localStorage.getItem("corehabit_customer_id")
+          isPremium: localStorage.getItem("corehabit_premium") === "true"
         })
       });
 
@@ -238,33 +203,6 @@
 
     generateBtn.disabled = false;
     generateBtn.textContent = "Generate My Plan";
-  }
-</script>
-
-<!-- ========================= -->
-<!-- Stripe Checkout (LEGACY – KEPT) -->
-<!-- ========================= -->
-<script>
-  async function startCheckout() {
-    try {
-      const res = await fetch("/.netlify/functions/createCheckoutSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS"
-        })
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Failed to start checkout.");
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Checkout failed.");
-    }
   }
 </script>
 
