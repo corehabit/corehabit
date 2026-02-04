@@ -279,6 +279,14 @@
     }
   }
 </script>
-
+<script>
+  // ✅ Unlock Premium UI if user has premium
+  if (localStorage.getItem("corehabit_premium") === "true") {
+    const overlay = document.querySelector(".premium-locked-overlay");
+    if (overlay) {
+      overlay.style.display = "none";
+    }
+  }
+</script>
 </body>
 </html>
