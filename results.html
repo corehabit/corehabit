@@ -78,7 +78,8 @@
 
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
-  <h1>Your Personalized Plan</h1><button
+  <h1>Your Personalized Plan</h1>
+  <button
   id="premiumReonboardBtn"
   style="
     margin-top:16px;
@@ -435,6 +436,36 @@
     localStorage.getItem("corehabit_customer_id")
   ) {
     regenBtn.style.display = "inline-block";
+  }
+</script>
+  <script>
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id");
+
+  const overlay = document.querySelector(".premium-locked-overlay");
+  const badge = document.getElementById("premium-badge");
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+
+  if (isPremium) {
+    // Hide upsell overlay
+    if (overlay) overlay.style.display = "none";
+
+    // Show ACTIVE badge
+    if (badge) badge.style.display = "inline-block";
+
+    // Show rebuild button
+    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+  }
+</script>
+  <script>
+  const premiumReonboardBtn = document.getElementById("premiumReonboardBtn");
+
+  if (premiumReonboardBtn) {
+    premiumReonboardBtn.addEventListener("click", () => {
+      localStorage.setItem("corehabit_reonboarding", "true");
+      window.location.href = "/onboarding.html";
+    });
   }
 </script>
 </body>
