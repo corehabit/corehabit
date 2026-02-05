@@ -54,22 +54,7 @@
       })
       .catch(err => console.error("Customer lookup failed:", err));
   }
-      <button
-  id="premiumReonboardBtn"
-  style="
-    margin-top:16px;
-    padding:12px 20px;
-    border-radius:999px;
-    border:1px solid #d4af37;
-    background:transparent;
-    color:#d4af37;
-    font-weight:700;
-    cursor:pointer;
-    display:none;
-  "
->
-  Rebuild My Plan with Premium
-</button>
+     
 </script>
      
   </script>
@@ -264,26 +249,22 @@
 <!-- ========================= -->
 <script>
   async function generatePlan() {
-  const isRegenerating =
-    document.activeElement &&
-    document.activeElement.id === "regenBtn";
-  async function generatePlan() {
+    const isRegenerating =
+      document.activeElement &&
+      document.activeElement.id === "regenBtn";
+
     const statusEl = document.getElementById("status");
     const resultEl = document.getElementById("result");
     const generateBtn = document.getElementById("generateBtn");
     const regenBtn = document.getElementById("regenBtn");
 
     generateBtn.disabled = true;
-regenBtn.disabled = true;
+    regenBtn.disabled = true;
 
-if (isRegenerating) {
-  regenBtn.textContent = "Refreshing...";
-} else {
-  generateBtn.textContent = "Generating...";
-}
     statusEl.textContent = isRegenerating
-  ? "Refreshing your Premium plan..."
-  : "Creating your CoreHabit plan...";
+      ? "Refreshing your Premium plan..."
+      : "Creating your CoreHabit plan...";
+
     resultEl.style.display = "none";
     resultEl.innerHTML = "";
 
@@ -291,7 +272,7 @@ if (isRegenerating) {
     if (!onboardingRaw) {
       statusEl.textContent = "No onboarding data found.";
       generateBtn.disabled = false;
-      generateBtn.textContent = "Generate My Plan";
+      regenBtn.disabled = false;
       return;
     }
 
@@ -302,17 +283,14 @@ if (isRegenerating) {
         body: JSON.stringify({
           onboarding: JSON.parse(onboardingRaw),
           isPremium:
-  localStorage.getItem("corehabit_premium") === "true" ||
-  !!localStorage.getItem("corehabit_customer_id")
+            localStorage.getItem("corehabit_premium") === "true" ||
+            !!localStorage.getItem("corehabit_customer_id")
         })
       });
 
-      const responseData = await response.json();
-      const data = responseData.plan;
+      const { plan: data } = await response.json();
 
-      statusEl.textContent = "";
       resultEl.style.display = "block";
-
       resultEl.innerHTML = `
         <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
         <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
@@ -321,61 +299,26 @@ if (isRegenerating) {
         <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
         <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
       `;
-// ===============================
-// PREMIUM FEATURE RENDERING
-// ===============================
-if (
-  isRegenerating &&
-  (
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id")
-  ) &&
-  data.seven_day_meal_plan
-) {
-  document.getElementById("premium-sections").style.display = "block";
 
-  // 7-Day Meal Plan
-  const mealList = document.getElementById("seven-day-meal-plan");
-  mealList.innerHTML = "";
-  data.seven_day_meal_plan.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    mealList.appendChild(li);
-  });
-
-  // Grocery List
-  const groceryList = document.getElementById("grocery-list");
-  groceryList.innerHTML = "";
-  data.grocery_list.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    groceryList.appendChild(li);
-  });
-const premiumReonboardBtn =
-  document.getElementById("premiumReonboardBtn");
-
-if (
-  localStorage.getItem("corehabit_premium") === "true" ||
-  localStorage.getItem("corehabit_customer_id")
-) {
-  premiumReonboardBtn.style.display = "inline-block";
-}
-  // Weekly Check-In
-  document.getElementById("weekly-check-in").textContent =
-    data.weekly_check_in;
-
-  // Advanced Training Notes
-  document.getElementById("advanced-training-notes").textContent =
-    data.advanced_training_notes;
-}
+      // STEP 4C — show premium ONLY on regeneration
       if (
-  localStorage.getItem("corehabit_premium") === "true" ||
-  localStorage.getItem("corehabit_customer_id")
-) {
-  regenBtn.style.display = "inline-block";
-} else {
-  regenBtn.style.display = "none";
-}
+        isRegenerating &&
+        (
+          localStorage.getItem("corehabit_premium") === "true" ||
+          localStorage.getItem("corehabit_customer_id")
+        ) &&
+        data.seven_day_meal_plan
+      ) {
+        document.getElementById("premium-sections").style.display = "block";
+      }
+
+      // Show regenerate button for premium users
+      if (
+        localStorage.getItem("corehabit_premium") === "true" ||
+        localStorage.getItem("corehabit_customer_id")
+      ) {
+        regenBtn.style.display = "inline-block";
+      }
 
     } catch (err) {
       console.error(err);
@@ -383,11 +326,12 @@ if (
     }
 
     generateBtn.disabled = false;
-regenBtn.disabled = false;
-
-generateBtn.textContent = "Generate My Plan";
-regenBtn.textContent = "Regenerate Plan";
+    regenBtn.disabled = false;
   }
+
+  // STEP 4B — hide premium sections on page load
+  const premiumSections = document.getElementById("premium-sections");
+  if (premiumSections) premiumSections.style.display = "none";
 </script>
 <!-- PREMIUM SECTIONS -->
 <section id="premium-sections" style="display:none;">
@@ -440,7 +384,7 @@ regenBtn.textContent = "Regenerate Plan";
   }
 </script>
 <script>
-  const isPremium = localStorage.getItem("corehabit_premium") === "true";
+  
 
   const overlay = document.querySelector(".premium-locked-overlay");
   const badge = document.getElementById("premium-badge");
@@ -465,35 +409,21 @@ regenBtn.textContent = "Regenerate Plan";
 </script>
   <script>
   const isPremium = localStorage.getItem("corehabit_premium") === "true";
-const premiumReonboardBtn =
-  document.getElementById("premiumReonboardBtn");
+<script>
+  const premiumReonboardBtn =
+    document.getElementById("premiumReonboardBtn");
 
-if (
-  localStorage.getItem("corehabit_premium") === "true" ||
-  localStorage.getItem("corehabit_customer_id")
-) {
-  premiumReonboardBtn.style.display = "inline-block";
-}
-    premiumReonboardBtn.addEventListener("click", () => {
-  localStorage.setItem("corehabit_reonboarding", "true");
-  window.location.href = "/onboarding.html";
-});
-  if (isPremium) {
-    // 🔓 Kill any ::before blur overlay on premium wrapper
-    const style = document.createElement("style");
-    style.innerHTML = `
-      #premium-root .premium-lock-wrapper::before {
-        display: none !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-      }
-    `;
-    document.head.appendChild(style);
+  if (
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id")
+  ) {
+    premiumReonboardBtn.style.display = "inline-block";
   }
-    const premiumSections = document.getElementById("premium-sections");
-if (premiumSections) {
-  premiumSections.style.display = "none";
-}
+
+  premiumReonboardBtn.addEventListener("click", () => {
+    localStorage.setItem("corehabit_reonboarding", "true");
+    window.location.href = "/onboarding.html";
+  });
 </script>
 </body>
 </html>
