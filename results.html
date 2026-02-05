@@ -415,5 +415,44 @@
     });
   }
 </script>
+  <script>
+  // ===== Premium UI Sync on Page Load =====
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id");
+
+  const overlay = document.querySelector(".premium-locked-overlay");
+  const badge = document.getElementById("premium-badge");
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+
+  if (isPremium) {
+    // Hide upgrade overlay
+    if (overlay) overlay.style.display = "none";
+
+    // Show ACTIVE badge
+    if (badge) badge.style.display = "inline-block";
+
+    // Show rebuild CTA
+    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+
+    // 🔥 KILL BLUR PSEUDO-ELEMENT
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .premium-lock-wrapper::before {
+        display: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  if (reonboardBtn) {
+    reonboardBtn.addEventListener("click", () => {
+      localStorage.setItem("corehabit_reonboarding", "true");
+      window.location.href = "/onboarding.html";
+    });
+  }
+</script>
 </body>
 </html>
