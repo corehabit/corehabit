@@ -239,10 +239,10 @@
     const statusEl = document.getElementById("status");
     const resultEl = document.getElementById("result");
     const generateBtn = document.getElementById("generateBtn");
-    const regenBtn = document.getElementById("regenBtn");
+const regenBtn = document.getElementById("regenBtn");
 
-    generateBtn.disabled = true;
-    regenBtn.disabled = true;
+if (generateBtn) generateBtn.disabled = true;
+if (regenBtn) regenBtn.disabled = true;
 
     statusEl.textContent = isRegenerating
       ? "Refreshing your Premium plan..."
@@ -308,8 +308,8 @@
       statusEl.textContent = "Something went wrong generating your plan.";
     }
 
-    generateBtn.disabled = false;
-    regenBtn.disabled = false;
+    if (generateBtn) generateBtn.disabled = false;
+if (regenBtn) regenBtn.disabled = false;
   }
 
   // STEP 4B — hide premium sections on page load
