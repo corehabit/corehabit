@@ -263,9 +263,10 @@
 <!-- Generate Plan -->
 <!-- ========================= -->
 <script>
+  async function generatePlan() {
   const isRegenerating =
-  document.activeElement &&
-  document.activeElement.id === "regenBtn";
+    document.activeElement &&
+    document.activeElement.id === "regenBtn";
   async function generatePlan() {
     const statusEl = document.getElementById("status");
     const resultEl = document.getElementById("result");
@@ -324,7 +325,11 @@ if (isRegenerating) {
 // PREMIUM FEATURE RENDERING
 // ===============================
 if (
-  localStorage.getItem("corehabit_premium") === "true" &&
+  isRegenerating &&
+  (
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id")
+  ) &&
   data.seven_day_meal_plan
 ) {
   document.getElementById("premium-sections").style.display = "block";
@@ -485,6 +490,10 @@ if (
     `;
     document.head.appendChild(style);
   }
+    const premiumSections = document.getElementById("premium-sections");
+if (premiumSections) {
+  premiumSections.style.display = "none";
+}
 </script>
 </body>
 </html>
