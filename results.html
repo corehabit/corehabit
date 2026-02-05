@@ -426,6 +426,7 @@
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
 
   if (isPremium) {
+    document.body.classList.add("premium-active");
     // Hide upgrade overlay
     if (overlay) overlay.style.display = "none";
 
