@@ -387,58 +387,7 @@
   }
 </script>
 <script>
-  
-
-  const overlay = document.querySelector(".premium-locked-overlay");
-  const badge = document.getElementById("premium-badge");
-  const cards = document.querySelectorAll(".premium-card");
-
-  if (isPremium) {
-    // Hide upgrade UI
-    if (overlay) overlay.style.display = "none";
-    if (badge) badge.style.display = "inline-block";
-
-    // 🔓 FORCE UNLOCK PREMIUM CARDS
-    cards.forEach(card => {
-      card.style.filter = "none";
-      card.style.opacity = "1";
-      card.style.transform = "none";
-      card.style.pointerEvents = "auto";
-    });
-  } else {
-    if (overlay) overlay.style.display = "block";
-    if (badge) badge.style.display = "none";
-  }
-</script>
-  <script>
-  const isPremium = localStorage.getItem("corehabit_premium") === "true";
-<script>
-  const premiumReonboardBtn =
-    document.getElementById("premiumReonboardBtn");
-
-  if (
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id")
-  ) {
-    premiumReonboardBtn.style.display = "inline-block";
-  }
-
-  premiumReonboardBtn.addEventListener("click", () => {
-    localStorage.setItem("corehabit_reonboarding", "true");
-    window.location.href = "/onboarding.html";
-  });
-</script>
-  <script>
-  const regenBtn = document.getElementById("regenBtn");
-
-  if (
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id")
-  ) {
-    regenBtn.style.display = "inline-block";
-  }
-</script>
-  <script>
+  // ===== Premium UI Sync on Page Load =====
   const isPremium =
     localStorage.getItem("corehabit_premium") === "true" ||
     localStorage.getItem("corehabit_customer_id");
@@ -448,21 +397,19 @@
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
 
   if (isPremium) {
-    // Hide upsell overlay
+    // Hide upgrade overlay
     if (overlay) overlay.style.display = "none";
 
     // Show ACTIVE badge
     if (badge) badge.style.display = "inline-block";
 
-    // Show rebuild button
+    // Show rebuild CTA
     if (reonboardBtn) reonboardBtn.style.display = "inline-block";
   }
-</script>
-  <script>
-  const premiumReonboardBtn = document.getElementById("premiumReonboardBtn");
 
-  if (premiumReonboardBtn) {
-    premiumReonboardBtn.addEventListener("click", () => {
+  // Rebuild → Premium onboarding
+  if (reonboardBtn) {
+    reonboardBtn.addEventListener("click", () => {
       localStorage.setItem("corehabit_reonboarding", "true");
       window.location.href = "/onboarding.html";
     });
