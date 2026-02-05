@@ -68,24 +68,6 @@
 
 <body
   <body class="corehabit-body">
-  
-  <script>
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
-
-  if (isPremium) {
-    document.body.classList.add("is-premium");
-  }
-</script>
-  min-height:100vh;
-  background: radial-gradient(
-    80% 80% at 20% 10%,
-    #1a1f35 0%,
-    #0b0f19 60%
-  );
-  color:#ffffff;
-">
 
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
@@ -409,6 +391,32 @@
 
   if (isPremium) {
     document.body.classList.add("is-premium");
+  }
+</script>
+  <script>
+  // ===== Premium state detection (single source of truth) =====
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id");
+
+  if (isPremium) {
+    document.body.classList.add("is-premium");
+
+    const reonboardBtn = document.getElementById("premiumReonboardBtn");
+    const badge = document.getElementById("premium-badge");
+    const overlay = document.querySelector(".premium-locked-overlay");
+
+    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+    if (badge) badge.style.display = "inline-block";
+    if (overlay) overlay.style.display = "none";
+  }
+
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+  if (reonboardBtn) {
+    reonboardBtn.addEventListener("click", () => {
+      localStorage.setItem("corehabit_reonboarding", "true");
+      window.location.href = "/onboarding.html";
+    });
   }
 </script>
 </body>
