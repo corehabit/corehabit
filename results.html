@@ -40,6 +40,16 @@
         if (data.customerId) {
           localStorage.setItem("corehabit_customer_id", data.customerId);
           localStorage.setItem("corehabit_premium", "true");
+              // 🔓 Force Premium UI unlock immediately after Stripe return
+    document.body.classList.add("is-premium");
+
+    const overlay = document.querySelector(".premium-locked-overlay");
+    const badge = document.getElementById("premium-badge");
+    const reonboardBtn = document.getElementById("premiumReonboardBtn");
+
+    if (overlay) overlay.style.display = "none";
+    if (badge) badge.style.display = "inline-block";
+    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
 
           // ✅ SHOW SUCCESS FEEDBACK
           const toast = document.getElementById("premium-toast");
