@@ -207,6 +207,10 @@
       --border-radius: 14px;
     }
   </style>
+  <script>
+  const MONTHLY_STRIPE_LINK = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  const ANNUAL_STRIPE_LINK  = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+</script>
 </head>
 
 <body>
@@ -217,16 +221,18 @@
       <h1>Upgrade to CoreHabit Premium</h1>
       <p>Built for people who want real results, not generic plans.</p>
 
-      <div class="top-cta-row">
-        <a href="https://buy.stripe.com/test_3cI7sMfyS0rq83k2ek3Nm02" class="premium-cta top-pill">
-          Start Monthly — $19.99
-        </a>
+     <div class="top-cta-row">
+  <a href="#" class="premium-cta top-pill"
+     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+    Start Monthly — $19.99
+  </a>
 
-        <a href="https://buy.stripe.com/test_bJefZibiCca897oaKQ3Nm01" class="pricing-badge top-pill">
-          <span class="most-popular">MOST POPULAR</span>
-          Go Annual — $149.99
-        </a>
-      </div>
+  <a href="#" class="pricing-badge top-pill"
+     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+    <span class="most-popular">MOST POPULAR</span>
+    Go Annual — $149.99
+  </a>
+</div>
 
       <span class="savings-text">
         Save $89.89 per year compared to monthly
@@ -303,28 +309,22 @@
       <div class="final-upgrade-panel">
         <h2>Choose your plan</h2>
 
-        <section class="section">
-  <div class="final-upgrade-panel">
-    <h2>Choose your plan</h2>
+        <div class="top-cta-row">
+  <a href="#" class="premium-cta top-pill"
+     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+    Start Monthly — $19.99
+  </a>
 
-    <div class="top-cta-row">
-      <a href="https://buy.stripe.com/test_3cI7sMfyS0rq83k2ek3Nm02"
-         class="premium-cta top-pill">
-        Start Monthly — $19.99
-      </a>
+  <a href="#" class="pricing-badge top-pill"
+     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+    <span class="most-popular">MOST POPULAR</span>
+    Go Annual — $149.99
+  </a>
+</div>
 
-      <a href="https://buy.stripe.com/test_bJefZibiCca897oaKQ3Nm01"
-         class="pricing-badge top-pill">
-        <span class="most-popular">MOST POPULAR</span>
-        Go Annual — $149.99
-      </a>
-    </div>
-
-    <span class="savings-text">
-      Save $89.89 per year compared to monthly
-    </span>
-  </div>
-</section>
+<span class="savings-text">
+  Save $89.89 per year compared to monthly
+</span>
 
       </div>
     </section>
