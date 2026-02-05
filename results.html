@@ -67,7 +67,7 @@
 </head>
 
 <body
-  <body class="" style="min-height:100vh;background:radial-gradient(80% 80% at 20% 10%,#1a1f35 0%,#0b0f19 60%);color:#ffffff;">
+  <body class="corehabit-body">
   
   <script>
   const isPremium =
@@ -402,6 +402,14 @@
     });
   }
 </script>
- 
+ <script>
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id");
+
+  if (isPremium) {
+    document.body.classList.add("is-premium");
+  }
+</script>
 </body>
 </html>
