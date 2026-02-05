@@ -59,6 +59,22 @@
       })
       .catch(err => console.error("Customer lookup failed:", err));
   }
+      <button
+  id="premiumReonboardBtn"
+  style="
+    margin-top:16px;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid #d4af37;
+    background:transparent;
+    color:#d4af37;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+  "
+>
+  Rebuild My Plan with Premium
+</button>
 </script>
      
   </script>
@@ -80,7 +96,23 @@
 
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
-  <h1>Your Personalized Plan</h1>
+  <h1>Your Personalized Plan</h1><button
+  id="premiumReonboardBtn"
+  style="
+    margin-top:16px;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid #d4af37;
+    background:transparent;
+    color:#d4af37;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+  "
+>
+  Rebuild My Plan with Premium
+</button>
+  
   <p style="color:#9ca3af;">
     Based on your answers, here’s your CoreHabit plan.
   </p>
@@ -319,7 +351,15 @@ if (
     li.textContent = item;
     groceryList.appendChild(li);
   });
+const premiumReonboardBtn =
+  document.getElementById("premiumReonboardBtn");
 
+if (
+  localStorage.getItem("corehabit_premium") === "true" ||
+  localStorage.getItem("corehabit_customer_id")
+) {
+  premiumReonboardBtn.style.display = "inline-block";
+}
   // Weekly Check-In
   document.getElementById("weekly-check-in").textContent =
     data.weekly_check_in;
@@ -425,7 +465,19 @@ regenBtn.textContent = "Regenerate Plan";
 </script>
   <script>
   const isPremium = localStorage.getItem("corehabit_premium") === "true";
+const premiumReonboardBtn =
+  document.getElementById("premiumReonboardBtn");
 
+if (
+  localStorage.getItem("corehabit_premium") === "true" ||
+  localStorage.getItem("corehabit_customer_id")
+) {
+  premiumReonboardBtn.style.display = "inline-block";
+}
+    premiumReonboardBtn.addEventListener("click", () => {
+  localStorage.setItem("corehabit_reonboarding", "true");
+  window.location.href = "/onboarding.html";
+});
   if (isPremium) {
     // 🔓 Kill any ::before blur overlay on premium wrapper
     const style = document.createElement("style");
