@@ -245,7 +245,29 @@
         <label><input type="checkbox" value="Shellfish" class="allergy"> Shellfish</label>
         <label><input type="checkbox" value="None" class="allergy"> None</label>
       </div>
+<!-- PREMIUM ONLY QUESTIONS -->
+<div class="step" id="premium-questions" style="display:none;">
+  <h2>Premium Preferences</h2>
 
+  <label for="budget">Weekly grocery budget (optional)</label>
+  <input id="budget" type="number" placeholder="e.g. 75" />
+
+  <label>Target muscle groups (select any)</label>
+  <div class="checkbox-group">
+    <label><input type="checkbox" value="Chest" class="muscle"> Chest</label>
+    <label><input type="checkbox" value="Back" class="muscle"> Back</label>
+    <label><input type="checkbox" value="Legs" class="muscle"> Legs</label>
+    <label><input type="checkbox" value="Shoulders" class="muscle"> Shoulders</label>
+    <label><input type="checkbox" value="Arms" class="muscle"> Arms</label>
+    <label><input type="checkbox" value="Glutes" class="muscle"> Glutes</label>
+  </div>
+
+  <label for="checkins">Enable weekly progress check-ins?</label>
+  <select id="checkins">
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
+</div>
       <label for="otherAllergy">Other (optional)</label>
       <input id="otherAllergy" placeholder="e.g. soy, sesame, lactose intolerance" />
 
@@ -274,7 +296,16 @@
   </div>
 
   <script>
+    const isPremium =
+      if (isPremium) {
+  const premiumBlock = document.getElementById("premium-questions");
+  if (premiumBlock) premiumBlock.style.display = "block";
+}
+  localStorage.getItem("corehabit_premium") === "true" ||
+  localStorage.getItem("corehabit_reonboarding") === "true";
     function submitOnboarding() {
+      const muscleNodes = document.querySelectorAll(".muscle:checked");
+const targetMuscles = Array.from(muscleNodes).map(m => m.value);
       const allergyNodes = document.querySelectorAll(".allergy:checked");
       let allergies = Array.from(allergyNodes).map(a => a.value);
 
@@ -284,20 +315,34 @@
       }
 
       const data = {
-        goal: document.getElementById("goal").value,
-        experience: document.getElementById("experience").value,
-        sex: document.getElementById("sex").value,
-        age: document.getElementById("age").value,
-        height: document.getElementById("height").value,
-        weight: document.getElementById("weight").value,
-        location: document.getElementById("location").value,
-        days_per_week: document.getElementById("days").value,
-        diet: document.getElementById("diet").value,
-        allergies: allergies,
-        meals_per_day: document.getElementById("meals").value
-      };
+  goal: document.getElementById("goal").value,
+  experience: document.getElementById("experience").value,
+  sex: document.getElementById("sex").value,
+  age: document.getElementById("age").value,
+  height: document.getElementById("height").value,
+  weight: document.getElementById("weight").value,
+  location: document.getElementById("location").value,
+  days_per_week: document.getElementById("days").value,
+  diet: document.getElementById("diet").value,
+  allergies: allergies,
+  meals_per_day: document.getElementById("meals").value,
+
+  // Premium-only fields
+  grocery_budget: isPremium
+    ? document.getElementById("budget").value
+    : null,
+
+  target_muscle_groups: isPremium
+    ? targetMuscles
+    : [],
+
+  weekly_checkins: isPremium
+    ? document.getElementById("checkins").value === "yes"
+    : false
+};
 
       localStorage.setItem("corehabit_onboarding", JSON.stringify(data));
+      localStorage.removeItem("corehabit_reonboarding");
       window.location.href = "results.html";
     }
   </script>
