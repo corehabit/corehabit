@@ -18,18 +18,35 @@ export async function handler(event) {
       "You are CoreHabit, a fitness and nutrition coaching engine. " +
       "You MUST respond with valid JSON only.";
 
-    const userPrompt =
-      "Using the onboarding data below, return a JSON object with EXACTLY this structure:\n\n" +
-      "{\n" +
-      '  "overview": string,\n' +
-      '  "weekly_workout_split": string[],\n' +
-      '  "sample_workout": string[],\n' +
-      '  "daily_nutrition_guidelines": string[],\n' +
-      '  "sample_day_of_eating": string[],\n' +
-      '  "weekly_focus_tip": string\n' +
-      "}\n\n" +
-      "Onboarding data:\n" +
-      JSON.stringify(onboarding, null, 2);
+    const baseSchema =
+  "{\n" +
+  '  "overview": string,\n' +
+  '  "weekly_workout_split": string[],\n' +
+  '  "sample_workout": string[],\n' +
+  '  "daily_nutrition_guidelines": string[],\n' +
+  '  "sample_day_of_eating": string[],\n' +
+  '  "weekly_focus_tip": string\n' +
+  "}";
+
+const premiumSchema =
+  "{\n" +
+  '  "overview": string,\n' +
+  '  "weekly_workout_split": string[],\n' +
+  '  "sample_workout": string[],\n' +
+  '  "daily_nutrition_guidelines": string[],\n' +
+  '  "sample_day_of_eating": string[],\n' +
+  '  "weekly_focus_tip": string,\n' +
+  '  "seven_day_meal_plan": string[],\n' +
+  '  "grocery_list": string[],\n' +
+  '  "weekly_check_in": string,\n' +
+  '  "advanced_training_notes": string\n' +
+  "}";
+
+const userPrompt =
+  "Using the onboarding data below, return a JSON object with EXACTLY this structure:\n\n" +
+  (isPremium ? premiumSchema : baseSchema) +
+  "\n\nOnboarding data:\n" +
+  JSON.stringify(onboarding, null, 2);
 
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
