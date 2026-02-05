@@ -236,6 +236,9 @@
 <!-- Generate Plan -->
 <!-- ========================= -->
 <script>
+  const isRegenerating =
+  document.activeElement &&
+  document.activeElement.id === "regenBtn";
   async function generatePlan() {
     const statusEl = document.getElementById("status");
     const resultEl = document.getElementById("result");
@@ -243,8 +246,16 @@
     const regenBtn = document.getElementById("regenBtn");
 
     generateBtn.disabled = true;
-    generateBtn.textContent = "Generating...";
-    statusEl.textContent = "Creating your CoreHabit plan...";
+regenBtn.disabled = true;
+
+if (isRegenerating) {
+  regenBtn.textContent = "Refreshing...";
+} else {
+  generateBtn.textContent = "Generating...";
+}
+    statusEl.textContent = isRegenerating
+  ? "Refreshing your Premium plan..."
+  : "Creating your CoreHabit plan...";
     resultEl.style.display = "none";
     resultEl.innerHTML = "";
 
@@ -317,7 +328,14 @@ if (
   document.getElementById("advanced-training-notes").textContent =
     data.advanced_training_notes;
 }
-      regenBtn.style.display = "inline-block";
+      if (
+  localStorage.getItem("corehabit_premium") === "true" ||
+  localStorage.getItem("corehabit_customer_id")
+) {
+  regenBtn.style.display = "inline-block";
+} else {
+  regenBtn.style.display = "none";
+}
 
     } catch (err) {
       console.error(err);
@@ -325,7 +343,10 @@ if (
     }
 
     generateBtn.disabled = false;
-    generateBtn.textContent = "Generate My Plan";
+regenBtn.disabled = false;
+
+generateBtn.textContent = "Generate My Plan";
+regenBtn.textContent = "Regenerate Plan";
   }
 </script>
 <!-- PREMIUM SECTIONS -->
