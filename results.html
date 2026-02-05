@@ -66,15 +66,9 @@
   <link rel="stylesheet" href="./assets/premium.css">
 </head>
 
-<body style="
-  min-height:100vh;
-  background: radial-gradient(
-    80% 80% at 20% 10%,
-    #1a1f35 0%,
-    #0b0f19 60%
-  );
-  color:#ffffff;
-">
+<body
+  <body class="" style="min-height:100vh;background:radial-gradient(80% 80% at 20% 10%,#1a1f35 0%,#0b0f19 60%);color:#ffffff;">
+  
   <script>
   const isPremium =
     localStorage.getItem("corehabit_premium") === "true" ||
@@ -133,20 +127,7 @@
       Generate My Plan
     </button>
 
-    <button id="regenBtn" onclick="generatePlan()" style="
-      margin-left:12px;
-      padding:12px 20px;
-      border-radius:999px;
-      border:1px solid #7c5cff;
-      background:transparent;
-      color:#7c5cff;
-      font-weight:600;
-      font-size:14px;
-      cursor:pointer;
-      display:none;
-    ">
-      Regenerate Plan
-    </button>
+   
   </div>
 
   <div id="result" style="
@@ -403,7 +384,24 @@
     }
   }
 </script>
+<script>
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id");
 
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+
+  if (isPremium && reonboardBtn) {
+    reonboardBtn.style.display = "inline-block";
+  }
+
+  if (reonboardBtn) {
+    reonboardBtn.addEventListener("click", () => {
+      localStorage.setItem("corehabit_reonboarding", "true");
+      window.location.href = "/onboarding.html";
+    });
+  }
+</script>
  
 </body>
 </html>
