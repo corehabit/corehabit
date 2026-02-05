@@ -425,16 +425,14 @@
   const badge = document.getElementById("premium-badge");
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
 
-  if (isPremium) {
-    document.body.classList.add("premium-active");
-    // Hide upgrade overlay
-    if (overlay) overlay.style.display = "none";
+ if (isPremium) {
+  document.body.classList.add("premium-active");
+  document.body.classList.add("is-premium"); // ✅ ADD THIS LINE
 
-    // Show ACTIVE badge
-    if (badge) badge.style.display = "inline-block";
-
-    // Show rebuild CTA
-    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+  if (overlay) overlay.style.display = "none";
+  if (badge) badge.style.display = "inline-block";
+  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+}
 
     // 🔥 KILL BLUR PSEUDO-ELEMENT
     const style = document.createElement("style");
