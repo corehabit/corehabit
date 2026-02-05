@@ -10,6 +10,7 @@
 
   if (params.get("premium") === "success") {
     localStorage.setItem("corehabit_premium", "true");
+    
 
     // Optional: clean URL so it looks nice after reload
     window.history.replaceState({}, document.title, "/results.html");
@@ -38,6 +39,7 @@
       .then(data => {
         if (data.customerId) {
           localStorage.setItem("corehabit_customer_id", data.customerId);
+          localStorage.setItem("corehabit_premium", "true");
 
           // ✅ SHOW SUCCESS FEEDBACK
           const toast = document.getElementById("premium-toast");
@@ -424,6 +426,16 @@
     localStorage.setItem("corehabit_reonboarding", "true");
     window.location.href = "/onboarding.html";
   });
+</script>
+  <script>
+  const regenBtn = document.getElementById("regenBtn");
+
+  if (
+    localStorage.getItem("corehabit_premium") === "true" ||
+    localStorage.getItem("corehabit_customer_id")
+  ) {
+    regenBtn.style.display = "inline-block";
+  }
 </script>
 </body>
 </html>
