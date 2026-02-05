@@ -21,12 +21,7 @@
   </script>
 
   <!-- Capture Stripe session_id after checkout -->
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-
-    if (sessionId) {
-      localStorage.setItem("corehabit_session_id", sessionId);
+ 
 <script>
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
