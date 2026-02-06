@@ -268,16 +268,13 @@ if (regenBtn) regenBtn.disabled = true;
 
     try {
       const response = await fetch("/.netlify/functions/generatePlan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-  onboarding: JSON.parse(onboardingRaw),
-  isPremium:
-    localStorage.getItem("corehabit_premium") === "true"
-})
-            
-        })
-      });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    onboarding: JSON.parse(onboardingRaw),
+    isPremium: localStorage.getItem("corehabit_premium") === "true"
+  })
+});
 
       const { plan: data } = await response.json();
 
