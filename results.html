@@ -274,7 +274,7 @@ if (regenBtn) regenBtn.disabled = true;
           onboarding: JSON.parse(onboardingRaw),
           isPremium:
             localStorage.getItem("corehabit_premium") === "true" ||
-            !!localStorage.getItem("corehabit_customer_id")
+            
         })
       });
 
@@ -374,57 +374,27 @@ if (regenBtn) regenBtn.disabled = false;
   }
 </script>
 <script>
+(function () {
   const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    
+    localStorage.getItem("corehabit_premium") === "true";
+
+  if (!isPremium) return;
+
+  document.body.classList.add("is-premium");
 
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
+  const badge = document.getElementById("premium-badge");
+  const overlay = document.querySelector(".premium-locked-overlay");
 
-  if (isPremium && reonboardBtn) {
-    reonboardBtn.style.display = "inline-block";
-  }
+  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+  if (badge) badge.style.display = "inline-block";
+  if (overlay) overlay.style.display = "none";
 
-  if (reonboardBtn) {
-    reonboardBtn.addEventListener("click", () => {
-      localStorage.setItem("corehabit_reonboarding", "true");
-      window.location.href = "/onboarding.html";
-    });
-  }
-</script>
- <script>
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    
-
-  if (isPremium) {
-    document.body.classList.add("is-premium");
-  }
-</script>
-  <script>
-  // ===== Premium state detection (single source of truth) =====
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    
-
-  if (isPremium) {
-    document.body.classList.add("is-premium");
-
-    const reonboardBtn = document.getElementById("premiumReonboardBtn");
-    const badge = document.getElementById("premium-badge");
-    const overlay = document.querySelector(".premium-locked-overlay");
-
-    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-    if (badge) badge.style.display = "inline-block";
-    if (overlay) overlay.style.display = "none";
-  }
-
-  const reonboardBtn = document.getElementById("premiumReonboardBtn");
-  if (reonboardBtn) {
-    reonboardBtn.addEventListener("click", () => {
-      localStorage.setItem("corehabit_reonboarding", "true");
-      window.location.href = "/onboarding.html";
-    });
-  }
+  reonboardBtn?.addEventListener("click", () => {
+    localStorage.setItem("corehabit_reonboarding", "true");
+    window.location.href = "/onboarding.html";
+  });
+})();
 </script>
 </body>
 </html>
