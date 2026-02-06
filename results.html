@@ -287,7 +287,27 @@ if (regenBtn) regenBtn.disabled = true;
         <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
         <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
       `;
+// Render Premium Sections if available
+if (
+  localStorage.getItem("corehabit_premium") === "true" &&
+  data.seven_day_meal_plan
+) {
+  const premiumSections = document.getElementById("premium-sections");
 
+  document.getElementById("seven-day-meal-plan").innerHTML =
+    data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
+
+  document.getElementById("grocery-list").innerHTML =
+    data.grocery_list.map(i => `<li>${i}</li>`).join("");
+
+  document.getElementById("weekly-check-in").textContent =
+    data.weekly_check_in;
+
+  document.getElementById("advanced-training-notes").textContent =
+    data.advanced_training_notes;
+
+  premiumSections.style.display = "block";
+}
       // STEP 4C — show premium ONLY on regeneration
 if (
   isRegenerating &&
