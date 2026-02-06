@@ -378,7 +378,7 @@ if (regenBtn) regenBtn.disabled = false;
 <script>
   const isPremium =
     localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
+    
 
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
 
@@ -396,7 +396,7 @@ if (regenBtn) regenBtn.disabled = false;
  <script>
   const isPremium =
     localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
+    
 
   if (isPremium) {
     document.body.classList.add("is-premium");
@@ -406,7 +406,7 @@ if (regenBtn) regenBtn.disabled = false;
   // ===== Premium state detection (single source of truth) =====
   const isPremium =
     localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
+    
 
   if (isPremium) {
     document.body.classList.add("is-premium");
