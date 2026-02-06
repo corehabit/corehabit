@@ -4,18 +4,7 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script>
-  // ✅ Persist Premium unlock after successful Stripe redirect
-  const params = new URLSearchParams(window.location.search);
 
-  if (params.get("premium") === "success") {
-    localStorage.setItem("corehabit_premium", "true");
-    
-
-    // Optional: clean URL so it looks nice after reload
-    window.history.replaceState({}, document.title, "/results.html");
-  }
-</script>
   <!-- Premium feature flag (TEMP – legacy, ignored now) -->
   <script>
     window.PREMIUM_ENABLED = true;
@@ -24,11 +13,14 @@
   <!-- Capture Stripe session_id after checkout -->
  
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get("session_id");
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
 
-  if (sessionId) {
-    localStorage.setItem("corehabit_session_id", sessionId);
+    if (!sessionId) return;
+
+    // Prevent infinite reload loops
+    if (localStorage.getItem("corehabit_reloaded_after_stripe")) return;
 
     fetch("/.netlify/functions/getCustomerFromSession", {
       method: "POST",
@@ -40,33 +32,14 @@
         if (data.customerId) {
           localStorage.setItem("corehabit_customer_id", data.customerId);
           localStorage.setItem("corehabit_premium", "true");
-              // 🔓 Force Premium UI unlock immediately after Stripe return
-    document.body.classList.add("is-premium");
 
-    const overlay = document.querySelector(".premium-locked-overlay");
-    const badge = document.getElementById("premium-badge");
-    const reonboardBtn = document.getElementById("premiumReonboardBtn");
-
-    if (overlay) overlay.style.display = "none";
-    if (badge) badge.style.display = "inline-block";
-    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-
-          // ✅ SHOW SUCCESS FEEDBACK
-          const toast = document.getElementById("premium-toast");
-          if (toast) {
-            toast.style.opacity = "1";
-            toast.style.transform = "translateY(0)";
-            setTimeout(() => {
-              toast.style.opacity = "0";
-            }, 4000);
-          }
-
-          console.log("✅ Premium unlocked:", data.customerId);
+          // 🔥 KEY FIX: reload ONCE so UI re-reads premium
+          localStorage.setItem("corehabit_reloaded_after_stripe", "true");
+          window.location.href = window.location.pathname;
         }
       })
       .catch(err => console.error("Customer lookup failed:", err));
-  }
-     
+  })();
 </script>
      
   </script>
@@ -376,33 +349,8 @@ if (regenBtn) regenBtn.disabled = false;
     }
   }
 </script>
-<script>
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
 
-  const reonboardBtn = document.getElementById("premiumReonboardBtn");
-
-  if (isPremium && reonboardBtn) {
-    reonboardBtn.style.display = "inline-block";
-  }
-
-  if (reonboardBtn) {
-    reonboardBtn.addEventListener("click", () => {
-      localStorage.setItem("corehabit_reonboarding", "true");
-      window.location.href = "/onboarding.html";
-    });
-  }
-</script>
- <script>
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true" ||
-    localStorage.getItem("corehabit_customer_id");
-
-  if (isPremium) {
-    document.body.classList.add("is-premium");
-  }
-</script>
+ 
   <script>
   // ===== Premium state detection (single source of truth) =====
   const isPremium =
