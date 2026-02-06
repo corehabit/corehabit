@@ -128,8 +128,29 @@
     box-shadow:0 20px 40px rgba(0,0,0,0.4);
     display:none;
   "></div>
+<section id="premium-sections" style="display:none;">
 
-  <!-- PREMIUM -->
+  <div class="premium-card">
+    <h3>7-Day Meal Plan</h3>
+    <ul id="seven-day-meal-plan"></ul>
+  </div>
+
+  <div class="premium-card">
+    <h3>Grocery List</h3>
+    <ul id="grocery-list"></ul>
+  </div>
+
+  <div class="premium-card">
+    <h3>Weekly Check-In</h3>
+    <p id="weekly-check-in"></p>
+  </div>
+
+  <div class="premium-card">
+    <h3>Advanced Training Notes</h3>
+    <p id="advanced-training-notes"></p>
+  </div>
+
+</section>  <!-- PREMIUM -->
   <div id="premium-root" style="margin-top:56px;">
 
     <h2 class="premium-title">
@@ -288,23 +309,51 @@ if (regenBtn) regenBtn.disabled = true;
         <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
       `;
 // Render Premium Sections if available
+// Render Premium Sections if available
 if (
-  localStorage.getItem("corehabit_premium") === "true" &&
-  data.seven_day_meal_plan
+  localStorage.getItem("corehabit_premium") === "true"
 ) {
   const premiumSections = document.getElementById("premium-sections");
 
-  document.getElementById("seven-day-meal-plan").innerHTML =
-    data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
+  // Render Macros if available
+  if (data.macro_targets) {
+    const macroHTML = `
+      <div class="premium-card">
+        <h3>Macro Targets</h3>
+        <ul>
+          <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
+          <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
+          <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
+          <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
+        </ul>
+      </div>
+    `;
+    premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
+  }
 
-  document.getElementById("grocery-list").innerHTML =
-    data.grocery_list.map(i => `<li>${i}</li>`).join("");
+  // Render Meal Plan
+  if (data.seven_day_meal_plan) {
+    document.getElementById("seven-day-meal-plan").innerHTML =
+      data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
+  }
 
-  document.getElementById("weekly-check-in").textContent =
-    data.weekly_check_in;
+  // Render Grocery List
+  if (data.grocery_list) {
+    document.getElementById("grocery-list").innerHTML =
+      data.grocery_list.map(i => `<li>${i}</li>`).join("");
+  }
 
-  document.getElementById("advanced-training-notes").textContent =
-    data.advanced_training_notes;
+  // Weekly Check-In
+  if (data.weekly_check_in) {
+    document.getElementById("weekly-check-in").textContent =
+      data.weekly_check_in;
+  }
+
+  // Advanced Notes
+  if (data.advanced_training_notes) {
+    document.getElementById("advanced-training-notes").textContent =
+      data.advanced_training_notes;
+  }
 
   premiumSections.style.display = "block";
 }
@@ -340,29 +389,7 @@ if (regenBtn) regenBtn.disabled = false;
   if (premiumSections) premiumSections.style.display = "none";
 </script>
 <!-- PREMIUM SECTIONS -->
-<section id="premium-sections" style="display:none;">
 
-  <div class="premium-card">
-    <h3>7-Day Meal Plan</h3>
-    <ul id="seven-day-meal-plan"></ul>
-  </div>
-
-  <div class="premium-card">
-    <h3>Grocery List</h3>
-    <ul id="grocery-list"></ul>
-  </div>
-
-  <div class="premium-card">
-    <h3>Weekly Check-In</h3>
-    <p id="weekly-check-in"></p>
-  </div>
-
-  <div class="premium-card">
-    <h3>Advanced Training Notes</h3>
-    <p id="advanced-training-notes"></p>
-  </div>
-
-</section>
 <!-- ========================= -->
 <!-- Stripe Checkout (LEGACY – KEPT) -->
 <!-- ========================= -->
