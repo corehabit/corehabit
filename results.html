@@ -271,9 +271,10 @@ if (regenBtn) regenBtn.disabled = true;
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          onboarding: JSON.parse(onboardingRaw),
-          isPremium:
-            localStorage.getItem("corehabit_premium") === "true" ||
+  onboarding: JSON.parse(onboardingRaw),
+  isPremium:
+    localStorage.getItem("corehabit_premium") === "true"
+})
             
         })
       });
@@ -291,24 +292,22 @@ if (regenBtn) regenBtn.disabled = true;
       `;
 
       // STEP 4C — show premium ONLY on regeneration
-      if (
-        isRegenerating &&
-        (
-          localStorage.getItem("corehabit_premium") === "true" ||
-          localStorage.getItem("corehabit_customer_id")
-        ) &&
-        data.seven_day_meal_plan
-      ) {
+if (
+  isRegenerating &&
+  localStorage.getItem("corehabit_premium") === "true" &&
+  data.seven_day_meal_plan
+)
+{
         document.getElementById("premium-sections").style.display = "block";
       }
 
       // Show regenerate button for premium users
       if (
-        localStorage.getItem("corehabit_premium") === "true" ||
-        localStorage.getItem("corehabit_customer_id")
-      ) {
-        regenBtn.style.display = "inline-block";
-      }
+  localStorage.getItem("corehabit_premium") === "true" &&
+  regenBtn
+) {
+  regenBtn.style.display = "inline-block";
+}
 
     } catch (err) {
       console.error(err);
