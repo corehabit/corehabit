@@ -5,16 +5,14 @@
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script>
-  // ✅ Persist Premium unlock after successful Stripe redirect
-  const params = new URLSearchParams(window.location.search);
+(function () {
+  const urlParams = new URLSearchParams(window.location.search);
 
-  if (params.get("premium") === "success") {
+  if (urlParams.get("premium") === "success") {
     localStorage.setItem("corehabit_premium", "true");
-    
-
-    // Optional: clean URL so it looks nice after reload
     window.history.replaceState({}, document.title, "/results.html");
   }
+})();
 </script>
   <!-- Premium feature flag (TEMP – legacy, ignored now) -->
   <script>
