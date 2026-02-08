@@ -360,6 +360,28 @@ if (data.progression_strategy) {
   `;
   premiumSections.insertAdjacentHTML("beforeend", progressionHTML);
 }
+  // Render Full 7 Day Workout Plan
+if (data.full_week_workout_plan) {
+  let workoutHTML = `
+    <div class="premium-card">
+      <h3>Full 7-Day Training Plan</h3>
+  `;
+
+  for (const day in data.full_week_workout_plan) {
+    workoutHTML += `
+      <h4 style="margin-top:16px;">${day}</h4>
+      <ul>
+        ${data.full_week_workout_plan[day]
+          .map(ex => `<li>${ex}</li>`)
+          .join("")}
+      </ul>
+    `;
+  }
+
+  workoutHTML += `</div>`;
+
+  premiumSections.insertAdjacentHTML("beforeend", workoutHTML);
+}
 
   // Render Meal Plan
   if (data.seven_day_meal_plan) {
