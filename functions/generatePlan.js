@@ -13,6 +13,72 @@ export async function handler(event) {
 
     // TEMP: premium flag comes from caller (until Stripe anchoring is finalized)
     const isPremium = body.isPremium === true;
+    // ===============================
+// 🔥 Deterministic Macro Calculator
+// ===============================
+
+function calculateMacros(onboarding) {
+  const weightLbs = parseFloat(onboarding.weight);
+  const age = parseInt(onboarding.age);
+  const sex = onboarding.sex;
+  const goal = onboarding.goal;
+
+  if (!weightLbs || !age) return null;
+
+  // Rough height handling (basic — assumes 6'0 format)
+  let heightInches = 70;
+  if (onboarding.height && onboarding.height.includes("'")) {
+    const parts = onboarding.height.split("'");
+    const feet = parseInt(parts[0]);
+    const inches = parseInt(parts[1]);
+    heightInches = feet * 12 + inches;
+  }
+
+  // Convert to metric
+  const weightKg = weightLbs * 0.4536;
+  const heightCm = heightInches * 2.54;
+
+  // Mifflin-St Jeor BMR
+  let bmr;
+  if (sex === "Male") {
+    bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+  } else {
+    bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+  }
+
+  // Activity multiplier (basic assumption gym 3–5 days)
+  const activityMultiplier = 1.55;
+  let tdee = bmr * activityMultiplier;
+
+  // Goal adjustment
+  if (goal.includes("Lose")) {
+    tdee -= 400;
+  } else if (goal.includes("Build muscle")) {
+    tdee += 350;
+  }
+
+  const calories = Math.round(tdee);
+
+  // Protein: 0.95g per lb for muscle gain, 0.9 otherwise
+  let proteinPerLb = goal.includes("Build muscle") ? 1.0 : 0.9;
+  const protein = Math.round(weightLbs * proteinPerLb);
+
+  // Fat: 25% calories
+  const fatCalories = calories * 0.25;
+  const fats = Math.round(fatCalories / 9);
+
+  // Carbs = remainder
+  const proteinCalories = protein * 4;
+  const remainingCalories = calories - proteinCalories - (fats * 9);
+  const carbs = Math.round(remainingCalories / 4);
+
+  return {
+    calories,
+    protein,
+    carbs,
+    fats
+  };
+}
 
    const systemPrompt =
   "You are CoreHabit, an elite personalized fitness and nutrition engine. " +
@@ -116,6 +182,13 @@ const userPrompt =
     let plan;
     try {
       plan = JSON.parse(data.choices[0].message.content);
+      // Override macro targets with deterministic calculation
+if (isPremium) {
+  const macros = calculateMacros(onboarding);
+  if (macros) {
+    plan.macro_targets = macros;
+  }
+}
     } catch {
       throw new Error("AI returned invalid JSON");
     }
