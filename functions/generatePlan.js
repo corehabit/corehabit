@@ -62,7 +62,11 @@ const userPrompt =
 "- For fat loss: subtract 300–500 calories.\n" +
 "- For muscle gain: add 300–500 calories.\n" +
 "- For maintenance: use calculated TDEE.\n" +
-"- Set protein between 0.7–1.0g per pound of bodyweight (higher for fat loss).\n" +
+"- Protein MUST be calculated first at 0.8–1.0g per pound of bodyweight for fat loss.\n" +
+"- For muscle gain, protein should be 0.7–0.9g per pound of bodyweight.\n" +
+"- Protein grams must NOT be below 0.7g per pound under any circumstance.\n" +
+"- After setting protein, calculate fat at 20–30% of total calories.\n" +
+"- Carbohydrates must fill the remaining calories after protein and fat are calculated.\n" +
 "- Set fat at 20–30% of total calories (9 calories per gram).\n" +
 "- Allocate remaining calories to carbohydrates (4 calories per gram).\n" +
 "- Ensure macro percentages align with common evidence-based ranges:\n" +
