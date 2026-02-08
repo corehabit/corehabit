@@ -162,13 +162,13 @@ const userPrompt =
 "- Include recommended rep ranges tied to the user's goal.\n" +
 "- Provide a clear progressive overload strategy in progression_strategy.\n" +
 "- Volume should align with evidence-based hypertrophy ranges (10–20 sets per muscle per week).\n" +
-   - Create a fully detailed 7-day workout plan.
-- Each training day must include 5–6 exercises.
-- Include sets, reps, and intensity guidance.
-- Align exercises with the user's goal and selected muscle priorities.
-- If user trains fewer than 7 days, include structured rest/recovery days.
-- Workouts must reflect training location (Gym vs Home).
-- Volume should support hypertrophy or fat loss depending on goal.
+  "- Create a fully detailed 7-day workout plan.\n" +
+"- Each training day must include 5–6 exercises.\n" +
+"- Include sets, reps, and intensity guidance.\n" +
+"- Align exercises with the user's goal and selected muscle priorities.\n" +
+"- If user trains fewer than 7 days, include structured rest/recovery days.\n" +
+"- Workouts must reflect training location (Gym vs Home).\n" +
+"- Volume should support hypertrophy or fat loss depending on goal.\n" +
       "- Respect diet preference and remove any allergic foods.\n" +
    "- The seven_day_meal_plan must include 7 days.\n" +
 "- Each day must include clearly labeled Breakfast, Lunch, and Dinner.\n" +
