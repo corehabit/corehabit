@@ -111,7 +111,9 @@ const premiumSchema =
   '    "fats": number\n' +
   '  },\n' +
   '  "weekly_workout_split": string[],\n' +
+  '  "volume_targets": string[],\n' +
   '  "sample_workout": string[],\n' +
+  '  "progression_strategy": string,\n' +
   '  "daily_nutrition_guidelines": string[],\n' +
   '  "sample_day_of_eating": string[],\n' +
   '  "weekly_focus_tip": string,\n' +
@@ -145,6 +147,11 @@ const userPrompt =
       "- Calorie targets must align with goal (deficit for fat loss, surplus for muscle gain).\n" +
       "- Weekly workout split must reflect selected training days.\n" +
       "- If muscle groups are selected, bias volume toward those.\n" +
+   "- Include weekly volume targets per major muscle group (sets per week).\n" +
+"- If muscle focus groups are selected, increase their weekly set volume by 20–30%.\n" +
+"- Include recommended rep ranges tied to the user's goal.\n" +
+"- Provide a clear progressive overload strategy in progression_strategy.\n" +
+"- Volume should align with evidence-based hypertrophy ranges (10–20 sets per muscle per week).\n" +
       "- Respect diet preference and remove any allergic foods.\n" +
    "- The seven_day_meal_plan must include 7 days.\n" +
 "- Each day must include clearly labeled Breakfast, Lunch, and Dinner.\n" +
