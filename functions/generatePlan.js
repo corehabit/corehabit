@@ -192,35 +192,7 @@ if (isPremium) {
     } catch {
       throw new Error("AI returned invalid JSON");
     }
-// ===== Add Macro Targets (Premium Only) =====
-if (isPremium) {
-  const weightRaw = onboarding.weight || "";
-  const weightMatch = weightRaw.match(/\d+/);
-  const weight = weightMatch ? parseFloat(weightMatch[0]) : 0;
 
-  const goal = onboarding.goal || "General health";
-
-  let calories;
-
-  if (goal === "Lose fat") {
-    calories = weight * 11;
-  } else if (goal === "Build muscle") {
-    calories = weight * 15;
-  } else {
-    calories = weight * 13;
-  }
-
-  const protein = weight * 0.8;
-  const fats = (calories * 0.25) / 9;
-  const carbs = (calories - (protein * 4 + fats * 9)) / 4;
-
-  plan.macro_targets = {
-    calories: Math.round(calories),
-    protein: Math.round(protein),
-    carbs: Math.round(carbs),
-    fats: Math.round(fats)
-  };
-}
     return {
       statusCode: 200,
       body: JSON.stringify({
