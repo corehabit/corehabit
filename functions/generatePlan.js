@@ -14,9 +14,14 @@ export async function handler(event) {
     // TEMP: premium flag comes from caller (until Stripe anchoring is finalized)
     const isPremium = body.isPremium === true;
 
-    const systemPrompt =
-      "You are CoreHabit, a fitness and nutrition coaching engine. " +
-      "You MUST respond with valid JSON only.";
+   const systemPrompt =
+  "You are CoreHabit, an elite personalized fitness and nutrition engine. " +
+  "You MUST return valid JSON only. " +
+  "Plans must be deeply personalized using the user's age, sex, weight, height, goal, training days, diet preference, allergies, grocery budget, and target muscle groups if provided. " +
+  "Macro targets must be calculated realistically using bodyweight and goal. " +
+  "Workouts must reflect training location and selected muscle priorities. " +
+  "Meal plans must respect diet preference and allergies. " +
+  "Premium plans must feel advanced, specific, and tailored — not generic.";
 
     const baseSchema =
   "{\n" +
@@ -31,6 +36,12 @@ export async function handler(event) {
 const premiumSchema =
   "{\n" +
   '  "overview": string,\n' +
+  '  "macro_targets": {\n' +
+  '    "calories": number,\n' +
+  '    "protein": number,\n' +
+  '    "carbs": number,\n' +
+  '    "fats": number\n' +
+  '  },\n' +
   '  "weekly_workout_split": string[],\n' +
   '  "sample_workout": string[],\n' +
   '  "daily_nutrition_guidelines": string[],\n' +
@@ -45,7 +56,19 @@ const premiumSchema =
 const userPrompt =
   "Using the onboarding data below, return a JSON object with EXACTLY this structure:\n\n" +
   (isPremium ? premiumSchema : baseSchema) +
-  "\n\nOnboarding data:\n" +
+  "\n\nInstructions:\n" +
+  (isPremium
+    ? "- Calculate macro targets based on bodyweight and goal.\n" +
+      "- Protein should scale appropriately for fat loss or muscle gain.\n" +
+      "- Calorie targets must align with goal (deficit for fat loss, surplus for muscle gain).\n" +
+      "- Weekly workout split must reflect selected training days.\n" +
+      "- If muscle groups are selected, bias volume toward those.\n" +
+      "- Respect diet preference and remove any allergic foods.\n" +
+      "- Grocery list must align with meal plan.\n" +
+      "- Weekly check-in should give measurable progress targets.\n" +
+      "- Advanced training notes should provide progression strategy.\n"
+    : "- Keep plan beginner-friendly and simple.\n") +
+  "\nOnboarding data:\n" +
   JSON.stringify(onboarding, null, 2);
 
     const response = await fetch(
