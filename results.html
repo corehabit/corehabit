@@ -115,7 +115,47 @@
     ">
       Generate My Plan
     </button>
+<div style="margin-top:20px;">
+  <button id="generateBtn" onclick="generatePlan()" style="
+    padding:14px 22px;
+    border-radius:999px;
+    border:none;
+    background:#7c5cff;
+    color:white;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+  ">
+    Generate My Plan
+  </button>
 
+  <!-- 🔥 ADD THIS RIGHT BELOW -->
+  <button
+    id="regenBtn"
+    onclick="generatePlan()"
+    style="
+      display:none;
+      margin-top:18px;
+      width:100%;
+      padding:18px;
+      border-radius:999px;
+      border:none;
+      background: linear-gradient(135deg, #d4af37, #f0d58c);
+      color:#1a1a1a;
+      font-weight:800;
+      font-size:18px;
+      letter-spacing:0.03em;
+      cursor:pointer;
+      box-shadow:0 10px 25px rgba(212,175,55,0.45);
+      transition: all 0.2s ease;
+    "
+    onmouseover="this.style.transform='translateY(-2px)'"
+    onmouseout="this.style.transform='translateY(0)'"
+  >
+    🔁 Regenerate Premium Plan
+  </button>
+
+</div>
    
   </div>
 
