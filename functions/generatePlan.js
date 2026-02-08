@@ -58,12 +58,25 @@ const userPrompt =
   (isPremium ? premiumSchema : baseSchema) +
   "\n\nInstructions:\n" +
   (isPremium
-    ? "- Calculate macro targets based on bodyweight and goal.\n" +
+    ? "- First calculate estimated TDEE based on age, sex, height, weight, and training days.\n" +
+"- For fat loss: subtract 300–500 calories.\n" +
+"- For muscle gain: add 300–500 calories.\n" +
+"- For maintenance: use calculated TDEE.\n" +
+"- Set protein between 0.7–1.0g per pound of bodyweight (higher for fat loss).\n" +
+"- Set fat at 20–30% of total calories (9 calories per gram).\n" +
+"- Allocate remaining calories to carbohydrates (4 calories per gram).\n" +
+"- Ensure macro percentages align with common evidence-based ranges:\n" +
+"  Fat Loss: 40–50% carbs, 25–35% protein, 20–30% fat.\n" +
+"  Muscle Gain: 40–50% carbs, 30–35% protein, 20–25% fat.\n" +
+"  Maintenance: 40–50% carbs, 20–30% protein, 30% fat.\n" +
       "- Protein should scale appropriately for fat loss or muscle gain.\n" +
       "- Calorie targets must align with goal (deficit for fat loss, surplus for muscle gain).\n" +
       "- Weekly workout split must reflect selected training days.\n" +
       "- If muscle groups are selected, bias volume toward those.\n" +
       "- Respect diet preference and remove any allergic foods.\n" +
+   "- The seven_day_meal_plan must include 7 days.\n" +
+"- Each day must include clearly labeled Breakfast, Lunch, and Dinner.\n" +
+"- Meals must align with macro targets.\n" +
       "- Grocery list must align with meal plan.\n" +
       "- Weekly check-in should give measurable progress targets.\n" +
       "- Advanced training notes should provide progression strategy.\n"
