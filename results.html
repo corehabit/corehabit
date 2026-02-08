@@ -79,22 +79,7 @@
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
   <h1>Your Personalized Plan</h1>
-  <button
-  id="premiumReonboardBtn"
-  style="
-    margin-top:16px;
-    padding:12px 20px;
-    border-radius:999px;
-    border:1px solid #d4af37;
-    background:transparent;
-    color:#d4af37;
-    font-weight:700;
-    cursor:pointer;
-    display:none;
-  "
->
-  Rebuild My Plan with Premium
-</button>
+  
   
   <p style="color:#9ca3af;">
     Based on your answers, here’s your CoreHabit plan.
@@ -115,19 +100,7 @@
     ">
       Generate My Plan
     </button>
-<div style="margin-top:20px;">
-  <button id="generateBtn" onclick="generatePlan()" style="
-    padding:14px 22px;
-    border-radius:999px;
-    border:none;
-    background:#7c5cff;
-    color:white;
-    font-weight:700;
-    font-size:16px;
-    cursor:pointer;
-  ">
-    Generate My Plan
-  </button>
+
 
   <!-- 🔥 ADD THIS RIGHT BELOW -->
   <button
@@ -456,28 +429,6 @@ if (regenBtn) regenBtn.disabled = false;
     }
   }
 </script>
-<script>
-(function () {
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true";
 
-  if (!isPremium) return;
-
-  document.body.classList.add("is-premium");
-
-  const reonboardBtn = document.getElementById("premiumReonboardBtn");
-  const badge = document.getElementById("premium-badge");
-  const overlay = document.querySelector(".premium-locked-overlay");
-
-  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-  if (badge) badge.style.display = "inline-block";
-  if (overlay) overlay.style.display = "none";
-
-  reonboardBtn?.addEventListener("click", () => {
-    localStorage.setItem("corehabit_reonboarding", "true");
-    window.location.href = "/onboarding.html";
-  });
-})();
-</script>
 </body>
 </html>
