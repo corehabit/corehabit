@@ -337,6 +337,29 @@ if (
     `;
     premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
   }
+  // Render Volume Targets
+if (data.volume_targets) {
+  const volumeHTML = `
+    <div class="premium-card">
+      <h3>Weekly Volume Targets</h3>
+      <ul>
+        ${data.volume_targets.map(v => `<li>${v}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+  premiumSections.insertAdjacentHTML("beforeend", volumeHTML);
+}
+
+// Render Progression Strategy
+if (data.progression_strategy) {
+  const progressionHTML = `
+    <div class="premium-card">
+      <h3>Progression Strategy</h3>
+      <p>${data.progression_strategy}</p>
+    </div>
+  `;
+  premiumSections.insertAdjacentHTML("beforeend", progressionHTML);
+}
 
   // Render Meal Plan
   if (data.seven_day_meal_plan) {
