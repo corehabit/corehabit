@@ -79,7 +79,22 @@
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
   <h1>Your Personalized Plan</h1>
-  
+  <button
+  id="premiumReonboardBtn"
+  style="
+    margin-top:16px;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid #d4af37;
+    background:transparent;
+    color:#d4af37;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+  "
+>
+  Rebuild My Plan with Premium
+</button>
   
   <p style="color:#9ca3af;">
     Based on your answers, here’s your CoreHabit plan.
@@ -100,33 +115,6 @@
     ">
       Generate My Plan
     </button>
-
-
-  <!-- 🔥 ADD THIS RIGHT BELOW -->
-  <button
-    id="regenBtn"
-    onclick="generatePlan()"
-    style="
-      display:none;
-      margin-top:18px;
-      width:100%;
-      padding:18px;
-      border-radius:999px;
-      border:none;
-      background: linear-gradient(135deg, #d4af37, #f0d58c);
-      color:#1a1a1a;
-      font-weight:800;
-      font-size:18px;
-      letter-spacing:0.03em;
-      cursor:pointer;
-      box-shadow:0 10px 25px rgba(212,175,55,0.45);
-      transition: all 0.2s ease;
-    "
-    onmouseover="this.style.transform='translateY(-2px)'"
-    onmouseout="this.style.transform='translateY(0)'"
-  >
-    🔁 Regenerate Premium Plan
-  </button>
 
    
   </div>
@@ -428,6 +416,28 @@ if (regenBtn) regenBtn.disabled = false;
     }
   }
 </script>
+<script>
+(function () {
+  const isPremium =
+    localStorage.getItem("corehabit_premium") === "true";
 
+  if (!isPremium) return;
+
+  document.body.classList.add("is-premium");
+
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+  const badge = document.getElementById("premium-badge");
+  const overlay = document.querySelector(".premium-locked-overlay");
+
+  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+  if (badge) badge.style.display = "inline-block";
+  if (overlay) overlay.style.display = "none";
+
+  reonboardBtn?.addEventListener("click", () => {
+    localStorage.setItem("corehabit_reonboarding", "true");
+    window.location.href = "/onboarding.html";
+  });
+})();
+</script>
 </body>
 </html>
