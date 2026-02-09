@@ -205,19 +205,41 @@ const userPrompt =
       throw new Error("Invalid OpenAI response");
     }
 
-    let plan;
-    try {
-      plan = JSON.parse(data.choices[0].message.content);
-      // Override macro targets with deterministic calculation
+   let plan;
+
+const raw = data.choices[0].message.content;
+
+// Extract JSON safely (ignores extra text before/after)
+const jsonMatch = raw.match(/\{[\s\S]*\}/);
+
+if (!jsonMatch) {
+  console.error("No JSON found in AI response:", raw);
+  throw new Error("No JSON found in AI response");
+}
+
+try {
+  plan = JSON.parse(jsonMatch[0]);
+} catch (err) {
+  console.error("JSON parse error:", err);
+  console.error("Raw response:", raw);
+  throw new Error("AI returned malformed JSON");
+}
+
+// Ensure required premium keys always exist
 if (isPremium) {
   const macros = calculateMacros(onboarding);
   if (macros) {
     plan.macro_targets = macros;
   }
+
+  plan.volume_targets = plan.volume_targets || [];
+  plan.progression_strategy = plan.progression_strategy || "";
+  plan.full_week_workout_plan = plan.full_week_workout_plan || {};
+  plan.seven_day_meal_plan = plan.seven_day_meal_plan || [];
+  plan.grocery_list = plan.grocery_list || [];
+  plan.weekly_check_in = plan.weekly_check_in || "";
+  plan.advanced_training_notes = plan.advanced_training_notes || "";
 }
-    } catch {
-      throw new Error("AI returned invalid JSON");
-    }
 
     return {
       statusCode: 200,
