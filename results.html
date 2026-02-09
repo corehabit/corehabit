@@ -493,13 +493,15 @@ if (regenBtn) regenBtn.disabled = false;
 </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
   <script>
-  const supabase = window.supabase.createClient(
+  window.supabaseClient = window.supabaseClient || window.supabase.createClient(
     "https://wonbwlvnojtgydvpllmk.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
 </script>
-  <script>
+ <script>
   async function testSignup() {
+    const supabase = window.supabaseClient;
+
     const { data, error } = await supabase.auth.signUp({
       email: "test123@corehabit.com",
       password: "password123"
@@ -509,7 +511,6 @@ if (regenBtn) regenBtn.disabled = false;
     console.log("ERROR:", error);
   }
 
-  // Run once for testing
   testSignup();
 </script>
 </body>
