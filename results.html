@@ -492,5 +492,25 @@ if (regenBtn) regenBtn.disabled = false;
   });
 })();
 </script>
+  <script>
+  const supabase = window.supabase.createClient(
+    "https://wonbwlvnojtgydvpllmk.supabase.co",
+    "sb_publishable_8ete4-j3tB8Fp_GZEslnog_tlvZqQDs"
+  );
+</script>
+  <script>
+  async function testSignup() {
+    const { data, error } = await supabase.auth.signUp({
+      email: "test123@corehabit.com",
+      password: "password123"
+    });
+
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
+  }
+
+  // Run once for testing
+  testSignup();
+</script>
 </body>
 </html>
