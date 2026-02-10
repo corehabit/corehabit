@@ -24,6 +24,30 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
 </script>  <!-- Capture Stripe session_id after checkout -->
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const supabase = window.supabaseClient;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.premium_status === true) {
+    unlockPremiumUI();
+  }
+
+});
+</script>
  <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -282,7 +306,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 <!-- ========================= -->
 <!-- Generate Plan -->
 <!-- ========================= -->
-<script>
+  <script>
   async function generatePlan() {
     const isRegenerating =
       document.activeElement &&
@@ -317,6 +341,17 @@ if (regenBtn) regenBtn.disabled = true;
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     onboarding: JSON.parse(onboardingRaw),
+    const supabase = window.supabaseClient;
+
+const { data: { user } } = await supabase.auth.getUser();
+
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("premium_status")
+  .eq("id", user.id)
+  .single();
+
+const isPremium = profile?.premium_status === true;
     const { data: { user } } = await supabase.auth.getUser();
 
 const { data: profile } = await supabase
@@ -341,8 +376,30 @@ isPremium: profile?.premium_status === true
       `;
 // Render Premium Sections if available
 // Render Premium Sections if available
- {
+if (isPremium) {
+
   const premiumSections = document.getElementById("premium-sections");
+
+  if (data.macro_targets) {
+    const macroHTML = `
+      <div class="premium-card">
+        <h3>Macro Targets</h3>
+        <ul>
+          <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
+          <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
+          <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
+          <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
+        </ul>
+      </div>
+    `;
+    premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
+  }
+
+  // keep your other premium render sections here...
+
+  premiumSections.style.display = "block";
+}
+
 
   // Render Macros if available
   if (data.macro_targets) {
@@ -466,27 +523,37 @@ if (regenBtn) regenBtn.disabled = false;
 <!-- Stripe Checkout (LEGACY – KEPT) -->
 <!-- ========================= -->
 <script>
-  async function startCheckout() {
-    try {
-      const res = await fetch("/.netlify/functions/createCheckoutSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId: "price_1Suo3PL0p80VWf6ll3JE5WqS"
-        })
-      });
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get("session_id");
 
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Failed to start checkout.");
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Checkout failed.");
-    }
-  }
+if (sessionId) {
+
+  fetch("/.netlify/functions/getCustomerFromSession", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId })
+  })
+  .then(res => res.json())
+  .then(async data => {
+
+    if (!data.customerId) return;
+
+    const supabase = window.supabaseClient;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    await supabase
+      .from("profiles")
+      .update({ premium_status: true })
+      .eq("id", user.id);
+
+    window.location.href = "/results.html";
+
+  })
+  .catch(err => console.error(err));
+}
 </script>
 <script>
   function unlockPremiumUI() {
