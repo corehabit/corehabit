@@ -34,10 +34,21 @@
       body: JSON.stringify({ sessionId })
     })
       .then(res => res.json())
-      .then(data => {
-        if (data.customerId) {
-          localStorage.setItem("corehabit_customer_id", data.customerId);
-          localStorage.setItem("corehabit_premium", "true");
+      .then(async data => {
+  if (data.customerId) {
+
+    const supabase = window.supabaseClient;
+    const { data: userData } = await supabase.auth.getUser();
+
+    if (userData?.user) {
+      await supabase
+        .from("profiles")
+        .update({ premium_status: true })
+        .eq("id", userData.user.id);
+    }
+
+    localStorage.setItem("corehabit_customer_id", data.customerId);
+    localStorage.setItem("corehabit_premium", "true");
               // 🔓 Force Premium UI unlock immediately after Stripe return
     document.body.classList.add("is-premium");
 
