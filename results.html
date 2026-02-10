@@ -31,10 +31,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    window.location.href = "/login.html";
-    return;
+  if (user) {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.premium_status === true) {
+    unlockPremiumUI();
   }
+}
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -307,215 +314,129 @@ document.addEventListener("DOMContentLoaded", async () => {
 <!-- Generate Plan -->
 <!-- ========================= -->
   <script>
-  async function generatePlan() {
-    const isRegenerating =
-      document.activeElement &&
-      document.activeElement.id === "regenBtn";
+async function generatePlan() {
 
-    const statusEl = document.getElementById("status");
-    const resultEl = document.getElementById("result");
-    const generateBtn = document.getElementById("generateBtn");
-const regenBtn = document.getElementById("regenBtn");
+  const isRegenerating =
+    document.activeElement &&
+    document.activeElement.id === "regenBtn";
 
-if (generateBtn) generateBtn.disabled = true;
-if (regenBtn) regenBtn.disabled = true;
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
+  const generateBtn = document.getElementById("generateBtn");
+  const regenBtn = document.getElementById("regenBtn");
 
-    statusEl.textContent = isRegenerating
-      ? "Refreshing your Premium plan..."
-      : "Creating your CoreHabit plan...";
+  if (generateBtn) generateBtn.disabled = true;
+  if (regenBtn) regenBtn.disabled = true;
 
-    resultEl.style.display = "none";
-    resultEl.innerHTML = "";
+  statusEl.textContent = isRegenerating
+    ? "Refreshing your Premium plan..."
+    : "Creating your CoreHabit plan...";
 
-    const onboardingRaw = localStorage.getItem("corehabit_onboarding");
-    if (!onboardingRaw) {
-      statusEl.textContent = "No onboarding data found.";
-      generateBtn.disabled = false;
-      regenBtn.disabled = false;
-      return;
-    }
+  resultEl.style.display = "none";
+  resultEl.innerHTML = "";
 
-    try {
-      const response = await fetch("/.netlify/functions/generatePlan", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    onboarding: JSON.parse(onboardingRaw),
+  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+  if (!onboardingRaw) {
+    statusEl.textContent = "No onboarding data found.";
+    if (generateBtn) generateBtn.disabled = false;
+    if (regenBtn) regenBtn.disabled = false;
+    return;
+  }
+
+  try {
+
+    // ✅ Check if user is premium
     const supabase = window.supabaseClient;
-
-const { data: { user } } = await supabase.auth.getUser();
-
-const { data: profile } = await supabase
-  .from("profiles")
-  .select("premium_status")
-  .eq("id", user.id)
-  .single();
-
-const isPremium = profile?.premium_status === true;
     const { data: { user } } = await supabase.auth.getUser();
 
-const { data: profile } = await supabase
-  .from("profiles")
-  .select("premium_status")
-  .eq("id", user.id)
-  .single();
+    let isPremium = false;
 
-isPremium: profile?.premium_status === true
-});
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("premium_status")
+        .eq("id", user.id)
+        .single();
 
-      const { plan: data } = await response.json();
-
-      resultEl.style.display = "block";
-      resultEl.innerHTML = `
-        <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-        <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
-        <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-        <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-        <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-        <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
-      `;
-// Render Premium Sections if available
-// Render Premium Sections if available
-if (isPremium) {
-
-  const premiumSections = document.getElementById("premium-sections");
-
-  if (data.macro_targets) {
-    const macroHTML = `
-      <div class="premium-card">
-        <h3>Macro Targets</h3>
-        <ul>
-          <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
-          <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
-          <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
-          <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
-        </ul>
-      </div>
-    `;
-    premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
-  }
-
-  // keep your other premium render sections here...
-
-  premiumSections.style.display = "block";
-}
-
-
-  // Render Macros if available
-  if (data.macro_targets) {
-    const macroHTML = `
-      <div class="premium-card">
-        <h3>Macro Targets</h3>
-        <ul>
-          <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
-          <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
-          <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
-          <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
-        </ul>
-      </div>
-    `;
-    premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
-  }
-  // Render Volume Targets
-if (data.volume_targets) {
-  const volumeHTML = `
-    <div class="premium-card">
-      <h3>Weekly Volume Targets</h3>
-      <ul>
-        ${data.volume_targets.map(v => `<li>${v}</li>`).join("")}
-      </ul>
-    </div>
-  `;
-  premiumSections.insertAdjacentHTML("beforeend", volumeHTML);
-}
-
-// Render Progression Strategy
-if (data.progression_strategy) {
-  const progressionHTML = `
-    <div class="premium-card">
-      <h3>Progression Strategy</h3>
-      <p>${data.progression_strategy}</p>
-    </div>
-  `;
-  premiumSections.insertAdjacentHTML("beforeend", progressionHTML);
-}
-  // Render Full 7 Day Workout Plan
-if (data.full_week_workout_plan) {
-  let workoutHTML = `
-    <div class="premium-card">
-      <h3>Full 7-Day Training Plan</h3>
-  `;
-
-  for (const day in data.full_week_workout_plan) {
-    workoutHTML += `
-      <h4 style="margin-top:16px;">${day}</h4>
-      <ul>
-        ${data.full_week_workout_plan[day]
-          .map(ex => `<li>${ex}</li>`)
-          .join("")}
-      </ul>
-    `;
-  }
-
-  workoutHTML += `</div>`;
-
-  premiumSections.insertAdjacentHTML("beforeend", workoutHTML);
-}
-
-  // Render Meal Plan
-  if (data.seven_day_meal_plan) {
-    document.getElementById("seven-day-meal-plan").innerHTML =
-      data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
-  }
-
-  // Render Grocery List
-  if (data.grocery_list) {
-    document.getElementById("grocery-list").innerHTML =
-      data.grocery_list.map(i => `<li>${i}</li>`).join("");
-  }
-
-  // Weekly Check-In
-  if (data.weekly_check_in) {
-    document.getElementById("weekly-check-in").textContent =
-      data.weekly_check_in;
-  }
-
-  // Advanced Notes
-  if (data.advanced_training_notes) {
-    document.getElementById("advanced-training-notes").textContent =
-      data.advanced_training_notes;
-  }
-
-  premiumSections.style.display = "block";
-}
-      // STEP 4C — show premium ONLY on regeneration
-if (
-  isRegenerating &&
-  data.seven_day_meal_plan
-)
-{
-        document.getElementById("premium-sections").style.display = "block";
-      }
-
-      // Show regenerate button for premium users
-      if (
-  regenBtn
-) {
-  regenBtn.style.display = "inline-block";
-}
-
-    } catch (err) {
-      console.error(err);
-      statusEl.textContent = "Something went wrong generating your plan.";
+      isPremium = profile?.premium_status === true;
     }
 
-    if (generateBtn) generateBtn.disabled = false;
-if (regenBtn) regenBtn.disabled = false;
+    // ✅ Call backend
+    const response = await fetch("/.netlify/functions/generatePlan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        onboarding: JSON.parse(onboardingRaw),
+        isPremium: isPremium
+      })
+    });
+
+    const { plan: data } = await response.json();
+
+    // ✅ Render base plan
+    resultEl.style.display = "block";
+    resultEl.innerHTML = `
+      <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
+      <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+      <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
+    `;
+
+    // ✅ Render premium ONLY if premium
+    if (isPremium) {
+
+      const premiumSections = document.getElementById("premium-sections");
+
+      if (data.macro_targets) {
+        const macroHTML = `
+          <div class="premium-card">
+            <h3>Macro Targets</h3>
+            <ul>
+              <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
+              <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
+              <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
+              <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
+            </ul>
+          </div>
+        `;
+        premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
+      }
+
+      if (data.volume_targets) {
+        premiumSections.insertAdjacentHTML("beforeend", `
+          <div class="premium-card">
+            <h3>Weekly Volume Targets</h3>
+            <ul>
+              ${data.volume_targets.map(v => `<li>${v}</li>`).join("")}
+            </ul>
+          </div>
+        `);
+      }
+
+      if (data.progression_strategy) {
+        premiumSections.insertAdjacentHTML("beforeend", `
+          <div class="premium-card">
+            <h3>Progression Strategy</h3>
+            <p>${data.progression_strategy}</p>
+          </div>
+        `);
+      }
+
+      premiumSections.style.display = "block";
+
+      if (regenBtn) regenBtn.style.display = "inline-block";
+    }
+
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Something went wrong generating your plan.";
   }
 
-  // STEP 4B — hide premium sections on page load
-  const premiumSections = document.getElementById("premium-sections");
-  if (premiumSections) premiumSections.style.display = "none";
+  if (generateBtn) generateBtn.disabled = false;
+  if (regenBtn) regenBtn.disabled = false;
+}
 </script>
 <!-- PREMIUM SECTIONS -->
 
