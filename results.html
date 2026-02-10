@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   </div>
 
 </section>  <!-- PREMIUM -->
-  <div id="premium-root" style="display:none;">
+  <div id="premium-root" style="margin-top:56px;">
 
     <h2 class="premium-title">
   CoreHabit Premium
@@ -347,7 +347,6 @@ async function generatePlan() {
 
     // ✅ Render base plan
     resultEl.style.display = "block";
-    document.getElementById("premium-root").style.display = "block";
     resultEl.innerHTML = `
       <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
       <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
@@ -426,9 +425,9 @@ async function generatePlan() {
     }
 
   } catch (err) {
-  console.error("FULL ERROR:", err);
-  statusEl.textContent = "Something went wrong generating your plan.";
-}
+    console.error(err);
+    statusEl.textContent = "Something went wrong generating your plan.";
+  }
 
   if (generateBtn) generateBtn.disabled = false;
   if (regenBtn) regenBtn.disabled = false;
