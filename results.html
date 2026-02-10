@@ -559,5 +559,40 @@ async function startPremiumFlow(planType) {
   }
 }
 </script>
+  <script>
+async function syncPremiumFromDatabase() {
+  const supabase = window.supabaseClient;
+
+  const { data: sessionData } = await supabase.auth.getSession();
+
+  if (!sessionData?.session?.user) return;
+
+  const userId = sessionData.session.user.id;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.premium_status === true) {
+    localStorage.setItem("corehabit_premium", "true");
+
+    document.body.classList.add("is-premium");
+
+    const overlay = document.querySelector(".premium-locked-overlay");
+    const badge = document.getElementById("premium-badge");
+    const reonboardBtn = document.getElementById("premiumReonboardBtn");
+
+    if (overlay) overlay.style.display = "none";
+    if (badge) badge.style.display = "inline-block";
+    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
+
+    console.log("Premium synced from database ✅");
+  }
+}
+
+syncPremiumFromDatabase();
+</script>
 </body>
 </html>
