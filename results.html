@@ -9,7 +9,6 @@
   const urlParams = new URLSearchParams(window.location.search);
 
   if (urlParams.get("premium") === "success") {
-    localStorage.setItem("corehabit_premium", "true");
     window.history.replaceState({}, document.title, "/results.html");
   }
 })();
@@ -53,7 +52,7 @@ if (userId) {
 }
 
     localStorage.setItem("corehabit_customer_id", data.customerId);
-    localStorage.setItem("corehabit_premium", "true");
+    
               // 🔓 Force Premium UI unlock immediately after Stripe return
     document.body.classList.add("is-premium");
 
@@ -485,12 +484,22 @@ if (regenBtn) regenBtn.disabled = false;
   }
 </script>
 <script>
-(function () {
-  const isPremium =
-    localStorage.getItem("corehabit_premium") === "true";
+<script>
+(async function () {
+  const supabase = window.supabaseClient;
+  const userId = localStorage.getItem("corehabit_user_id");
 
-  if (!isPremium) return;
+  if (!userId) return; // Not logged in → keep premium locked
 
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
+  if (error || !profile?.premium_status) return;
+
+  // 🔓 Unlock Premium UI
   document.body.classList.add("is-premium");
 
   const reonboardBtn = document.getElementById("premiumReonboardBtn");
@@ -501,11 +510,8 @@ if (regenBtn) regenBtn.disabled = false;
   if (badge) badge.style.display = "inline-block";
   if (overlay) overlay.style.display = "none";
 
-  reonboardBtn?.addEventListener("click", () => {
-    localStorage.setItem("corehabit_reonboarding", "true");
-    window.location.href = "/onboarding.html";
-  });
 })();
+</script>
 </script>
   
  
