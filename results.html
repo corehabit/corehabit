@@ -343,7 +343,10 @@ async function generatePlan() {
       })
     });
 
-    const { plan: data } = await response.json();
+    const raw = await response.json();
+console.log("API RESPONSE:", raw);
+
+const data = raw.plan;
 
     // ✅ Render base plan
     resultEl.style.display = "block";
@@ -484,8 +487,7 @@ if (sessionId) {
   if (badge) badge.style.display = "inline-block";
   if (reonboardBtn) reonboardBtn.style.display = "inline-block";
 
-  const premiumSections = document.getElementById("premium-sections");
-  if (premiumSections) premiumSections.style.display = "block";
+  
 }
   function goToPremiumOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
