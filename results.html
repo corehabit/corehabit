@@ -38,14 +38,14 @@
   if (data.customerId) {
 
     const supabase = window.supabaseClient;
-    const { data: userData } = await supabase.auth.getUser();
+    const userId = localStorage.getItem("corehabit_user_id");
 
-    if (userData?.user) {
-      await supabase
-        .from("profiles")
-        .update({ premium_status: true })
-        .eq("id", userData.user.id);
-    }
+if (userId) {
+  await supabase
+    .from("profiles")
+    .update({ premium_status: true })
+    .eq("id", userId);
+}
 
     localStorage.setItem("corehabit_customer_id", data.customerId);
     localStorage.setItem("corehabit_premium", "true");
