@@ -24,7 +24,31 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
 </script>  <!-- Capture Stripe session_id after checkout -->
- 
+ <script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const supabase = window.supabaseClient;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.premium_status === true) {
+    unlockPremiumUI();
+  }
+
+});
+</script>
+  
 <script>
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id");
@@ -41,44 +65,22 @@
       .then(async data => {
   if (data.customerId) {
 
-    const supabase = window.supabaseClient;
-    const userId = localStorage.getItem("corehabit_user_id");
+  const supabase = window.supabaseClient;
 
-if (userId) {
-  await supabase
-    .from("profiles")
-    .update({ premium_status: true })
-    .eq("id", userId);
-}
+  const { data: sessionData } = await supabase.auth.getSession();
 
-    localStorage.setItem("corehabit_customer_id", data.customerId);
-    
-              // 🔓 Force Premium UI unlock immediately after Stripe return
-    document.body.classList.add("is-premium");
+  if (sessionData?.session?.user) {
 
-    const overlay = document.querySelector(".premium-locked-overlay");
-    const badge = document.getElementById("premium-badge");
-    const reonboardBtn = document.getElementById("premiumReonboardBtn");
+    const userId = sessionData.session.user.id;
 
-    if (overlay) overlay.style.display = "none";
-    if (badge) badge.style.display = "inline-block";
-    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-
-          // ✅ SHOW SUCCESS FEEDBACK
-          const toast = document.getElementById("premium-toast");
-          if (toast) {
-            toast.style.opacity = "1";
-            toast.style.transform = "translateY(0)";
-            setTimeout(() => {
-              toast.style.opacity = "0";
-            }, 4000);
-          }
-
-          console.log("✅ Premium unlocked:", data.customerId);
-        }
-      })
-      .catch(err => console.error("Customer lookup failed:", err));
+    await supabase
+      .from("profiles")
+      .update({ premium_status: true })
+      .eq("id", userId);
   }
+
+  window.location.href = "/results.html";
+}
      
 </script>
      
@@ -315,8 +317,15 @@ if (regenBtn) regenBtn.disabled = true;
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     onboarding: JSON.parse(onboardingRaw),
-    isPremium: localStorage.getItem("corehabit_premium") === "true"
-  })
+    const { data: { user } } = await supabase.auth.getUser();
+
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("premium_status")
+  .eq("id", user.id)
+  .single();
+
+isPremium: profile?.premium_status === true
 });
 
       const { plan: data } = await response.json();
@@ -332,9 +341,7 @@ if (regenBtn) regenBtn.disabled = true;
       `;
 // Render Premium Sections if available
 // Render Premium Sections if available
-if (
-  localStorage.getItem("corehabit_premium") === "true"
-) {
+ {
   const premiumSections = document.getElementById("premium-sections");
 
   // Render Macros if available
@@ -427,7 +434,6 @@ if (data.full_week_workout_plan) {
       // STEP 4C — show premium ONLY on regeneration
 if (
   isRegenerating &&
-  localStorage.getItem("corehabit_premium") === "true" &&
   data.seven_day_meal_plan
 )
 {
@@ -436,7 +442,6 @@ if (
 
       // Show regenerate button for premium users
       if (
-  localStorage.getItem("corehabit_premium") === "true" &&
   regenBtn
 ) {
   regenBtn.style.display = "inline-block";
@@ -484,35 +489,23 @@ if (regenBtn) regenBtn.disabled = false;
   }
 </script>
 <script>
-<script>
-(async function () {
-  const supabase = window.supabaseClient;
-  const userId = localStorage.getItem("corehabit_user_id");
+  function unlockPremiumUI() {
 
-  if (!userId) return; // Not logged in → keep premium locked
-
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", userId)
-    .single();
-
-  if (error || !profile?.premium_status) return;
-
-  // 🔓 Unlock Premium UI
   document.body.classList.add("is-premium");
 
-  const reonboardBtn = document.getElementById("premiumReonboardBtn");
-  const badge = document.getElementById("premium-badge");
   const overlay = document.querySelector(".premium-locked-overlay");
+  const badge = document.getElementById("premium-badge");
+  const reonboardBtn = document.getElementById("premiumReonboardBtn");
 
-  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-  if (badge) badge.style.display = "inline-block";
   if (overlay) overlay.style.display = "none";
+  if (badge) badge.style.display = "inline-block";
+  if (reonboardBtn) reonboardBtn.style.display = "inline-block";
 
-})();
+  const premiumSections = document.getElementById("premium-sections");
+  if (premiumSections) premiumSections.style.display = "block";
+}
 </script>
-</script>
+
   
  
   <script>
@@ -559,40 +552,6 @@ async function startPremiumFlow(planType) {
   }
 }
 </script>
-  <script>
-async function syncPremiumFromDatabase() {
-  const supabase = window.supabaseClient;
-
-  const { data: sessionData } = await supabase.auth.getSession();
-
-  if (!sessionData?.session?.user) return;
-
-  const userId = sessionData.session.user.id;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", userId)
-    .single();
-
-  if (profile?.premium_status === true) {
-    localStorage.setItem("corehabit_premium", "true");
-
-    document.body.classList.add("is-premium");
-
-    const overlay = document.querySelector(".premium-locked-overlay");
-    const badge = document.getElementById("premium-badge");
-    const reonboardBtn = document.getElementById("premiumReonboardBtn");
-
-    if (overlay) overlay.style.display = "none";
-    if (badge) badge.style.display = "inline-block";
-    if (reonboardBtn) reonboardBtn.style.display = "inline-block";
-
-    console.log("Premium synced from database ✅");
-  }
-}
-
-syncPremiumFromDatabase();
-</script>
+  
 </body>
 </html>
