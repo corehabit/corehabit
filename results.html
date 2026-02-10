@@ -29,13 +29,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   const supabase = window.supabaseClient;
-
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    window.location.href = "/login.html";
-    return;
-  }
+  if (!user) return; // allow free access
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -98,7 +94,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   <h1>Your Personalized Plan</h1>
   <button
-  id="premiumReonboardBtn"
+  id="regenBtn"
+  onclick="generatePlan()"
   style="
     display:none;
     margin-top:28px;
@@ -120,10 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 >
   🔁 Regenerate Premium Plan
 </button>
-  <script>
-document.getElementById("premiumReonboardBtn")
-  ?.addEventListener("click", generatePlan);
-</script>
   <p style="color:#9ca3af;">
     Based on your answers, here’s your CoreHabit plan.
   </p>
@@ -290,13 +283,14 @@ document.getElementById("premiumReonboardBtn")
 async function generatePlan() {
 
   const isRegenerating =
-    document.activeElement &&
-    document.activeElement.id === "premiumReonboardBtn";
+  document.activeElement &&
+  document.activeElement.id === "premiumReonboardBtn";
+
 
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
   const generateBtn = document.getElementById("generateBtn");
-  const regenBtn = document.getElementById("premiumReonboardBtn");
+  const regenBtn = document.getElementById("regenBtn");
 
 
   if (generateBtn) generateBtn.disabled = true;
