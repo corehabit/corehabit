@@ -77,7 +77,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   window.location.href = "/results.html";
+        }
+  })
+  .catch(err => console.error(err));
 }
+
      
 </script>
      
@@ -95,8 +99,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   <h1>Your Personalized Plan</h1>
   <button
   id="regenBtn"
-  onclick="generatePlan()"
-  style="
+  onclick="goToPremiumOnboarding()"
+ style="
     display:none;
     margin-top:28px;
     width:100%;
@@ -483,65 +487,88 @@ if (sessionId) {
   const premiumSections = document.getElementById("premium-sections");
   if (premiumSections) premiumSections.style.display = "block";
 }
+  function goToPremiumOnboarding() {
+  localStorage.setItem("corehabit_reonboarding", "true");
+  window.location.href = "/onboarding.html";
+}
+
 </script>
 
   
  
   <script>
 async function startPremiumFlow(planType) {
+
   const supabase = window.supabaseClient;
 
-  const email = prompt("Enter your email to create your premium account:");
+  const email = prompt("Enter your email:");
   if (!email) return;
 
-  const password = prompt("Create a password (minimum 6 characters):");
-  if (!password || password.length < 6) {
-    alert("Password must be at least 6 characters.");
-    return;
-  }
+  const password = prompt("Enter your password:");
+  if (!password) return;
 
+  // Try to sign up
   let { data, error } = await supabase.auth.signUp({
-  email,
-  password
-});
-regenBtn
-// If user already exists → log them in instead
-if (error && error.message.includes("already")) {
-
-  const loginAttempt = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (loginAttempt.error) {
-    alert(loginAttempt.error.message);
+  // If already exists → sign in instead
+  if (error && error.message.includes("already")) {
+
+    const loginAttempt = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (loginAttempt.error) {
+      alert(loginAttempt.error.message);
+      return;
+    }
+
+    data = loginAttempt.data;
+  }
+
+  if (!data?.user) {
+    alert("Authentication failed.");
     return;
   }
 
-  data = loginAttempt.data;
-}
+  const userId = data.user.id;
 
-  // Store user id locally
-  localStorage.setItem("corehabit_user_id", data.user.id);
-  await supabase.from("profiles").insert([
-  {
-    id: data.user.id,
-    email: data.user.email,
-    level: 1,
-    xp: 0,
-    current_block: 1,
-    premium_status: false
+  // 🔎 Check premium status BEFORE Stripe
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.premium_status === true) {
+    window.location.href = "/results.html";
+    return;
   }
-]);
 
-  // Redirect to Stripe based on plan type
+  // If profile doesn't exist (new user), create it
+  if (!profile) {
+    await supabase.from("profiles").insert([
+      {
+        id: userId,
+        email: data.user.email,
+        level: 1,
+        xp: 0,
+        current_block: 1,
+        premium_status: false
+      }
+    ]);
+  }
+
+  // 🟡 Send to Stripe
   if (planType === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else {
     window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
   }
 }
-</script>
-  
+  </script>  
 </body>
 </html>
