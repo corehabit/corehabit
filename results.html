@@ -284,7 +284,7 @@ async function generatePlan() {
 
   const isRegenerating =
   document.activeElement &&
-  document.activeElement.id === "premiumReonboardBtn";
+  document.activeElement.id === "regenBtn";
 
 
   const statusEl = document.getElementById("status");
@@ -474,7 +474,7 @@ if (sessionId) {
 
   const overlay = document.querySelector(".premium-locked-overlay");
   const badge = document.getElementById("premium-badge");
-  const reonboardBtn = document.getElementById("premiumReonboardBtn");
+  const reonboardBtn = document.getElementById("regenBtn");
 
   if (overlay) overlay.style.display = "none";
   if (badge) badge.style.display = "inline-block";
@@ -500,15 +500,26 @@ async function startPremiumFlow(planType) {
     return;
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  let { data, error } = await supabase.auth.signUp({
+  email,
+  password
+});
+regenBtn
+// If user already exists → log them in instead
+if (error && error.message.includes("already")) {
+
+  const loginAttempt = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (error) {
-    alert(error.message);
+  if (loginAttempt.error) {
+    alert(loginAttempt.error.message);
     return;
   }
+
+  data = loginAttempt.data;
+}
 
   // Store user id locally
   localStorage.setItem("corehabit_user_id", data.user.id);
