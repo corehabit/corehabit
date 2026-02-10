@@ -24,37 +24,7 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
 </script>  <!-- Capture Stripe session_id after checkout -->
-  <script>
-document.addEventListener("DOMContentLoaded", async () => {
-
-  const supabase = window.supabaseClient;
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.premium_status === true) {
-    unlockPremiumUI();
-  }
-}
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.premium_status === true) {
-    unlockPremiumUI();
-  }
-
-});
-</script>
+  
  <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -150,7 +120,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 >
   🔁 Regenerate Premium Plan
 </button>
-  
+  <script>
+document.getElementById("premiumReonboardBtn")
+  ?.addEventListener("click", generatePlan);
+</script>
   <p style="color:#9ca3af;">
     Based on your answers, here’s your CoreHabit plan.
   </p>
@@ -318,12 +291,13 @@ async function generatePlan() {
 
   const isRegenerating =
     document.activeElement &&
-    document.activeElement.id === "regenBtn";
+    document.activeElement.id === "premiumReonboardBtn";
 
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
   const generateBtn = document.getElementById("generateBtn");
-  const regenBtn = document.getElementById("regenBtn");
+  const regenBtn = document.getElementById("premiumReonboardBtn");
+
 
   if (generateBtn) generateBtn.disabled = true;
   if (regenBtn) regenBtn.disabled = true;
@@ -423,6 +397,29 @@ async function generatePlan() {
           </div>
         `);
       }
+
+      if (data.full_week_workout_plan) {
+
+  let workoutHTML = `
+    <div class="premium-card">
+      <h3>Full 7-Day Training Plan</h3>
+  `;
+
+  for (const day in data.full_week_workout_plan) {
+    workoutHTML += `
+      <h4 style="margin-top:16px;">${day}</h4>
+      <ul>
+        ${data.full_week_workout_plan[day]
+          .map(ex => `<li>${ex}</li>`)
+          .join("")}
+      </ul>
+    `;
+  }
+
+  workoutHTML += `</div>`;
+
+  premiumSections.insertAdjacentHTML("beforeend", workoutHTML);
+}
 
       premiumSections.style.display = "block";
 
