@@ -549,6 +549,16 @@ async function startPremiumFlow(planType) {
 
   // Store user id locally
   localStorage.setItem("corehabit_user_id", data.user.id);
+  await supabase.from("profiles").insert([
+  {
+    id: data.user.id,
+    email: data.user.email,
+    level: 1,
+    xp: 0,
+    current_block: 1,
+    premium_status: false
+  }
+]);
 
   // Redirect to Stripe based on plan type
   if (planType === "monthly") {
