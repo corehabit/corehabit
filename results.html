@@ -233,21 +233,21 @@
     flex-wrap:wrap;
   "
 >
-  <a
-    href="https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01"
-    class="premium-primary-btn"
-    style="min-width:220px;text-align:center;"
-  >
-    Go Premium — Monthly
-  </a>
+  <button
+  class="premium-primary-btn"
+  onclick="startPremiumFlow('monthly')"
+  style="min-width:220px;"
+>
+  Go Premium — Monthly
+</button>
 
-  <a
-    href="https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02"
-    class="premium-primary-btn"
-    style="min-width:220px;text-align:center;"
-  >
-    Go Premium — Annual
-  </a>
+<button
+  class="premium-primary-btn"
+  onclick="startPremiumFlow('annual')"
+  style="min-width:220px;"
+>
+  Go Premium — Annual
+</button>
 </div>
 
         
@@ -512,6 +512,40 @@ if (regenBtn) regenBtn.disabled = false;
   }
 
   
+</script>
+  <script>
+async function startPremiumFlow(planType) {
+  const supabase = window.supabaseClient;
+
+  const email = prompt("Enter your email to create your premium account:");
+  if (!email) return;
+
+  const password = prompt("Create a password (minimum 6 characters):");
+  if (!password || password.length < 6) {
+    alert("Password must be at least 6 characters.");
+    return;
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  // Store user id locally
+  localStorage.setItem("corehabit_user_id", data.user.id);
+
+  // Redirect to Stripe based on plan type
+  if (planType === "monthly") {
+    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  } else {
+    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+  }
+}
 </script>
 </body>
 </html>
