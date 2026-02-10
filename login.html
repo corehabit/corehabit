@@ -36,35 +36,38 @@
   );
 
   async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
-    if (error) {
-      document.getElementById("error").textContent = error.message;
-      return;
-    }
+  console.log("LOGIN DATA:", data);
+  console.log("LOGIN ERROR:", error);
 
-    const userId = data.user.id;
+  if (error) {
+    document.getElementById("error").textContent = error.message;
+    return;
+  }
 
-    localStorage.setItem("corehabit_user_id", userId);
+  const userId = data.user.id;
+  localStorage.setItem("corehabit_user_id", userId);
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("premium_status")
-      .eq("id", userId)
-      .single();
+  console.log("User ID stored:", userId);
 
-    if (profile?.premium_status) {
-      localStorage.setItem("corehabit_premium", "true");
-      window.location.href = "/results.html";
-    } else {
-      window.location.href = "/results.html";
-    }
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
+  console.log("PROFILE:", profile);
+  console.log("PROFILE ERROR:", profileError);
+
+  window.location.href = "/results.html";
+}
   }
 </script>
 
