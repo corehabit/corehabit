@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Login — CoreHabit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+
+<body style="background:#0b0f14;color:white;font-family:system-ui;">
+
+<div style="max-width:420px;margin:120px auto;padding:32px;background:#111827;border-radius:20px;">
+  
+  <h2 style="margin-bottom:24px;">Welcome back</h2>
+
+  <input id="email" placeholder="Email"
+    style="width:100%;padding:14px;border-radius:12px;margin-bottom:12px;border:none;" />
+
+  <input id="password" type="password" placeholder="Password"
+    style="width:100%;padding:14px;border-radius:12px;margin-bottom:20px;border:none;" />
+
+  <button onclick="login()"
+    style="width:100%;padding:14px;border-radius:999px;background:#7c5cff;color:white;border:none;font-weight:700;">
+    Log In
+  </button>
+
+  <p id="error" style="color:#ff6b6b;margin-top:16px;"></p>
+
+</div>
+
+<script>
+  const supabase = window.supabase.createClient(
+    "https://wonbwlvnojtgydvpllmk.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
+  );
+
+  async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      document.getElementById("error").textContent = error.message;
+      return;
+    }
+
+    const userId = data.user.id;
+
+    localStorage.setItem("corehabit_user_id", userId);
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("premium_status")
+      .eq("id", userId)
+      .single();
+
+    if (profile?.premium_status) {
+      localStorage.setItem("corehabit_premium", "true");
+      window.location.href = "/results.html";
+    } else {
+      window.location.href = "/results.html";
+    }
+  }
+</script>
+
+</body>
+</html>
