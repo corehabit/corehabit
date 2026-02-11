@@ -335,19 +335,29 @@ async function generatePlan() {
 
     // ✅ Call backend
     const response = await fetch("/.netlify/functions/generatePlan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        onboarding: JSON.parse(onboardingRaw),
-        isPremium: isPremium
-      })
-    });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    onboarding: JSON.parse(onboardingRaw),
+    isPremium: isPremium
+  })
+});
 
-    const raw = await response.json();
+if (!response.ok) {
+  const errorText = await response.text();
+  console.error("Server error:", errorText);
+  throw new Error("Server failed");
+}
+
+const raw = await response.json();
 console.log("API RESPONSE:", raw);
 
-const data = raw.plan;
+if (!raw.plan) {
+  console.error("No plan returned:", raw);
+  throw new Error("Plan missing");
+}
 
+const data = raw.plan;
     // ✅ Render base plan
     resultEl.style.display = "block";
     resultEl.innerHTML = `
