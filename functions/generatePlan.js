@@ -189,13 +189,14 @@ const userPrompt =
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
-          temperature: 0.4,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ]
-        })
+  model: "gpt-4o-mini",
+  temperature: 0.4,
+  max_tokens: isPremium ? 1800 : 900,
+  messages: [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ]
+})
       }
     );
 
