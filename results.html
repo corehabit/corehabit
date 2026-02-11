@@ -378,6 +378,29 @@ const data = raw.plan;
         `;
         premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
       }
+      // Fill 7-Day Meal Plan
+if (data.seven_day_meal_plan) {
+  document.getElementById("seven-day-meal-plan").innerHTML =
+    data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
+}
+
+// Fill Grocery List
+if (data.grocery_list) {
+  document.getElementById("grocery-list").innerHTML =
+    data.grocery_list.map(i => `<li>${i}</li>`).join("");
+}
+
+// Fill Weekly Check-In
+if (data.weekly_check_in) {
+  document.getElementById("weekly-check-in").textContent =
+    data.weekly_check_in;
+}
+
+// Fill Advanced Training Notes
+if (data.advanced_training_notes) {
+  document.getElementById("advanced-training-notes").textContent =
+    data.advanced_training_notes;
+}
 
       if (data.volume_targets) {
         premiumSections.insertAdjacentHTML("beforeend", `
