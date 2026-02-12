@@ -415,39 +415,25 @@ async function startPremiumFlow(planType) {
   const password = prompt("Enter your password:");
   if (!password) return;
 
- let { data, error } = await supabase.auth.signInWithPassword({
-  email,
-  password
-});
-
-if (error) {
-  const signupAttempt = await supabase.auth.signUp({
+  // Try login first
+  let { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (signupAttempt.error) {
-    alert(signupAttempt.error.message);
-    return;
-  }
-
-  data = signupAttempt.data;
-}
-
-
-  if (error && error.message.includes("already")) {
-
-    const loginAttempt = await supabase.auth.signInWithPassword({
+  // If login fails → try signup
+  if (error) {
+    const signupAttempt = await supabase.auth.signUp({
       email,
       password
     });
 
-    if (loginAttempt.error) {
-      alert(loginAttempt.error.message);
+    if (signupAttempt.error) {
+      alert(signupAttempt.error.message);
       return;
     }
 
-    data = loginAttempt.data;
+    data = signupAttempt.data;
   }
 
   if (!data?.user) {
@@ -461,7 +447,7 @@ if (error) {
     .from("profiles")
     .select("premium_status")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (profile?.premium_status === true) {
     window.location.href = "/results.html";
