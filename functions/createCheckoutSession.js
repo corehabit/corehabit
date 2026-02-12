@@ -1,3 +1,4 @@
+console.log("Stripe key exists:", !!process.env.STRIPE_SECRET_KEY);
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
