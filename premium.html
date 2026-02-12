@@ -207,7 +207,13 @@
       --border-radius: 14px;
     }
   </style>
- 
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.supabaseClient = window.supabase.createClient(
+  "https://wonbwlvnojtgydvpllmk.supabase.co",
+  "YOUR_ANON_KEY"
+);
+</script>
 </head>
 
 <body>
@@ -219,18 +225,21 @@
       <p>Built for people who want real results, not generic plans.</p>
 
      <div class="top-cta-row">
-  <button type="button" class="premium-cta top-pill"
-        onclick="startCheckout(MONTHLY_PRICE_ID)">
-  Start Monthly — $19.99
-</button>
+  <button
+    class="premium-primary-btn"
+    onclick="startPremiumFlow('monthly')"
+    style="min-width:220px;"
+  >
+    Go Premium — Monthly
+  </button>
 
-
-  <button type="button" class="pricing-badge top-pill"
-        onclick="startCheckout(ANNUAL_PRICE_ID)">
-  <span class="most-popular">MOST POPULAR</span>
-  Go Annual — $149.99
-</button>
-
+  <button
+    class="premium-primary-btn"
+    onclick="startPremiumFlow('annual')"
+    style="min-width:220px;"
+  >
+    Go Premium — Annual
+  </button>
 </div>
 
       <span class="savings-text">
@@ -309,19 +318,23 @@
         <h2>Choose your plan</h2>
 
         <div class="top-cta-row">
- <button type="button" class="premium-cta top-pill"
-        onclick="startCheckout(MONTHLY_PRICE_ID)">
-  Start Monthly — $19.99
-</button>
+  <button
+    class="premium-primary-btn"
+    onclick="startPremiumFlow('monthly')"
+    style="min-width:220px;"
+  >
+    Go Premium — Monthly
+  </button>
 
-
-  <button type="button" class="pricing-badge top-pill"
-        onclick="startCheckout(ANNUAL_PRICE_ID)">
-  <span class="most-popular">MOST POPULAR</span>
-  Go Annual — $149.99
-</button>
-
+  <button
+    class="premium-primary-btn"
+    onclick="startPremiumFlow('annual')"
+    style="min-width:220px;"
+  >
+    Go Premium — Annual
+  </button>
 </div>
+
 
 <span class="savings-text">
   Save $89.89 per year compared to monthly
@@ -355,6 +368,75 @@
       alert("Something went wrong. Try again.");
     }
   }
+</script>
+  <script>
+async function startPremiumFlow(planType) {
+
+  const supabase = window.supabaseClient;
+
+  const email = prompt("Enter your email:");
+  if (!email) return;
+
+  const password = prompt("Enter your password:");
+  if (!password) return;
+
+  let { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error && error.message.includes("already")) {
+
+    const loginAttempt = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (loginAttempt.error) {
+      alert(loginAttempt.error.message);
+      return;
+    }
+
+    data = loginAttempt.data;
+  }
+
+  if (!data?.user) {
+    alert("Authentication failed.");
+    return;
+  }
+
+  const userId = data.user.id;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
+  if (profile?.premium_status === true) {
+    window.location.href = "/results.html";
+    return;
+  }
+
+  if (!profile) {
+    await supabase.from("profiles").insert([
+      {
+        id: userId,
+        email: data.user.email,
+        level: 1,
+        xp: 0,
+        current_block: 1,
+        premium_status: false
+      }
+    ]);
+  }
+
+  if (planType === "monthly") {
+    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  } else {
+    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+  }
+}
 </script>
 </body>
 </html>
