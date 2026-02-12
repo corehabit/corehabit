@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 exports.handler = async (event) => {
   try {
     const { priceId } = JSON.parse(event.body);
-    const origin = event.headers.origin;
+    const origin = process.env.URL || "https://corehabitcoach.netlify.app";
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
