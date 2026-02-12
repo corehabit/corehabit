@@ -415,27 +415,28 @@ async function startPremiumFlow(planType) {
   const password = prompt("Enter your password:");
   if (!password) return;
 
-  console.log("Starting auth flow...");
+  console.log("STEP 1: Attempt login");
 
-  // 1️⃣ Try login first
   let { data: loginData, error: loginError } =
     await supabase.auth.signInWithPassword({
       email,
       password
     });
 
+  console.log("Login result:", loginData, loginError);
+
   let user = loginData?.user;
 
-  // 2️⃣ If login failed, try signup
   if (!user) {
-
-    console.log("Login failed, attempting signup...");
+    console.log("STEP 2: Attempt signup");
 
     const { data: signupData, error: signupError } =
       await supabase.auth.signUp({
         email,
         password
       });
+
+    console.log("Signup result:", signupData, signupError);
 
     if (signupError) {
       alert(signupError.message);
@@ -444,52 +445,56 @@ async function startPremiumFlow(planType) {
 
     user = signupData?.user;
 
-    // 🔥 IMPORTANT: fetch session after signup
     const { data: sessionData } = await supabase.auth.getSession();
+    console.log("Session after signup:", sessionData);
+
     if (sessionData?.session?.user) {
       user = sessionData.session.user;
     }
   }
 
   if (!user) {
+    console.log("❌ No user after auth");
     alert("Authentication failed.");
     return;
   }
 
-  console.log("User authenticated:", user.id);
+  console.log("STEP 3: Authenticated user:", user.id);
 
-  // 3️⃣ Check profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("premium_status")
     .eq("id", user.id)
     .maybeSingle();
 
-  console.log("Profile:", profile);
+  console.log("Profile query:", profile, profileError);
 
   if (profile?.premium_status === true) {
+    console.log("Already premium → redirecting");
     window.location.href = "/results.html";
     return;
   }
 
-  // 4️⃣ Create profile if missing
   if (!profile) {
     console.log("Creating profile...");
-    await supabase.from("profiles").insert([
-      {
-        id: user.id,
-        email: user.email,
-        level: 1,
-        xp: 0,
-        current_block: 1,
-        premium_status: false
-      }
-    ]);
+    const { error: insertError } = await supabase
+      .from("profiles")
+      .insert([
+        {
+          id: user.id,
+          email: user.email,
+          level: 1,
+          xp: 0,
+          current_block: 1,
+          premium_status: false
+        }
+      ]);
+
+    console.log("Profile insert result:", insertError);
   }
 
-  console.log("Redirecting to Stripe...");
+  console.log("STEP 4: Redirecting to Stripe");
 
-  // 5️⃣ Stripe redirect
   if (planType === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else {
