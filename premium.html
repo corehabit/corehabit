@@ -208,28 +208,8 @@
     }
   </style>
   <script>
-async function startCheckout(priceId) {
-  try {
-    const res = await fetch("/.netlify/functions/createCheckoutSession", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId })
-    });
-
-    const data = await res.json();
-
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      console.error("Checkout response:", data);
-      alert("Checkout failed.");
-    }
-
-  } catch (err) {
-    console.error("Checkout error:", err);
-    alert("Checkout failed.");
-  }
-}
+  const MONTHLY_STRIPE_LINK = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  const ANNUAL_STRIPE_LINK  = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
 </script>
 </head>
 
@@ -243,16 +223,15 @@ async function startCheckout(priceId) {
 
      <div class="top-cta-row">
   <a href="#" class="premium-cta top-pill"
-   onclick="startCheckout('price_1Suo3PL0p80VWf6ll3JE5WqS'); return false;">
-  Start Monthly — $19.99
-</a>
+     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+    Start Monthly — $19.99
+  </a>
 
-<a href="#" class="pricing-badge top-pill"
-   onclick="startCheckout('price_1SwtdaL0p80VWf6lV3WH9nLl'); return false;">
-  <span class="most-popular">MOST POPULAR</span>
-  Go Annual — $149.99
-</a>
-
+  <a href="#" class="pricing-badge top-pill"
+     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+    <span class="most-popular">MOST POPULAR</span>
+    Go Annual — $149.99
+  </a>
 </div>
 
       <span class="savings-text">
@@ -332,16 +311,15 @@ async function startCheckout(priceId) {
 
         <div class="top-cta-row">
   <a href="#" class="premium-cta top-pill"
-   onclick="startCheckout('price_1Suo3PL0p80VWf6ll3JE5WqS'); return false;">
-  Start Monthly — $19.99
-</a>
+     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+    Start Monthly — $19.99
+  </a>
 
-<a href="#" class="pricing-badge top-pill"
-   onclick="startCheckout('price_1SwtdaL0p80VWf6lV3WH9nLl'); return false;">
-  <span class="most-popular">MOST POPULAR</span>
-  Go Annual — $149.99
-</a>
-
+  <a href="#" class="pricing-badge top-pill"
+     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+    <span class="most-popular">MOST POPULAR</span>
+    Go Annual — $149.99
+  </a>
 </div>
 
 <span class="savings-text">
