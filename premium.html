@@ -207,10 +207,7 @@
       --border-radius: 14px;
     }
   </style>
-  <script>
-  const MONTHLY_STRIPE_LINK = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
-  const ANNUAL_STRIPE_LINK  = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
-</script>
+ 
 </head>
 
 <body>
@@ -223,12 +220,12 @@
 
      <div class="top-cta-row">
   <a href="#" class="premium-cta top-pill"
-     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+     onclick="startCheckout(MONTHLY_PRICE_ID)" return false;">
     Start Monthly — $19.99
   </a>
 
   <a href="#" class="pricing-badge top-pill"
-     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+     onclick="startCheckout(ANNUAL_PRICE_ID)" return false;">
     <span class="most-popular">MOST POPULAR</span>
     Go Annual — $149.99
   </a>
@@ -311,12 +308,12 @@
 
         <div class="top-cta-row">
   <a href="#" class="premium-cta top-pill"
-     onclick="window.location.href = MONTHLY_STRIPE_LINK; return false;">
+     onclick="startCheckout(MONTHLY_PRICE_ID)" return false;">
     Start Monthly — $19.99
   </a>
 
   <a href="#" class="pricing-badge top-pill"
-     onclick="window.location.href = ANNUAL_STRIPE_LINK; return false;">
+     onclick="startCheckout(ANNUAL_PRICE_ID)" return false;">
     <span class="most-popular">MOST POPULAR</span>
     Go Annual — $149.99
   </a>
@@ -330,5 +327,30 @@
     </section>
 
   </div>
+  <script>
+  const MONTHLY_PRICE_ID = "price_1SwtcqL0p80VWf6l3H8aBTYX";
+  const ANNUAL_PRICE_ID  = "price_1SwtdaL0p80VWf6lV3WH9nLl";
+
+  async function startCheckout(priceId) {
+    try {
+      const response = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Checkout failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Something went wrong. Try again.");
+    }
+  }
+</script>
 </body>
 </html>
