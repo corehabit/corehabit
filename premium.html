@@ -415,50 +415,70 @@ async function startPremiumFlow(planType) {
   const password = prompt("Enter your password:");
   if (!password) return;
 
-  // Try login first
-  let { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  console.log("Starting auth flow...");
 
-  // If login fails → try signup
-  if (error) {
-    const signupAttempt = await supabase.auth.signUp({
+  // 1️⃣ Try login first
+  let { data: loginData, error: loginError } =
+    await supabase.auth.signInWithPassword({
       email,
       password
     });
 
-    if (signupAttempt.error) {
-      alert(signupAttempt.error.message);
+  let user = loginData?.user;
+
+  // 2️⃣ If login failed, try signup
+  if (!user) {
+
+    console.log("Login failed, attempting signup...");
+
+    const { data: signupData, error: signupError } =
+      await supabase.auth.signUp({
+        email,
+        password
+      });
+
+    if (signupError) {
+      alert(signupError.message);
       return;
     }
 
-    data = signupAttempt.data;
+    user = signupData?.user;
+
+    // 🔥 IMPORTANT: fetch session after signup
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData?.session?.user) {
+      user = sessionData.session.user;
+    }
   }
 
-  if (!data?.user) {
+  if (!user) {
     alert("Authentication failed.");
     return;
   }
 
-  const userId = data.user.id;
+  console.log("User authenticated:", user.id);
 
+  // 3️⃣ Check profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("premium_status")
-    .eq("id", userId)
+    .eq("id", user.id)
     .maybeSingle();
+
+  console.log("Profile:", profile);
 
   if (profile?.premium_status === true) {
     window.location.href = "/results.html";
     return;
   }
 
+  // 4️⃣ Create profile if missing
   if (!profile) {
+    console.log("Creating profile...");
     await supabase.from("profiles").insert([
       {
-        id: userId,
-        email: data.user.email,
+        id: user.id,
+        email: user.email,
         level: 1,
         xp: 0,
         current_block: 1,
@@ -467,6 +487,9 @@ async function startPremiumFlow(planType) {
     ]);
   }
 
+  console.log("Redirecting to Stripe...");
+
+  // 5️⃣ Stripe redirect
   if (planType === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else {
