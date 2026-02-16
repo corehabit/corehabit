@@ -238,6 +238,43 @@
 .premium-btn:hover {
   transform: translateY(-3px);
 }
+    .auth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.auth-box {
+  background: #111827;
+  padding: 40px;
+  border-radius: 20px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-box input {
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #1f2937;
+  color: white;
+}
+
+.auth-box button {
+  padding: 14px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #7c5cff, #9b87ff);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
   </style>
  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -402,103 +439,68 @@ window.supabaseClient = window.supabase.createClient(
     }
   }
 </script>
+  
+  <!-- AUTH MODAL -->
+<div id="authModal" class="auth-modal">
+  <div class="auth-box">
+    <h2>Continue to Premium</h2>
+    <input id="authEmail" type="email" placeholder="Email" />
+    <input id="authPassword" type="password" placeholder="Password" />
+    <button onclick="submitAuth()">Continue</button>
+  </div>
+</div>
   <script>
-async function startPremiumFlow(planType) {
+
+let selectedPlan = null;
+
+function startPremiumFlow(planType) {
+  selectedPlan = planType;
+  document.getElementById("authModal").style.display = "flex";
+}
+
+async function submitAuth() {
 
   const supabase = window.supabaseClient;
 
-  const email = prompt("Enter your email:");
-  if (!email) return;
+  const email = document.getElementById("authEmail").value;
+  const password = document.getElementById("authPassword").value;
 
-  const password = prompt("Enter your password:");
-  if (!password) return;
+  if (!email || !password) return;
 
-  console.log("STEP 1: Attempt login");
+  let { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
-  let { data: loginData, error: loginError } =
-    await supabase.auth.signInWithPassword({
+  if (error) {
+    const signupAttempt = await supabase.auth.signUp({
       email,
       password
     });
 
-  console.log("Login result:", loginData, loginError);
-
-  let user = loginData?.user;
-
-  if (!user) {
-    console.log("STEP 2: Attempt signup");
-
-    const { data: signupData, error: signupError } =
-      await supabase.auth.signUp({
-        email,
-        password
-      });
-
-    console.log("Signup result:", signupData, signupError);
-
-    if (signupError) {
-      alert(signupError.message);
+    if (signupAttempt.error) {
+      alert(signupAttempt.error.message);
       return;
     }
 
-    user = signupData?.user;
-
-    const { data: sessionData } = await supabase.auth.getSession();
-    console.log("Session after signup:", sessionData);
-
-    if (sessionData?.session?.user) {
-      user = sessionData.session.user;
-    }
+    data = signupAttempt.data;
   }
 
+  const user = data?.user;
   if (!user) {
-    console.log("❌ No user after auth");
     alert("Authentication failed.");
     return;
   }
 
-  console.log("STEP 3: Authenticated user:", user.id);
+  document.getElementById("authModal").style.display = "none";
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  console.log("Profile query:", profile, profileError);
-
-  if (profile?.premium_status === true) {
-    console.log("Already premium → redirecting");
-    window.location.href = "/results.html";
-    return;
-  }
-
-  if (!profile) {
-    console.log("Creating profile...");
-    const { error: insertError } = await supabase
-      .from("profiles")
-      .insert([
-        {
-          id: user.id,
-          email: user.email,
-          level: 1,
-          xp: 0,
-          current_block: 1,
-          premium_status: false
-        }
-      ]);
-
-    console.log("Profile insert result:", insertError);
-  }
-
-  console.log("STEP 4: Redirecting to Stripe");
-
-  if (planType === "monthly") {
+  if (selectedPlan === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else {
     window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
   }
 }
+
 </script>
 </body>
 </html>
