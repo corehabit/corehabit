@@ -4,15 +4,7 @@
   <meta charset="utf-8">
   <title>Your Plan — CoreHabit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script>
-(function () {
-  const urlParams = new URLSearchParams(window.location.search);
 
-  if (urlParams.get("premium") === "success") {
-    window.history.replaceState({}, document.title, "/results.html");
-  }
-})();
-</script>
   <!-- Premium feature flag (TEMP – legacy, ignored now) -->
   <script>
     window.PREMIUM_ENABLED = true;
@@ -584,81 +576,14 @@ if (sessionId) {
 </script>
 
   
- 
-  <script>
-async function startPremiumFlow(planType) {
+<script> 
+ let selectedPlan = null;
 
-  const supabase = window.supabaseClient;
-
-  const email = prompt("Enter your email:");
-  if (!email) return;
-
-  const password = prompt("Enter your password:");
-  if (!password) return;
-
-  // Try to sign up
-  let { data, error } = await supabase.auth.signUp({
-    email,
-    password
-  });
-
-  // If already exists → sign in instead
-  if (error && error.message.includes("already")) {
-
-    const loginAttempt = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (loginAttempt.error) {
-      alert(loginAttempt.error.message);
-      return;
-    }
-
-    data = loginAttempt.data;
-  }
-
-  if (!data?.user) {
-    alert("Authentication failed.");
-    return;
-  }
-
-  const userId = data.user.id;
-
-  // 🔎 Check premium status BEFORE Stripe
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", userId)
-    .single();
-
-  if (profile?.premium_status === true) {
-    window.location.href = "/results.html";
-    return;
-  }
-
-  // If profile doesn't exist (new user), create it
-  if (!profile) {
-    await supabase.from("profiles").insert([
-      {
-        id: userId,
-        email: data.user.email,
-        level: 1,
-        xp: 0,
-        current_block: 1,
-        premium_status: false
-      }
-    ]);
-  }
-
-  // 🟡 Send to Stripe
-  if (planType === "monthly") {
-    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
-  } else {
-    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
-  }
+function startPremiumFlow(planType) {
+  selectedPlan = planType;
+  openLoginModal();
 }
-  </script>  
+</script>
   <!-- LOGIN MODAL -->
 <div id="loginModal" class="auth-modal">
   <div class="auth-box">
@@ -674,10 +599,13 @@ function openLoginModal() {
 }
 
 async function submitLogin() {
+
   const supabase = window.supabaseClient;
 
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
+
+  if (!email || !password) return;
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -689,8 +617,30 @@ async function submitLogin() {
     return;
   }
 
+  const userId = data.user.id;
+
+  // Check premium status
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", userId)
+    .single();
+
   document.getElementById("loginModal").style.display = "none";
-  location.reload();
+
+  if (profile?.premium_status === true) {
+    unlockPremiumUI();
+    return;
+  }
+
+  // Send to Stripe if upgrading
+  if (selectedPlan === "monthly") {
+    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  } else if (selectedPlan === "annual") {
+    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+  } else {
+    location.reload(); // normal login
+  }
 }
 </script>
 </body>
