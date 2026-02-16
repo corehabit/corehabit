@@ -90,6 +90,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   <!-- Styles -->
   <link rel="stylesheet" href="./assets/styles.css">
   <link rel="stylesheet" href="./assets/premium.css">
+  <style>
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.auth-box {
+  background: #111827;
+  padding: 40px;
+  border-radius: 20px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-box input {
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #1f2937;
+  color: white;
+}
+
+.auth-box button {
+  padding: 14px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #7c5cff, #9b87ff);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body class="corehabit-body">
@@ -97,6 +136,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 <div style="max-width:720px;margin:80px auto;padding:20px;font-family:system-ui;">
 
   <h1>Your Personalized Plan</h1>
+  <button onclick="openLoginModal()" style="
+  margin-bottom:20px;
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  background:#1f2937;
+  color:white;
+  cursor:pointer;
+">
+  Login
+</button>
   <button
   id="regenBtn"
   onclick="goToPremiumOnboarding()"
@@ -267,7 +317,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   Go Premium — Annual
 </button>
 </div>
-
         
 
       </div>
@@ -284,6 +333,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 <!-- Generate Plan -->
 <!-- ========================= -->
   <script>
+    const params = new URLSearchParams(window.location.search);
+
+if (params.get("premium") === "success") {
+  localStorage.setItem("corehabit_premium", "true");
+}
 async function generatePlan() {
 
   const isRegenerating =
@@ -605,5 +659,39 @@ async function startPremiumFlow(planType) {
   }
 }
   </script>  
+  <!-- LOGIN MODAL -->
+<div id="loginModal" class="auth-modal">
+  <div class="auth-box">
+    <h2>Login</h2>
+    <input id="loginEmail" type="email" placeholder="Email" />
+    <input id="loginPassword" type="password" placeholder="Password" />
+    <button onclick="submitLogin()">Continue</button>
+  </div>
+</div>
+  <script>
+function openLoginModal() {
+  document.getElementById("loginModal").style.display = "flex";
+}
+
+async function submitLogin() {
+  const supabase = window.supabaseClient;
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  document.getElementById("loginModal").style.display = "none";
+  location.reload();
+}
+</script>
 </body>
 </html>
