@@ -21,9 +21,14 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   const supabase = window.supabaseClient;
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: sessionData } = await supabase.auth.getSession();
+const user = sessionData?.session?.user;
 
-  if (!user) return; // allow free access
+if (!user) {
+  console.error("No Supabase session after Stripe redirect");
+  return;
+}
+
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -607,19 +612,29 @@ async function submitLogin() {
 
   if (!email || !password) return;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  let { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
+  // If login fails → attempt signup
   if (error) {
-    alert(error.message);
-    return;
+
+    const signupAttempt = await supabase.auth.signUp({
+      email,
+      password
+    });
+
+    if (signupAttempt.error) {
+      alert(signupAttempt.error.message);
+      return;
+    }
+
+    data = signupAttempt.data;
   }
 
   const userId = data.user.id;
 
-  // Check premium status
   const { data: profile } = await supabase
     .from("profiles")
     .select("premium_status")
@@ -633,15 +648,15 @@ async function submitLogin() {
     return;
   }
 
-  // Send to Stripe if upgrading
   if (selectedPlan === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else if (selectedPlan === "annual") {
     window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
   } else {
-    location.reload(); // normal login
+    location.reload();
   }
 }
+
 </script>
 </body>
 </html>
