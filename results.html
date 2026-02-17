@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .from("profiles")
     .select("premium_status")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   if (profile?.premium_status === true) {
     unlockPremiumUI();
@@ -379,7 +379,7 @@ async function generatePlan() {
         .from("profiles")
         .select("premium_status")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
       isPremium = profile?.premium_status === true;
     }
@@ -598,13 +598,34 @@ async function submitLogin() {
     data = signupAttempt.data;
   }
 
-  const userId = data.user.id;
+  const user = data.user;
+const userId = user.id;
+
+// ✅ Ensure profile exists
+let { data: existingProfile } = await supabase
+  .from("profiles")
+  .select("id")
+  .eq("id", userId)
+  .maybeSingle();
+
+if (!existingProfile) {
+  await supabase.from("profiles").insert([
+    {
+      id: userId,
+      email: user.email,
+      level: 1,
+      xp: 0,
+      current_block: 1,
+      premium_status: false
+    }
+  ]);
+}
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("premium_status")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   document.getElementById("loginModal").style.display = "none";
 
