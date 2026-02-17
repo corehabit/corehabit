@@ -486,20 +486,32 @@ async function submitAuth() {
     data = signupAttempt.data;
   }
 
-  const user = data?.user;
-  if (!user) {
-    alert("Authentication failed.");
-    return;
-  }
-
-  document.getElementById("authModal").style.display = "none";
-
-  if (selectedPlan === "monthly") {
-    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
-  } else {
-    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
-  }
+ const user = data?.user;
+if (!user) {
+  alert("Authentication failed.");
+  return;
 }
+
+// ✅ Ensure profile exists
+let { data: existingProfile } = await supabase
+  .from("profiles")
+  .select("id")
+  .eq("id", user.id)
+  .maybeSingle();
+
+if (!existingProfile) {
+  await supabase.from("profiles").insert([
+    {
+      id: user.id,
+      email: user.email,
+      level: 1,
+      xp: 0,
+      current_block: 1,
+      premium_status: false
+    }
+  ]);
+}
+
 
 </script>
 </body>
