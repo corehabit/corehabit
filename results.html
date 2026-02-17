@@ -20,15 +20,16 @@
  <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // 🚫 Do NOT check premium if returning from Stripe
+  if (urlParams.get("session_id")) return;
+
   const supabase = window.supabaseClient;
   const { data: sessionData } = await supabase.auth.getSession();
-const user = sessionData?.session?.user;
+  const user = sessionData?.session?.user;
 
-if (!user) {
-  console.error("No Supabase session after Stripe redirect");
-  return;
-}
-
+  if (!user) return;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -45,38 +46,41 @@ if (!user) {
   
 <script>
   const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get("session_id");
+const sessionId = params.get("session_id");
 
-  if (sessionId) {
-    localStorage.setItem("corehabit_session_id", sessionId);
+if (sessionId) {
 
-    fetch("/.netlify/functions/getCustomerFromSession", {
+  (async () => {
+
+    const supabase = window.supabaseClient;
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
+
+    if (!user) {
+      console.error("No Supabase session yet. Retrying in 500ms...");
+      setTimeout(() => location.reload(), 500);
+      return;
+    }
+
+    const response = await fetch("/.netlify/functions/getCustomerFromSession", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId })
-    })
-      .then(res => res.json())
-      .then(async data => {
-  if (data.customerId) {
+    });
 
-  const supabase = window.supabaseClient;
+    const data = await response.json();
 
-  const { data: sessionData } = await supabase.auth.getSession();
+    if (data.customerId) {
+      await supabase
+        .from("profiles")
+        .update({ premium_status: true })
+        .eq("id", user.id);
 
-  if (sessionData?.session?.user) {
+      window.location.href = "/results.html";
+    }
 
-    const userId = sessionData.session.user.id;
-
-    await supabase
-      .from("profiles")
-      .update({ premium_status: true })
-      .eq("id", userId);
-  }
-
-  window.location.href = "/results.html";
-        }
-  })
-  .catch(err => console.error(err));
+  })();
 }
 
      
@@ -330,11 +334,7 @@ if (!user) {
 <!-- Generate Plan -->
 <!-- ========================= -->
   <script>
-    const params = new URLSearchParams(window.location.search);
-
-if (params.get("premium") === "success") {
-  localStorage.setItem("corehabit_premium", "true");
-}
+    
 async function generatePlan() {
 
   const isRegenerating =
@@ -522,42 +522,7 @@ if (data.advanced_training_notes) {
 </script>
 <!-- PREMIUM SECTIONS -->
 
-<!-- ========================= -->
-<!-- Stripe Checkout (LEGACY – KEPT) -->
-<!-- ========================= -->
-<script>
-const params = new URLSearchParams(window.location.search);
-const sessionId = params.get("session_id");
 
-if (sessionId) {
-
-  fetch("/.netlify/functions/getCustomerFromSession", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionId })
-  })
-  .then(res => res.json())
-  .then(async data => {
-
-    if (!data.customerId) return;
-
-    const supabase = window.supabaseClient;
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) return;
-
-    await supabase
-      .from("profiles")
-      .update({ premium_status: true })
-      .eq("id", user.id);
-
-    window.location.href = "/results.html";
-
-  })
-  .catch(err => console.error(err));
-}
-</script>
 <script>
   function unlockPremiumUI() {
 
