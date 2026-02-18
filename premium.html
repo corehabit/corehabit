@@ -462,6 +462,17 @@ async function submitAuth() {
   }
 
   const user = data?.user;
+  await supabase
+  .from("profiles")
+  .upsert({
+    id: user.id,
+    email: user.email,
+    level: 1,
+    xp: 0,
+    current_block: 1,
+    premium_status: false
+  }, { onConflict: "id" });
+
   if (!user) {
     alert("Authentication failed.");
     return;
