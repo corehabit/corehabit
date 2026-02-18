@@ -414,32 +414,7 @@ window.supabaseClient = window.supabase.createClient(
     </section>
 
   </div>
-  <script>
-  const MONTHLY_PRICE_ID = "price_1SwtcqL0p80VWf6l3H8aBTYX";
-  const ANNUAL_PRICE_ID  = "price_1SwtdaL0p80VWf6lV3WH9nLl";
-
-  async function startCheckout(priceId) {
-    try {
-      const response = await fetch("/.netlify/functions/createCheckoutSession", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId })
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Checkout failed. Please try again.");
-      }
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Something went wrong. Try again.");
-    }
-  }
-</script>
-  
+ 
   <!-- AUTH MODAL -->
 <div id="authModal" class="auth-modal">
   <div class="auth-box">
@@ -497,10 +472,10 @@ async function submitAuth() {
 
   document.getElementById("authModal").style.display = "none";
 
-  if (selectedPlan === "monthly") {
-  startCheckout(MONTHLY_PRICE_ID);
+ if (selectedPlan === "monthly") {
+  window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
 } else {
-  startCheckout(ANNUAL_PRICE_ID);
+  window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
 }
 }
 
