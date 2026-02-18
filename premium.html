@@ -472,10 +472,12 @@ async function submitAuth() {
 
   document.getElementById("authModal").style.display = "none";
 
- if (selectedPlan === "monthly") {
-  window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
-} else {
-  window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+if (selectedPlan === "monthly") {
+  window.location.href =
+    "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01?redirect_url=https://corehabitcoach.netlify.app/results.html?premium=success";
+} else if (selectedPlan === "annual") {
+  window.location.href =
+    "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02?redirect_url=https://corehabitcoach.netlify.app/results.html?premium=success";
 }
 }
 
