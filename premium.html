@@ -498,10 +498,10 @@ async function submitAuth() {
   document.getElementById("authModal").style.display = "none";
 
   if (selectedPlan === "monthly") {
-    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
-  } else {
-    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
-  }
+  startCheckout(MONTHLY_PRICE_ID);
+} else {
+  startCheckout(ANNUAL_PRICE_ID);
+}
 }
 
 </script>
