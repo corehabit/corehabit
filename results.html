@@ -591,25 +591,18 @@ async function submitLogin() {
   const user = data.user;
 const userId = user.id;
 
-// ✅ Ensure profile exists
-let { data: existingProfile } = await supabase
+// Force create or update profile safely
+await supabase
   .from("profiles")
-  .select("id")
-  .eq("id", userId)
-  .maybeSingle();
+  .upsert({
+    id: userId,
+    email: user.email,
+    level: 1,
+    xp: 0,
+    current_block: 1,
+    premium_status: false
+  }, { onConflict: "id" });
 
-if (!existingProfile) {
-  await supabase.from("profiles").insert([
-    {
-      id: userId,
-      email: user.email,
-      level: 1,
-      xp: 0,
-      current_block: 1,
-      premium_status: false
-    }
-  ]);
-}
 
   const { data: profile } = await supabase
     .from("profiles")
