@@ -9,9 +9,11 @@
   <script>
     window.PREMIUM_ENABLED = true;
   </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
-  <script>
-  window.supabaseClient = window.supabaseClient || window.supabase.createClient(
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const { createClient } = supabase;
+
+  window.supabaseClient = window.supabaseClient || createClient(
     "https://wonbwlvnojtgydvpllmk.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
@@ -325,9 +327,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 <!-- Generate Plan -->
 <!-- ========================= -->
   <script>
-    const params = new URLSearchParams(window.location.search);
+    const urlParams2 = new URLSearchParams(window.location.search);
 
-if (params.get("premium") === "success") {
+if (urlParams2.get("premium") === "success") {
   localStorage.setItem("corehabit_premium", "true");
 }
 async function generatePlan() {
@@ -588,10 +590,15 @@ function startPremiumFlow(planType) {
 <div id="loginModal" class="auth-modal">
   <div class="auth-box">
     <h2 id="authTitle">Sign in or Create account</h2>
-<button onclick="submitAuth()">Continue</button>
-<p style="font-size:12px;color:#9ca3af;text-align:center;">
-  New users will be automatically signed up.
-</p>
+
+    <input id="loginEmail" type="email" placeholder="Email" />
+    <input id="loginPassword" type="password" placeholder="Password" />
+
+    <button onclick="submitAuth()">Continue</button>
+
+    <p style="font-size:12px;color:#9ca3af;text-align:center;">
+      New users will be automatically signed up.
+    </p>
   </div>
 </div>
   <script>
