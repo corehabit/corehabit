@@ -583,7 +583,9 @@ if (sessionId) {
 
 function startPremiumFlow(planType) {
   selectedPlan = planType;
-  openLoginModal();
+
+  // send user to your working premium signup page
+  window.location.href = `/premium.html?plan=${planType}`;
 }
 </script>
   <!-- LOGIN MODAL -->
