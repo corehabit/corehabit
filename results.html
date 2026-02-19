@@ -15,62 +15,63 @@
     "https://wonbwlvnojtgydvpllmk.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
   );
-    const urlParams = new URLSearchParams(window.location.search);
-
-if (urlParams.get("premium") === "success") {
-  localStorage.setItem("corehabit_premium", "true");
-}
-
 </script>  <!-- Capture Stripe session_id after checkout -->
   
  <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // 🔥 Instant unlock if premium flag exists
-  if (localStorage.getItem("corehabit_premium") === "true") {
+  const supabase = window.supabaseClient;
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return; // allow free access
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.premium_status === true) {
     unlockPremiumUI();
-    return;
   }
 
 });
-
 </script>
   
 <script>
-  
-if (sessionId) {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
 
-  (async () => {
+  if (sessionId) {
+    localStorage.setItem("corehabit_session_id", sessionId);
 
-    const supabase = window.supabaseClient;
-
-    const { data: sessionData } = await supabase.auth.getSession();
-    const user = sessionData?.session?.user;
-
-    if (!user) {
-      console.error("No Supabase session yet. Retrying in 500ms...");
-      setTimeout(() => location.reload(), 500);
-      return;
-    }
-
-    const response = await fetch("/.netlify/functions/getCustomerFromSession", {
+    fetch("/.netlify/functions/getCustomerFromSession", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId })
-    });
+    })
+      .then(res => res.json())
+      .then(async data => {
+  if (data.customerId) {
 
-    const data = await response.json();
+  const supabase = window.supabaseClient;
 
-    if (data.customerId) {
-      await supabase
-        .from("profiles")
-        .update({ premium_status: true })
-        .eq("id", user.id);
+  const { data: sessionData } = await supabase.auth.getSession();
 
-      window.location.href = "/results.html";
-    }
+  if (sessionData?.session?.user) {
 
-  })();
+    const userId = sessionData.session.user.id;
+
+    await supabase
+      .from("profiles")
+      .update({ premium_status: true })
+      .eq("id", userId);
+  }
+
+  window.location.href = "/results.html";
+        }
+  })
+  .catch(err => console.error(err));
 }
 
      
@@ -324,7 +325,11 @@ if (sessionId) {
 <!-- Generate Plan -->
 <!-- ========================= -->
   <script>
-    
+    const params = new URLSearchParams(window.location.search);
+
+if (params.get("premium") === "success") {
+  localStorage.setItem("corehabit_premium", "true");
+}
 async function generatePlan() {
 
   const isRegenerating =
@@ -369,7 +374,7 @@ async function generatePlan() {
         .from("profiles")
         .select("premium_status")
         .eq("id", user.id)
-        .maybeSingle();
+        .single();
 
       isPremium = profile?.premium_status === true;
     }
@@ -512,7 +517,42 @@ if (data.advanced_training_notes) {
 </script>
 <!-- PREMIUM SECTIONS -->
 
+<!-- ========================= -->
+<!-- Stripe Checkout (LEGACY – KEPT) -->
+<!-- ========================= -->
+<script>
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get("session_id");
 
+if (sessionId) {
+
+  fetch("/.netlify/functions/getCustomerFromSession", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId })
+  })
+  .then(res => res.json())
+  .then(async data => {
+
+    if (!data.customerId) return;
+
+    const supabase = window.supabaseClient;
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    await supabase
+      .from("profiles")
+      .update({ premium_status: true })
+      .eq("id", user.id);
+
+    window.location.href = "/results.html";
+
+  })
+  .catch(err => console.error(err));
+}
+</script>
 <script>
   function unlockPremiumUI() {
 
@@ -567,48 +607,24 @@ async function submitLogin() {
 
   if (!email || !password) return;
 
-  let { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  // If login fails → attempt signup
   if (error) {
-
-    const signupAttempt = await supabase.auth.signUp({
-      email,
-      password
-    });
-
-    if (signupAttempt.error) {
-      alert(signupAttempt.error.message);
-      return;
-    }
-
-    data = signupAttempt.data;
+    alert(error.message);
+    return;
   }
 
-  const user = data.user;
-const userId = user.id;
+  const userId = data.user.id;
 
-// Force create or update profile safely
-await supabase
-  .from("profiles")
-  .upsert({
-    id: userId,
-    email: user.email,
-    level: 1,
-    xp: 0,
-    current_block: 1,
-    premium_status: false
-  }, { onConflict: "id" });
-
-
+  // Check premium status
   const { data: profile } = await supabase
     .from("profiles")
     .select("premium_status")
     .eq("id", userId)
-    .maybeSingle();
+    .single();
 
   document.getElementById("loginModal").style.display = "none";
 
@@ -617,15 +633,15 @@ await supabase
     return;
   }
 
+  // Send to Stripe if upgrading
   if (selectedPlan === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else if (selectedPlan === "annual") {
     window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
   } else {
-    location.reload();
+    location.reload(); // normal login
   }
 }
-
 </script>
 </body>
 </html>
