@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .auth-box {
@@ -131,13 +131,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   <h1>Your Personalized Plan</h1>
   <button onclick="openLoginModal()" style="
-  margin-bottom:20px;
-  padding:10px 18px;
+  margin-bottom:24px;
+  padding:14px 28px;
   border-radius:999px;
   border:none;
-  background:#1f2937;
+  background: linear-gradient(135deg, #7c5cff, #9b87ff);
   color:white;
+  font-weight:700;
+  font-size:16px;
   cursor:pointer;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 10px 25px rgba(124,92,255,0.35);
 ">
   Login
 </button>
