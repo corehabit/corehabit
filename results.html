@@ -587,18 +587,15 @@ function startPremiumFlow(planType) {
   <!-- LOGIN MODAL -->
 <div id="loginModal" class="auth-modal">
   <div class="auth-box">
-    <h2>Login</h2>
-    <input id="loginEmail" type="email" placeholder="Email" />
-    <input id="loginPassword" type="password" placeholder="Password" />
-    <button onclick="submitLogin()">Continue</button>
+    <h2 id="authTitle">Sign in or Create account</h2>
+<button onclick="submitAuth()">Continue</button>
+<p style="font-size:12px;color:#9ca3af;text-align:center;">
+  New users will be automatically signed up.
+</p>
   </div>
 </div>
   <script>
-function openLoginModal() {
-  document.getElementById("loginModal").style.display = "flex";
-}
-
-async function submitLogin() {
+async function submitAuth() {
 
   const supabase = window.supabaseClient;
 
@@ -607,19 +604,36 @@ async function submitLogin() {
 
   if (!email || !password) return;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  // 🔥 STEP 1 — try login first
+  let { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (error) {
+  // 🔥 STEP 2 — if user doesn't exist, SIGN THEM UP
+  if (error && error.message.toLowerCase().includes("invalid login")) {
+
+    const signup = await supabase.auth.signUp({
+      email,
+      password
+    });
+
+    if (signup.error) {
+      alert(signup.error.message);
+      return;
+    }
+
+    data = signup.data;
+  }
+
+  if (error && !data?.user) {
     alert(error.message);
     return;
   }
 
   const userId = data.user.id;
 
-  // Check premium status
+  // 🔥 check premium status
   const { data: profile } = await supabase
     .from("profiles")
     .select("premium_status")
@@ -628,18 +642,19 @@ async function submitLogin() {
 
   document.getElementById("loginModal").style.display = "none";
 
+  // Already premium
   if (profile?.premium_status === true) {
     unlockPremiumUI();
     return;
   }
 
-  // Send to Stripe if upgrading
+  // 🔥 send to Stripe if upgrading
   if (selectedPlan === "monthly") {
     window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
   } else if (selectedPlan === "annual") {
     window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
   } else {
-    location.reload(); // normal login
+    location.reload();
   }
 }
 </script>
