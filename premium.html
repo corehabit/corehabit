@@ -414,7 +414,32 @@ window.supabaseClient = window.supabase.createClient(
     </section>
 
   </div>
- 
+  <script>
+  const MONTHLY_PRICE_ID = "price_1SwtcqL0p80VWf6l3H8aBTYX";
+  const ANNUAL_PRICE_ID  = "price_1SwtdaL0p80VWf6lV3WH9nLl";
+
+  async function startCheckout(priceId) {
+    try {
+      const response = await fetch("/.netlify/functions/createCheckoutSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId })
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Checkout failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert("Something went wrong. Try again.");
+    }
+  }
+</script>
+  
   <!-- AUTH MODAL -->
 <div id="authModal" class="auth-modal">
   <div class="auth-box">
@@ -424,7 +449,7 @@ window.supabaseClient = window.supabase.createClient(
     <button onclick="submitAuth()">Continue</button>
   </div>
 </div>
- <script>
+  <script>
 
 let selectedPlan = null;
 
@@ -462,37 +487,20 @@ async function submitAuth() {
   }
 
   const user = data?.user;
-  await supabase
-  .from("profiles")
-  .upsert({
-    id: user.id,
-    email: user.email,
-    level: 1,
-    xp: 0,
-    current_block: 1,
-    premium_status: false
-  }, { onConflict: "id" });
-
   if (!user) {
     alert("Authentication failed.");
     return;
   }
 
-  // 🔥 FORCE SESSION PERSIST
-  await supabase.auth.getSession();
-
   document.getElementById("authModal").style.display = "none";
 
-if (selectedPlan === "monthly") {
-  window.location.href =
-    "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01?redirect_url=https://corehabitcoach.netlify.app/results.html?premium=success";
-} else if (selectedPlan === "annual") {
-  window.location.href =
-    "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02?redirect_url=https://corehabitcoach.netlify.app/results.html?premium=success";
-}
+  if (selectedPlan === "monthly") {
+    window.location.href = "https://buy.stripe.com/test_5kQfZifqv5eb8yI1hQ0kE01";
+  } else {
+    window.location.href = "https://buy.stripe.com/test_eVq14obafgWT4isbWu0kE02";
+  }
 }
 
 </script>
-
 </body>
 </html>
