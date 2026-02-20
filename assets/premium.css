@@ -82,6 +82,8 @@
 
 #premium-root .premium-lock-wrapper {
   position: relative;
+  z-index: 1;              /* ✅ NEW */
+  overflow: hidden;        /* ✅ NEW — CRITICAL */
 }
 
 #premium-root .premium-locked-overlay {
