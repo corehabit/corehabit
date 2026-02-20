@@ -151,8 +151,8 @@
 async function loadDashboard() {
   const supabase = window.supabaseClient;
 
+  // ✅ Auth gate
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) {
     window.location.href = "/";
     return;
@@ -160,43 +160,88 @@ async function loadDashboard() {
 
   document.getElementById("userEmail").textContent = user.email;
 
-  // Get profile
-  const { data: profile } = await supabase
+  // ✅ Profile / premium status
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("premium_status")
     .eq("id", user.id)
     .single();
 
-  // Premium UI
+  if (profileError) console.warn("Profile fetch error:", profileError);
+
   if (profile?.premium_status === true) {
     document.getElementById("premiumBadge").style.display = "inline-block";
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-  // Load last onboarding (temporary MVP data source)
+  // ✅ Load last generated plan (MVP storage)
   const planRaw = localStorage.getItem("corehabit_last_plan");
+  if (planRaw) {
+    try {
+      const plan = JSON.parse(planRaw);
 
-if (planRaw) {
-  const plan = JSON.parse(planRaw);
+      document.getElementById("planSummary").innerHTML = `
+        Calories: ${plan?.macro_targets?.calories ?? "-"}<br>
+        Protein: ${plan?.macro_targets?.protein ?? "-"}g<br>
+        Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ") || "-"}
+      `;
+    } catch (e) {
+      console.warn("Could not parse corehabit_last_plan:", e);
+    }
+  }
 
-  document.getElementById("planSummary").innerHTML = `
-    Calories: ${plan?.macro_targets?.calories || "-"}<br>
-    Protein: ${plan?.macro_targets?.protein || "-"}g<br>
-    Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ")}
-  `;
-}
+  // ✅ Weekly nudge logic (correct location)
+  const lastCheckin = localStorage.getItem("corehabit_last_checkin");
 
-  
+  if (lastCheckin) {
+    const daysSince =
+      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
+
+    if (daysSince >= 7) showWeeklyNudge();
+  } else {
+    const firstVisit = localStorage.getItem("corehabit_first_visit");
+
+    if (!firstVisit) {
+      localStorage.setItem("corehabit_first_visit", Date.now());
+    } else {
+      const daysSinceFirst =
+        (Date.now() - Number(firstVisit)) / (1000 * 60 * 60 * 24);
+
+      if (daysSinceFirst >= 3) showWeeklyNudge();
+    }
+  }
 }
 
 function submitCheckin(status) {
   console.log("Check-in:", status);
+
+  // ✅ save last check-in time (CRITICAL for retention loop)
+  localStorage.setItem("corehabit_last_checkin", Date.now());
+
   alert("Check-in saved ✔️");
 }
 
 function goToOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
   window.location.href = "/onboarding.html";
+}
+
+function showWeeklyNudge() {
+  // prevent duplicates
+  if (document.getElementById("weeklyNudgeCard")) return;
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "weeklyNudgeCard";
+  card.innerHTML = `
+    <h2>👀 Weekly Check-In</h2>
+    <div class="muted">
+      Time to review your progress and keep the momentum going.
+    </div>
+  `;
+
+  const container = document.querySelector(".container");
+  container.insertBefore(card, container.children[2] || null);
 }
 
 loadDashboard();
