@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Your Dashboard — CoreHabit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const { createClient } = supabase;
+
+    window.supabaseClient = createClient(
+      "https://wonbwlvnojtgydvpllmk.supabase.co",
+      "YOUR_ANON_KEY_HERE"
+    );
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: radial-gradient(
+        80% 80% at 20% 10%,
+        #1a1f35 0%,
+        #0b0f19 60%
+      );
+      color: white;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 80px auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: #111827;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      border: 1px solid rgba(124,92,255,0.15);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #7c5cff, #9b87ff);
+      color: white;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: #e5e7eb;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #7c5cff;
+      margin-left: 8px;
+    }
+
+    .checkin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #9ca3af;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <h1>Your CoreHabit Dashboard
+    <span id="premiumBadge" class="badge" style="display:none;">PREMIUM</span>
+  </h1>
+  <div id="userEmail" class="muted"></div>
+
+  <!-- Plan Snapshot -->
+  <div class="card">
+    <h2>Current Plan</h2>
+    <div id="planSummary" class="muted">
+      Your plan will appear here after generation.
+    </div>
+  </div>
+
+  <!-- Weekly Check-in -->
+  <div class="card">
+    <h2>Weekly Check-In</h2>
+    <div class="muted">How is your progress this week?</div>
+
+    <div class="checkin-grid">
+      <button class="btn-secondary" onclick="submitCheckin('on_track')">✅ On track</button>
+      <button class="btn-secondary" onclick="submitCheckin('struggling')">⚠️ Struggling</button>
+      <button class="btn-secondary" onclick="submitCheckin('ahead')">🚀 Ahead</button>
+    </div>
+  </div>
+
+  <!-- Regenerate -->
+  <div class="card">
+    <h2>Update Your Plan</h2>
+    <button class="btn-primary" onclick="goToOnboarding()">
+      🔁 Regenerate My Plan
+    </button>
+  </div>
+
+  <!-- Premium Upsell -->
+  <div id="premiumUpsell" class="card">
+    <h2>Unlock Premium</h2>
+    <div class="muted">
+      Personalized meals, grocery lists, and adaptive plans.
+    </div>
+    <button class="btn-primary" onclick="window.location.href='/premium.html'">
+      Go Premium
+    </button>
+  </div>
+
+</div>
+
+<script>
+async function loadDashboard() {
+  const supabase = window.supabaseClient;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "/";
+    return;
+  }
+
+  document.getElementById("userEmail").textContent = user.email;
+
+  // Get profile
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
+
+  // Premium UI
+  if (profile?.premium_status === true) {
+    document.getElementById("premiumBadge").style.display = "inline-block";
+    document.getElementById("premiumUpsell").style.display = "none";
+  }
+
+  // Load last onboarding (temporary MVP data source)
+  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+
+  if (onboardingRaw) {
+    const data = JSON.parse(onboardingRaw);
+
+    document.getElementById("planSummary").innerHTML = `
+      Goal: ${data.goal || "-"}<br>
+      Training: ${data.trainingDays || "-"} days/week<br>
+      Experience: ${data.experience || "-"}
+    `;
+  }
+}
+
+function submitCheckin(status) {
+  console.log("Check-in:", status);
+  alert("Check-in saved ✔️");
+}
+
+function goToOnboarding() {
+  localStorage.setItem("corehabit_reonboarding", "true");
+  window.location.href = "/onboarding.html";
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>
