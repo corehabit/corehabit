@@ -324,20 +324,36 @@ async function setupAccountButton() {
   const btn = document.getElementById("accountBtn");
   const supabase = window.supabaseClient;
 
-  if (!btn || !supabase) return;
+  if (!btn || !supabase) {
+    console.warn("Account button or Supabase missing");
+    return;
+  }
 
-  const { data: { user } } = await supabase.auth.getUser();
+  try {
+    // 🔥 This is more reliable than getUser() alone
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
 
-  if (user) {
-    btn.textContent = "Dashboard";
-    btn.onclick = () => window.location.href = "/account.html";
-  } else {
-    btn.textContent = "Login";
-    btn.onclick = () => window.location.href = "/login.html";
+    console.log("Homepage user:", user);
+
+    if (user) {
+      btn.textContent = "Dashboard";
+      btn.onclick = () => {
+        window.location.href = "/account.html";
+      };
+    } else {
+      btn.textContent = "Login";
+      btn.onclick = () => {
+        window.location.href = "/login.html";
+      };
+    }
+  } catch (err) {
+    console.error("Account button error:", err);
   }
 }
 
-setupAccountButton();
+// wait for page to fully load
+window.addEventListener("load", setupAccountButton);
 </script>
 </body>
 </html>
