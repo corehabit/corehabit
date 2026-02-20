@@ -12,7 +12,7 @@
 
     window.supabaseClient = createClient(
       "https://wonbwlvnojtgydvpllmk.supabase.co",
-      "YOUR_ANON_KEY_HERE"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
     );
   </script>
 
@@ -186,15 +186,7 @@ if (planRaw) {
   `;
 }
 
-  if (onboardingRaw) {
-    const data = JSON.parse(onboardingRaw);
-
-    document.getElementById("planSummary").innerHTML = `
-      Goal: ${data.goal || "-"}<br>
-      Training: ${data.trainingDays || "-"} days/week<br>
-      Experience: ${data.experience || "-"}
-    `;
-  }
+  
 }
 
 function submitCheckin(status) {
