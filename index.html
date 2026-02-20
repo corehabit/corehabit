@@ -270,7 +270,7 @@ h1 {
   <a href="plan.html" class="btn">See My Plan</a>
 
   <!-- ✅ Smart Account Button -->
-  <a href="/account.html" class="btn" id="accountBtn">Account</a>
+  <a href="/login.html" class="btn" id="accountBtn">Login</a>
 
   <a href="/premium.html" class="btn premium-btn">Premium</a>
 </div>
@@ -383,40 +383,31 @@ h1 {
 
   </div>
   <script>
-async function setupAccountButton() {
+const { createClient } = supabase;
+
+const supabaseClient = createClient(
+  "https://wonbwlvnojtgydvpllmk.supabase.co",
+  "YOUR_ANON_KEY_HERE"
+);
+
+async function updateAccountButton() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
   const btn = document.getElementById("accountBtn");
-  const supabase = window.supabaseClient;
 
-  if (!btn || !supabase) {
-    console.warn("Account button or Supabase missing");
-    return;
-  }
+  if (!btn) return;
 
-  try {
-    // 🔥 This is more reliable than getUser() alone
-    const { data: sessionData } = await supabase.auth.getSession();
-    const user = sessionData?.session?.user;
-
-    console.log("Homepage user:", user);
-
-    if (user) {
-      btn.textContent = "Account";
-      btn.onclick = () => {
-        window.location.href = "/account.html";
-      };
-    } else {
-      btn.textContent = "Login";
-      btn.onclick = () => {
-        window.location.href = "/login.html";
-      };
-    }
-  } catch (err) {
-    console.error("Account button error:", err);
+  if (user) {
+    // ✅ Logged in
+    btn.textContent = "Account";
+    btn.href = "/account.html";
+  } else {
+    // ✅ Logged out
+    btn.textContent = "Login";
+    btn.href = "/login.html";
   }
 }
 
-// wait for page to fully load
-window.addEventListener("load", setupAccountButton);
+updateAccountButton();
 </script>
 </body>
 </html>
