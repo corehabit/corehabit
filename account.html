@@ -174,7 +174,17 @@ async function loadDashboard() {
   }
 
   // Load last onboarding (temporary MVP data source)
-  const onboardingRaw = localStorage.getItem("corehabit_onboarding");
+  const planRaw = localStorage.getItem("corehabit_last_plan");
+
+if (planRaw) {
+  const plan = JSON.parse(planRaw);
+
+  document.getElementById("planSummary").innerHTML = `
+    Calories: ${plan?.macro_targets?.calories || "-"}<br>
+    Protein: ${plan?.macro_targets?.protein || "-"}g<br>
+    Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ")}
+  `;
+}
 
   if (onboardingRaw) {
     const data = JSON.parse(onboardingRaw);
