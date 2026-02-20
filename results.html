@@ -422,6 +422,7 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
+    localStorage.setItem("corehabit_last_plan", JSON.stringify(data));
     // ✅ Render base plan
     resultEl.style.display = "block";
     resultEl.innerHTML = `
