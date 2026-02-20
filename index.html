@@ -186,6 +186,14 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const { createClient } = supabase;
+
+  window.supabaseClient = createClient(
+    "https://wonbwlvnojtgydvpllmk.supabase.co",
+    "YOUR_ANON_KEY_HERE"
+  );
+</script>
 </head>
 
 <body class="home-page">
@@ -197,7 +205,7 @@
 
       <div class="header-actions">
   <a href="plan.html" class="btn">See My Plan</a>
-  <a href="/login.html" class="btn">Login</a>
+  <button id="accountBtn" class="btn">My Account</button>
   <a href="/premium.html" class="btn premium-btn">Premium</a>
 </div>
     </header>
@@ -308,5 +316,31 @@
     </footer>
 
   </div>
+  <script>
+async function setupAccountButton() {
+  const supabase = window.supabaseClient;
+  const btn = document.getElementById("accountBtn");
+
+  if (!btn) return;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    // ✅ Logged in → dashboard
+    btn.textContent = "Dashboard";
+    btn.onclick = () => {
+      window.location.href = "/account.html";
+    };
+  } else {
+    // ✅ Not logged in → login/signup flow
+    btn.textContent = "Login";
+    btn.onclick = () => {
+      window.location.href = "/login.html";
+    };
+  }
+}
+
+setupAccountButton();
+</script>
 </body>
 </html>
