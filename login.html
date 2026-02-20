@@ -81,9 +81,11 @@
     <h2>Welcome Back</h2>
     <p class="subtitle">Log in to access your personalized plan.</p>
 
-    <input id="loginEmail" type="email" />
-<input id="loginPassword" type="password" />
+    <label class="auth-label">Email</label>
+<input id="loginEmail" type="email" placeholder="you@example.com" />
 
+<label class="auth-label">Password</label>
+<input id="loginPassword" type="password" placeholder="Enter your password" />
     <button onclick="handleLogin()">Login</button>
 
     <p id="error"></p>
