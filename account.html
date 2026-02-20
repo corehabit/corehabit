@@ -249,11 +249,11 @@ if (lastCheckin) {
   document.getElementById("userEmail").textContent = user.email;
 
   // ✅ Profile / premium status
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("premium_status")
-    .eq("id", user.id)
-    .single();
+  // Premium UI
+if (profile && profile.premium_status === true) {
+  document.getElementById("premiumBadge").style.display = "inline-block";
+  document.getElementById("premiumUpsell").style.display = "none";
+}
 
   if (profileError) console.warn("Profile fetch error:", profileError);
 
@@ -325,8 +325,13 @@ function submitCheckin(status) {
   alert("Check-in saved ✔️");
 }
 function goToOnboarding() {
-  localStorage.setItem("corehabit_reonboarding", "true");
-  window.location.href = "/onboarding.html";
+  try {
+    localStorage.setItem("corehabit_reonboarding", "true");
+    window.location.assign("/onboarding.html");
+  } catch (e) {
+    console.error("Regen navigation failed", e);
+    window.location.href = "/onboarding.html";
+  }
 }
 
 function showWeeklyNudge() {
