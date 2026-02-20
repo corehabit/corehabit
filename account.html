@@ -263,10 +263,22 @@ if (lastCheckin) {
   }
 
   // ✅ Load last generated plan (MVP storage)
-  const planRaw = localStorage.getItem("corehabit_last_plan");
-  if (planRaw) {
-    try {
-      const plan = JSON.parse(planRaw);
+  // Load last generated plan (MVP storage)
+const planRaw = localStorage.getItem("corehabit_last_plan");
+
+if (planRaw) {
+  try {
+    const plan = JSON.parse(planRaw);
+
+    document.getElementById("planSummary").innerHTML = `
+      Calories: ${plan?.macro_targets?.calories || "-"}<br>
+      Protein: ${plan?.macro_targets?.protein || "-"}g<br>
+      Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ")}
+    `;
+  } catch (e) {
+    console.error("Plan parse failed", e);
+  }
+}
 
       document.getElementById("planSummary").innerHTML = `
         Calories: ${plan?.macro_targets?.calories ?? "-"}<br>
