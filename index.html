@@ -205,7 +205,11 @@
 
       <div class="header-actions">
   <a href="plan.html" class="btn">See My Plan</a>
+  <a href="/login.html" class="btn">Login</a>
+
+  <!-- ✅ NEW ACCOUNT BUTTON -->
   <button id="accountBtn" class="btn">My Account</button>
+
   <a href="/premium.html" class="btn premium-btn">Premium</a>
 </div>
     </header>
@@ -318,25 +322,19 @@
   </div>
   <script>
 async function setupAccountButton() {
-  const supabase = window.supabaseClient;
   const btn = document.getElementById("accountBtn");
+  const supabase = window.supabaseClient;
 
-  if (!btn) return;
+  if (!btn || !supabase) return;
 
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
-    // ✅ Logged in → dashboard
     btn.textContent = "Dashboard";
-    btn.onclick = () => {
-      window.location.href = "/account.html";
-    };
+    btn.onclick = () => window.location.href = "/account.html";
   } else {
-    // ✅ Not logged in → login/signup flow
     btn.textContent = "Login";
-    btn.onclick = () => {
-      window.location.href = "/login.html";
-    };
+    btn.onclick = () => window.location.href = "/login.html";
   }
 }
 
