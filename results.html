@@ -501,6 +501,11 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
+    // ✅ Persist latest plan for dashboard
+localStorage.setItem(
+  "corehabit_last_plan",
+  JSON.stringify(data)
+);
     localStorage.setItem("corehabit_last_plan", JSON.stringify(data));
     // ✅ Render base plan
     resultEl.style.display = "block";
