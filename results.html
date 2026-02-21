@@ -508,6 +508,12 @@ localStorage.setItem(
   JSON.stringify(data)
 );
     localStorage.setItem("corehabit_last_plan", JSON.stringify(data));
+    if (user) {
+  await supabase
+    .from("profiles")
+    .update({ current_plan: data })
+    .eq("id", user.id);
+}
 
 if (user) {
   await supabase
