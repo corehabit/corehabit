@@ -224,61 +224,39 @@
 async function loadDashboard() {
   const supabase = window.supabaseClient;
 
-  // ✅ Auth gate
+  // ===== AUTH GATE =====
   const { data: { user } } = await supabase.auth.getUser();
+
   if (!user) {
     window.location.href = "/";
     return;
-    // ===== Elite stats logic =====
-
-// check-in count
-const checkins = Number(localStorage.getItem("corehabit_checkins") || 0);
-document.getElementById("statCheckins").textContent = checkins;
-
-// simple streak logic
-const lastCheckin = localStorage.getItem("corehabit_last_checkin");
-
-if (lastCheckin) {
-  const daysSince =
-    (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-
-  const streak = daysSince <= 2 ? checkins : 0;
-  document.getElementById("statStreak").textContent = streak;
-}  }
+  }
 
   document.getElementById("userEmail").textContent = user.email;
 
-  // ✅ Profile / premium status
-  // Premium UI
-if (profile && profile.premium_status === true) {
-  document.getElementById("premiumBadge").style.display = "inline-block";
-  document.getElementById("premiumUpsell").style.display = "none";
-}
+  // ===== FETCH PROFILE =====
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("premium_status")
+    .eq("id", user.id)
+    .single();
 
-  if (profileError) console.warn("Profile fetch error:", profileError);
+  if (error) {
+    console.warn("Profile fetch error:", error);
+  }
 
-  if (profile?.premium_status === true) {
+  // ===== PREMIUM UI =====
+  if (profile && profile.premium_status === true) {
     document.getElementById("premiumBadge").style.display = "inline-block";
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-  // ✅ Load last generated plan (MVP storage)
-  // Load last generated plan (MVP storage)
-const planRaw = localStorage.getItem("corehabit_last_plan");
+  // ===== LOAD PLAN =====
+  const planRaw = localStorage.getItem("corehabit_last_plan");
 
-if (planRaw) {
-  try {
-    const plan = JSON.parse(planRaw);
-
-    document.getElementById("planSummary").innerHTML = `
-      Calories: ${plan?.macro_targets?.calories || "-"}<br>
-      Protein: ${plan?.macro_targets?.protein || "-"}g<br>
-      Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ")}
-    `;
-  } catch (e) {
-    console.error("Plan parse failed", e);
-  }
-}
+  if (planRaw) {
+    try {
+      const plan = JSON.parse(planRaw);
 
       document.getElementById("planSummary").innerHTML = `
         Calories: ${plan?.macro_targets?.calories ?? "-"}<br>
@@ -290,9 +268,23 @@ if (planRaw) {
     }
   }
 
-  // ✅ Weekly nudge logic (correct location)
+  // ===== STATS =====
+  const checkins = Number(localStorage.getItem("corehabit_checkins") || 0);
+  document.getElementById("statCheckins").textContent = checkins;
+
   const lastCheckin = localStorage.getItem("corehabit_last_checkin");
 
+  if (lastCheckin) {
+    const daysSince =
+      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
+
+    const streak = daysSince <= 2 ? checkins : 0;
+    document.getElementById("statStreak").textContent = streak;
+  } else {
+    document.getElementById("statStreak").textContent = 0;
+  }
+
+  // ===== WEEKLY NUDGE =====
   if (lastCheckin) {
     const daysSince =
       (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
@@ -310,46 +302,6 @@ if (planRaw) {
       if (daysSinceFirst >= 3) showWeeklyNudge();
     }
   }
-}
-
-function submitCheckin(status) {
-  console.log("Check-in:", status);
-
-  // save last check-in
-  localStorage.setItem("corehabit_last_checkin", Date.now());
-
-  // increment total check-ins
-  const current = Number(localStorage.getItem("corehabit_checkins") || 0);
-  localStorage.setItem("corehabit_checkins", current + 1);
-
-  alert("Check-in saved ✔️");
-}
-function goToOnboarding() {
-  try {
-    localStorage.setItem("corehabit_reonboarding", "true");
-    window.location.assign("/onboarding.html");
-  } catch (e) {
-    console.error("Regen navigation failed", e);
-    window.location.href = "/onboarding.html";
-  }
-}
-
-function showWeeklyNudge() {
-  // prevent duplicates
-  if (document.getElementById("weeklyNudgeCard")) return;
-
-  const card = document.createElement("div");
-  card.className = "card";
-  card.id = "weeklyNudgeCard";
-  card.innerHTML = `
-    <h2>👀 Weekly Check-In</h2>
-    <div class="muted">
-      Time to review your progress and keep the momentum going.
-    </div>
-  `;
-
-  const container = document.querySelector(".container");
-  container.insertBefore(card, container.children[2] || null);
 }
 
 loadDashboard();
