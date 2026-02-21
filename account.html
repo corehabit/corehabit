@@ -259,10 +259,24 @@ async function loadDashboard() {
       const plan = JSON.parse(planRaw);
 
       document.getElementById("planSummary").innerHTML = `
-        Calories: ${plan?.macro_targets?.calories ?? "-"}<br>
-        Protein: ${plan?.macro_targets?.protein ?? "-"}g<br>
-        Workout Split: ${(plan?.weekly_workout_split || []).slice(0,3).join(", ") || "-"}
-      `;
+  <strong>Overview</strong><br>
+  ${plan?.overview || "-"}<br><br>
+
+  <strong>Workout Split</strong><br>
+  ${(plan?.weekly_workout_split || [])
+    .map(d => `• ${d}`)
+    .join("<br>") || "-"}<br><br>
+
+  <strong>Sample Workout</strong><br>
+  ${(plan?.sample_workout || [])
+    .map(d => `• ${d}`)
+    .join("<br>") || "-"}<br><br>
+
+  <strong>Nutrition Guidelines</strong><br>
+  ${(plan?.daily_nutrition_guidelines || [])
+    .map(d => `• ${d}`)
+    .join("<br>") || "-"}
+`;
     } catch (e) {
       console.warn("Could not parse corehabit_last_plan:", e);
     }
