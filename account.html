@@ -305,6 +305,50 @@ async function loadDashboard() {
 }
 
 loadDashboard();
+  // ===== CHECK-IN FUNCTION =====
+function submitCheckin(status) {
+  console.log("Check-in:", status);
+
+  // Save timestamp
+  localStorage.setItem("corehabit_last_checkin", Date.now());
+
+  // Increment total check-ins
+  const current = Number(localStorage.getItem("corehabit_checkins") || 0);
+  localStorage.setItem("corehabit_checkins", current + 1);
+
+  // Refresh stats immediately
+  document.getElementById("statCheckins").textContent = current + 1;
+
+  document.getElementById("statStreak").textContent = current + 1;
+
+  alert("Check-in saved ✔️");
+}
+
+
+// ===== REGENERATE FUNCTION =====
+function goToOnboarding() {
+  localStorage.setItem("corehabit_reonboarding", "true");
+  window.location.href = "/onboarding.html";
+}
+
+
+// ===== WEEKLY NUDGE FUNCTION =====
+function showWeeklyNudge() {
+  if (document.getElementById("weeklyNudgeCard")) return;
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.id = "weeklyNudgeCard";
+  card.innerHTML = `
+    <h2>👀 Weekly Check-In</h2>
+    <div class="muted">
+      Time to review your progress and keep the momentum going.
+    </div>
+  `;
+
+  const container = document.querySelector(".container");
+  container.insertBefore(card, container.children[2] || null);
+}
 </script>
 
 </body>
