@@ -518,28 +518,7 @@ localStorage.setItem(
       <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
       <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
     `;
-    // ✅ Show dashboard link
-const dashboardLink = document.getElementById("dashboard-link");
 
-dashboardLink.innerHTML = `
-  <div style="margin-top:30px; text-align:center;">
-    <a href="/account.html"
-       style="
-         display:inline-block;
-         padding:14px 28px;
-         border-radius:999px;
-         background:linear-gradient(135deg,#7c5cff,#9b87ff);
-         color:white;
-         font-weight:700;
-         text-decoration:none;
-         box-shadow:0 12px 35px rgba(124,92,255,0.4);
-       ">
-      Go To My Dashboard
-    </a>
-  </div>
-`;
-
-dashboardLink.style.display = "block";
 
     // ✅ Render premium ONLY if premium
     if (isPremium) {
@@ -631,7 +610,31 @@ if (data.advanced_training_notes) {
 
       if (regenBtn) regenBtn.style.display = "inline-block";
     }
+    // ✅ Move dashboard button to bottom of page
+const premiumRoot = document.getElementById("premium-root");
 
+const dashboardBtn = document.createElement("div");
+dashboardBtn.style.marginTop = "40px";
+dashboardBtn.style.textAlign = "center";
+
+dashboardBtn.innerHTML = `
+  <a href="/account.html"
+     style="
+       display:inline-block;
+       padding:16px 32px;
+       border-radius:999px;
+       background:linear-gradient(135deg,#7c5cff,#9b87ff);
+       color:white;
+       font-weight:800;
+       font-size:16px;
+       text-decoration:none;
+       box-shadow:0 15px 40px rgba(124,92,255,0.45);
+     ">
+    Go To My Dashboard
+  </a>
+`;
+
+premiumRoot.appendChild(dashboardBtn);
   } catch (err) {
     console.error(err);
     statusEl.textContent = "Something went wrong generating your plan.";
