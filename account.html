@@ -252,50 +252,66 @@ async function loadDashboard() {
   }
 
   // ===== LOAD FULL PLAN =====
-// ===== LOAD PLAN FROM SUPABASE =====
-const { data: profileWithPlan } = await supabase
-  .from("profiles")
-  .select("current_plan")
-  .eq("id", user.id)
-  .single();
+const planRaw = localStorage.getItem("corehabit_last_plan");
 
-const plan = profileWithPlan?.current_plan;
+if (planRaw) {
+  try {
+    const plan = JSON.parse(planRaw);
 
-if (plan) {
+    document.getElementById("planSummary").innerHTML = `
+  <strong>Overview</strong><br>
+  ${plan.overview || "-"}<br><br>
 
-  document.getElementById("planSummary").innerHTML = `
-    <strong>Overview</strong><br>
-    ${plan.overview || "-"}<br><br>
+  <strong>Weekly Workout Split</strong><br>
+  ${(plan.weekly_workout_split || [])
+    .map(d => `• ${d}`)
+    .join("<br>")}<br><br>
 
-    <strong>Weekly Workout Split</strong><br>
-    ${(plan.weekly_workout_split || [])
-      .map(d => `• ${d}`)
-      .join("<br>")}<br><br>
+  <strong>Sample Workout</strong><br>
+  ${(plan.sample_workout || [])
+    .map(d => `• ${d}`)
+    .join("<br>")}<br><br>
 
-    <strong>Sample Workout</strong><br>
-    ${(plan.sample_workout || [])
-      .map(d => `• ${d}`)
-      .join("<br>")}<br><br>
+  <strong>Daily Nutrition Guidelines</strong><br>
+  ${(plan.daily_nutrition_guidelines || [])
+    .map(d => `• ${d}`)
+    .join("<br>")}<br><br>
 
-    <strong>Daily Nutrition Guidelines</strong><br>
-    ${(plan.daily_nutrition_guidelines || [])
-      .map(d => `• ${d}`)
-      .join("<br>")}<br><br>
+  <strong>Sample Day of Eating</strong><br>
+  ${(plan.sample_day_of_eating || [])
+    .map(d => `• ${d}`)
+    .join("<br>")}<br><br>
 
-    ${plan.macro_targets ? `
-      <strong>Macro Targets</strong><br>
-      • Calories: ${plan.macro_targets.calories}<br>
-      • Protein: ${plan.macro_targets.protein}g<br>
-      • Carbs: ${plan.macro_targets.carbs}g<br>
-      • Fats: ${plan.macro_targets.fats}g<br><br>
-    ` : ""}
+  <strong>Weekly Focus Tip</strong><br>
+  ${plan.weekly_focus_tip || "-"}<br><br>
 
-    ${plan.seven_day_meal_plan ? `
-      <strong>7-Day Meal Plan</strong><br>
-      ${plan.seven_day_meal_plan.map(m => `• ${m}`).join("<br>")}<br><br>
-    ` : ""}
-  `;
-}
+  ${plan.macro_targets ? `
+    <strong>Macro Targets</strong><br>
+    • Calories: ${plan.macro_targets.calories}<br>
+    • Protein: ${plan.macro_targets.protein}g<br>
+    • Carbs: ${plan.macro_targets.carbs}g<br>
+    • Fats: ${plan.macro_targets.fats}g<br><br>
+  ` : ""}
+
+  ${plan.seven_day_meal_plan ? `
+    <strong>7-Day Meal Plan</strong><br>
+    ${plan.seven_day_meal_plan.map(m => `• ${m}`).join("<br>")}<br><br>
+  ` : ""}
+
+  ${plan.grocery_list ? `
+    <strong>Grocery List</strong><br>
+    ${plan.grocery_list.map(g => `• ${g}`).join("<br>")}<br><br>
+  ` : ""}
+
+  ${plan.full_week_workout_plan ? `
+    <strong>Full 7-Day Workout Plan</strong><br>
+    ${Object.entries(plan.full_week_workout_plan)
+      .map(([day, exercises]) => `
+        <br><em>${day}</em><br>
+        ${exercises.map(ex => `• ${ex}`).join("<br>")}
+      `).join("<br>")}
+  ` : ""}
+`;
   } catch (e) {
     console.warn("Plan parse failed", e);
   }
@@ -340,44 +356,22 @@ if (plan) {
 
 loadDashboard();
   // ===== CHECK-IN FUNCTION =====
-async function submitCheckin(status) {
+function submitCheckin(status) {
+  console.log("Check-in:", status);
 
-  const supabase = window.supabaseClient;
+  // Save timestamp
+  localStorage.setItem("corehabit_last_checkin", Date.now());
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
+  // Increment total check-ins
+  const current = Number(localStorage.getItem("corehabit_checkins") || 0);
+  localStorage.setItem("corehabit_checkins", current + 1);
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("current_plan, checkin_count")
-    .eq("id", user.id)
-    .single();
+  // Refresh stats immediately
+  document.getElementById("statCheckins").textContent = current + 1;
 
-  if (!profile?.current_plan) return;
+  document.getElementById("statStreak").textContent = current + 1;
 
-  let plan = profile.current_plan;
-
-  // 🔥 Adjust plan based on check-in
-  if (status === "struggling" && plan.macro_targets) {
-    plan.macro_targets.calories -= 150;
-  }
-
-  if (status === "ahead" && plan.macro_targets) {
-    plan.macro_targets.calories += 150;
-  }
-
-  await supabase
-    .from("profiles")
-    .update({
-      current_plan: plan,
-      checkin_count: (profile.checkin_count || 0) + 1,
-      last_checkin: new Date()
-    })
-    .eq("id", user.id);
-
-  alert("Plan updated based on your progress ✔️");
-
-  location.reload();
+  alert("Check-in saved ✔️");
 }
 
 
