@@ -251,8 +251,44 @@ async function loadDashboard() {
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-  // ===== LOAD PLAN =====
-  const planRaw = localStorage.getItem("corehabit_last_plan");
+  // ===== LOAD FULL PLAN =====
+const planRaw = localStorage.getItem("corehabit_last_plan");
+
+if (planRaw) {
+  try {
+    const plan = JSON.parse(planRaw);
+
+    document.getElementById("planSummary").innerHTML = `
+      <strong>Overview</strong><br>
+      ${plan.overview || "-"}<br><br>
+
+      <strong>Weekly Workout Split</strong><br>
+      ${(plan.weekly_workout_split || [])
+        .map(d => `• ${d}`)
+        .join("<br>") || "-"}<br><br>
+
+      <strong>Sample Workout</strong><br>
+      ${(plan.sample_workout || [])
+        .map(d => `• ${d}`)
+        .join("<br>") || "-"}<br><br>
+
+      <strong>Daily Nutrition Guidelines</strong><br>
+      ${(plan.daily_nutrition_guidelines || [])
+        .map(d => `• ${d}`)
+        .join("<br>") || "-"}<br><br>
+
+      <strong>Sample Day of Eating</strong><br>
+      ${(plan.sample_day_of_eating || [])
+        .map(d => `• ${d}`)
+        .join("<br>") || "-"}<br><br>
+
+      <strong>Weekly Focus Tip</strong><br>
+      ${plan.weekly_focus_tip || "-"}
+    `;
+  } catch (e) {
+    console.warn("Plan parse failed", e);
+  }
+}
 
   if (planRaw) {
     try {
