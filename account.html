@@ -251,109 +251,88 @@ async function loadDashboard() {
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-  // ===== LOAD FULL PLAN =====
+  // ===== LOAD COMPLETE PLAN =====
 const planRaw = localStorage.getItem("corehabit_last_plan");
 
 if (planRaw) {
   try {
     const plan = JSON.parse(planRaw);
 
-    document.getElementById("planSummary").innerHTML = `
+    let html = `
       <strong>Overview</strong><br>
       ${plan.overview || "-"}<br><br>
 
       <strong>Weekly Workout Split</strong><br>
       ${(plan.weekly_workout_split || [])
         .map(d => `• ${d}`)
-        .join("<br>") || "-"}<br><br>
+        .join("<br>")}<br><br>
 
       <strong>Sample Workout</strong><br>
       ${(plan.sample_workout || [])
         .map(d => `• ${d}`)
-        .join("<br>") || "-"}<br><br>
+        .join("<br>")}<br><br>
 
       <strong>Daily Nutrition Guidelines</strong><br>
       ${(plan.daily_nutrition_guidelines || [])
         .map(d => `• ${d}`)
-        .join("<br>") || "-"}<br><br>
+        .join("<br>")}<br><br>
 
       <strong>Sample Day of Eating</strong><br>
       ${(plan.sample_day_of_eating || [])
         .map(d => `• ${d}`)
-        .join("<br>") || "-"}<br><br>
+        .join("<br>")}<br><br>
 
       <strong>Weekly Focus Tip</strong><br>
-      ${plan.weekly_focus_tip || "-"}
+      ${plan.weekly_focus_tip || "-"}<br><br>
     `;
+
+    // 🔥 PREMIUM ADDITIONS
+
+    if (plan.macro_targets) {
+      html += `
+        <strong>Macro Targets</strong><br>
+        • Calories: ${plan.macro_targets.calories}<br>
+        • Protein: ${plan.macro_targets.protein}g<br>
+        • Carbs: ${plan.macro_targets.carbs}g<br>
+        • Fats: ${plan.macro_targets.fats}g<br><br>
+      `;
+    }
+
+    if (plan.seven_day_meal_plan) {
+      html += `
+        <strong>7-Day Meal Plan</strong><br>
+        ${plan.seven_day_meal_plan
+          .map(m => `• ${m}`)
+          .join("<br>")}<br><br>
+      `;
+    }
+
+    if (plan.grocery_list) {
+      html += `
+        <strong>Grocery List</strong><br>
+        ${plan.grocery_list
+          .map(g => `• ${g}`)
+          .join("<br>")}<br><br>
+      `;
+    }
+
+    if (plan.full_week_workout_plan) {
+      html += `<strong>Full 7-Day Workout Plan</strong><br>`;
+      for (const day in plan.full_week_workout_plan) {
+        html += `<br><em>${day}</em><br>`;
+        html += plan.full_week_workout_plan[day]
+          .map(ex => `• ${ex}`)
+          .join("<br>");
+        html += "<br>";
+      }
+    }
+
+    document.getElementById("planSummary").innerHTML = html;
+
   } catch (e) {
     console.warn("Plan parse failed", e);
   }
 }
-
-  if (planRaw) {
-    try {
-      const plan = JSON.parse(planRaw);
-
-      document.getElementById("planSummary").innerHTML = `
-  <strong>Overview</strong><br>
-  ${plan?.overview || "-"}<br><br>
-
-  <strong>Workout Split</strong><br>
-  ${(plan?.weekly_workout_split || [])
-    .map(d => `• ${d}`)
-    .join("<br>") || "-"}<br><br>
-
-  <strong>Sample Workout</strong><br>
-  ${(plan?.sample_workout || [])
-    .map(d => `• ${d}`)
-    .join("<br>") || "-"}<br><br>
-
-  <strong>Nutrition Guidelines</strong><br>
-  ${(plan?.daily_nutrition_guidelines || [])
-    .map(d => `• ${d}`)
-    .join("<br>") || "-"}
-`;
-    } catch (e) {
-      console.warn("Could not parse corehabit_last_plan:", e);
-    }
-  }
-
-  // ===== STATS =====
-  const checkins = Number(localStorage.getItem("corehabit_checkins") || 0);
-  document.getElementById("statCheckins").textContent = checkins;
-
-  const lastCheckin = localStorage.getItem("corehabit_last_checkin");
-
-  if (lastCheckin) {
-    const daysSince =
-      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-
-    const streak = daysSince <= 2 ? checkins : 0;
-    document.getElementById("statStreak").textContent = streak;
-  } else {
-    document.getElementById("statStreak").textContent = 0;
-  }
-
-  // ===== WEEKLY NUDGE =====
-  if (lastCheckin) {
-    const daysSince =
-      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-
-    if (daysSince >= 7) showWeeklyNudge();
-  } else {
-    const firstVisit = localStorage.getItem("corehabit_first_visit");
-
-    if (!firstVisit) {
-      localStorage.setItem("corehabit_first_visit", Date.now());
-    } else {
-      const daysSinceFirst =
-        (Date.now() - Number(firstVisit)) / (1000 * 60 * 60 * 24);
-
-      if (daysSinceFirst >= 3) showWeeklyNudge();
-    }
-  }
-}
-
 loadDashboard();
   // ===== CHECK-IN FUNCTION =====
 function submitCheckin(status) {
