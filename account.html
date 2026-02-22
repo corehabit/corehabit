@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Your Dashboard — CoreHabit</title>
-  <meta nam="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -217,10 +217,24 @@
       Go Premium
     </button>
   </div>
+  <!-- Weekly Progress Section -->
+<div id="weekly-progress-section" style="margin-top:40px; padding:20px; border-top:1px solid #eee;">
+  <h3 id="week-status-text">Loading week...</h3>
+
+  <button id="start-next-week-btn" style="display:none; margin-top:15px;">
+    Start Next Week
+  </button>
+</div>
 
 </div>
 
-<script>
+<script type="module">
+import {
+  evaluateCheckIn,
+  applyAdjustments,
+  generateChangeSummary
+} from "/utils/weeklyProgression.js";
+
 async function loadDashboard() {
   const supabase = window.supabaseClient;
 
@@ -237,7 +251,7 @@ async function loadDashboard() {
   // ===== FETCH PROFILE =====
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("premium_status")
+    .select("*")
     .eq("id", user.id)
     .single();
 
@@ -245,107 +259,99 @@ async function loadDashboard() {
     console.warn("Profile fetch error:", error);
   }
 
+  const weekNumber = (profile?.week_number || 1);
+  document.getElementById("week-status-text").innerText = `Week ${weekNumber} Active`;
+
+  // Show button for now (later you can gate this by day 7 logic)
+  document.getElementById("start-next-week-btn").style.display = "block";
+
   // ===== PREMIUM UI =====
   if (profile && profile.premium_status === true) {
     document.getElementById("premiumBadge").style.display = "inline-block";
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-// ===== LOAD FULL PLAN (Supabase first, fallback localStorage) =====
-let plan = null;
+  // ===== LOAD FULL PLAN (Supabase first, fallback localStorage) =====
+  let plan = null;
 
-// 1️⃣ Try Supabase
-try {
-  const { data: profileWithPlan } = await supabase
-    .from("profiles")
-    .select("current_plan")
-    .eq("id", user.id)
-    .single();
+  try {
+    const { data: profileWithPlan } = await supabase
+      .from("profiles")
+      .select("current_plan")
+      .eq("id", user.id)
+      .single();
 
-  if (profileWithPlan?.current_plan) {
-    plan = profileWithPlan.current_plan;
+    if (profileWithPlan?.current_plan) {
+      plan = profileWithPlan.current_plan;
+    }
+  } catch (e) {
+    console.warn("Supabase plan fetch failed:", e);
   }
-} catch (e) {
-  console.warn("Supabase plan fetch failed:", e);
-}
 
-// 2️⃣ Fallback to localStorage
-if (!plan) {
-  const planRaw = localStorage.getItem("corehabit_last_plan");
-  if (planRaw) {
-    try { plan = JSON.parse(planRaw); } catch (e) {}
+  if (!plan) {
+    const planRaw = localStorage.getItem("corehabit_last_plan");
+    if (planRaw) {
+      try { plan = JSON.parse(planRaw); } catch (e) {}
+    }
   }
-}
 
-// 3️⃣ Render if exists
-if (plan) {
-  document.getElementById("planSummary").innerHTML = `
-  <strong>Overview</strong><br>
-  ${plan.overview || "-"}<br><br>
+  // Render if exists
+  if (plan) {
+    document.getElementById("planSummary").innerHTML = `
+      <strong>Overview</strong><br>
+      ${plan.overview || "-"}<br><br>
 
-  <strong>Weekly Workout Split</strong><br>
-  ${(plan.weekly_workout_split || [])
-    .map(d => `• ${d}`)
-    .join("<br>")}<br><br>
+      <strong>Weekly Workout Split</strong><br>
+      ${(plan.weekly_workout_split || []).map(d => `• ${d}`).join("<br>")}<br><br>
 
-  <strong>Sample Workout</strong><br>
-  ${(plan.sample_workout || [])
-    .map(d => `• ${d}`)
-    .join("<br>")}<br><br>
+      <strong>Sample Workout</strong><br>
+      ${(plan.sample_workout || []).map(d => `• ${d}`).join("<br>")}<br><br>
 
-  <strong>Daily Nutrition Guidelines</strong><br>
-  ${(plan.daily_nutrition_guidelines || [])
-    .map(d => `• ${d}`)
-    .join("<br>")}<br><br>
+      <strong>Daily Nutrition Guidelines</strong><br>
+      ${(plan.daily_nutrition_guidelines || []).map(d => `• ${d}`).join("<br>")}<br><br>
 
-  <strong>Sample Day of Eating</strong><br>
-  ${(plan.sample_day_of_eating || [])
-    .map(d => `• ${d}`)
-    .join("<br>")}<br><br>
+      <strong>Sample Day of Eating</strong><br>
+      ${(plan.sample_day_of_eating || []).map(d => `• ${d}`).join("<br>")}<br><br>
 
-  <strong>Weekly Focus Tip</strong><br>
-  ${plan.weekly_focus_tip || "-"}<br><br>
+      <strong>Weekly Focus Tip</strong><br>
+      ${plan.weekly_focus_tip || "-"}<br><br>
 
-  ${plan.macro_targets ? `
-    <strong>Macro Targets</strong><br>
-    • Calories: ${plan.macro_targets.calories}<br>
-    • Protein: ${plan.macro_targets.protein}g<br>
-    • Carbs: ${plan.macro_targets.carbs}g<br>
-    • Fats: ${plan.macro_targets.fats}g<br><br>
-  ` : ""}
+      ${plan.macro_targets ? `
+        <strong>Macro Targets</strong><br>
+        • Calories: ${plan.macro_targets.calories}<br>
+        • Protein: ${plan.macro_targets.protein}g<br>
+        • Carbs: ${plan.macro_targets.carbs}g<br>
+        • Fats: ${plan.macro_targets.fats}g<br><br>
+      ` : ""}
 
-  ${plan.seven_day_meal_plan ? `
-    <strong>7-Day Meal Plan</strong><br>
-    ${plan.seven_day_meal_plan.map(m => `• ${m}`).join("<br>")}<br><br>
-  ` : ""}
+      ${plan.seven_day_meal_plan ? `
+        <strong>7-Day Meal Plan</strong><br>
+        ${plan.seven_day_meal_plan.map(m => `• ${m}`).join("<br>")}<br><br>
+      ` : ""}
 
-  ${plan.grocery_list ? `
-    <strong>Grocery List</strong><br>
-    ${plan.grocery_list.map(g => `• ${g}`).join("<br>")}<br><br>
-  ` : ""}
+      ${plan.grocery_list ? `
+        <strong>Grocery List</strong><br>
+        ${plan.grocery_list.map(g => `• ${g}`).join("<br>")}<br><br>
+      ` : ""}
 
-  ${plan.full_week_workout_plan ? `
-    <strong>Full 7-Day Workout Plan</strong><br>
-    ${Object.entries(plan.full_week_workout_plan)
-      .map(([day, exercises]) => `
-        <br><em>${day}</em><br>
-        ${exercises.map(ex => `• ${ex}`).join("<br>")}
-      `).join("<br>")}
-  ` : ""}
-  `;
-}
-
+      ${plan.full_week_workout_plan ? `
+        <strong>Full 7-Day Workout Plan</strong><br>
+        ${Object.entries(plan.full_week_workout_plan)
+          .map(([day, exercises]) => `
+            <br><em>${day}</em><br>
+            ${exercises.map(ex => `• ${ex}`).join("<br>")}
+          `).join("<br>")}
+      ` : ""}
+    `;
+  }
 
   // ===== STATS =====
   const checkins = Number(localStorage.getItem("corehabit_checkins") || 0);
   document.getElementById("statCheckins").textContent = checkins;
 
   const lastCheckin = localStorage.getItem("corehabit_last_checkin");
-
   if (lastCheckin) {
-    const daysSince =
-      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-
+    const daysSince = (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
     const streak = daysSince <= 2 ? checkins : 0;
     document.getElementById("statStreak").textContent = streak;
   } else {
@@ -354,51 +360,41 @@ if (plan) {
 
   // ===== WEEKLY NUDGE =====
   if (lastCheckin) {
-    const daysSince =
-      (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-
+    const daysSince = (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
     if (daysSince >= 7) showWeeklyNudge();
   } else {
     const firstVisit = localStorage.getItem("corehabit_first_visit");
-
     if (!firstVisit) {
       localStorage.setItem("corehabit_first_visit", Date.now());
     } else {
-      const daysSinceFirst =
-        (Date.now() - Number(firstVisit)) / (1000 * 60 * 60 * 24);
-
+      const daysSinceFirst = (Date.now() - Number(firstVisit)) / (1000 * 60 * 60 * 24);
       if (daysSinceFirst >= 3) showWeeklyNudge();
     }
   }
 }
 
 loadDashboard();
-  // ===== CHECK-IN FUNCTION =====
-function submitCheckin(status) {
+
+// ===== CHECK-IN FUNCTION (your quick buttons) =====
+window.submitCheckin = function submitCheckin(status) {
   console.log("Check-in:", status);
 
-  // Save timestamp
   localStorage.setItem("corehabit_last_checkin", Date.now());
 
-  // Increment total check-ins
   const current = Number(localStorage.getItem("corehabit_checkins") || 0);
   localStorage.setItem("corehabit_checkins", current + 1);
 
-  // Refresh stats immediately
   document.getElementById("statCheckins").textContent = current + 1;
-
   document.getElementById("statStreak").textContent = current + 1;
 
   alert("Check-in saved ✔️");
-}
-
+};
 
 // ===== REGENERATE FUNCTION =====
-function goToOnboarding() {
+window.goToOnboarding = function goToOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
   window.location.href = "/onboarding.html";
-}
-
+};
 
 // ===== WEEKLY NUDGE FUNCTION =====
 function showWeeklyNudge() {
@@ -417,7 +413,111 @@ function showWeeklyNudge() {
   const container = document.querySelector(".container");
   container.insertBefore(card, container.children[2] || null);
 }
+
+// ===== WEEKLY MODAL + REGEN =====
+window.addEventListener("DOMContentLoaded", () => {
+  // Open modal
+  document.getElementById("start-next-week-btn")
+    .addEventListener("click", () => {
+      document.getElementById("checkin-modal").style.display = "flex";
+    });
+
+  // Submit check-in & generate
+  document.getElementById("submit-checkin")
+    .addEventListener("click", async () => {
+      const supabase = window.supabaseClient;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const checkInData = {
+        weight_change: parseFloat(document.getElementById("weight-change").value),
+        strength_trend: document.getElementById("strength-trend").value,
+        energy: parseInt(document.getElementById("energy").value),
+        adherence: parseInt(document.getElementById("adherence").value),
+        sleep: parseInt(document.getElementById("sleep").value)
+      };
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      const oldPlan = profile.current_plan;
+      if (!oldPlan) {
+        alert("No existing plan found. Generate a plan first.");
+        return;
+      }
+
+      const adjustments = evaluateCheckIn(oldPlan, checkInData);
+      const newPlan = applyAdjustments(oldPlan, adjustments);
+      const summary = generateChangeSummary(adjustments);
+
+      await supabase.from("profiles").update({
+        current_plan: newPlan,
+        week_number: (profile.week_number || 1) + 1,
+        plan_history: [...(profile.plan_history || []), oldPlan],
+        check_in_history: [
+          ...(profile.check_in_history || []),
+          { week: profile.week_number || 1, checkInData, adjustments, summary }
+        ]
+      }).eq("id", user.id);
+
+      showSummary(summary);
+    });
+});
+
+// ===== SHOW SUMMARY =====
+function showSummary(summary) {
+  let html = "<h2>Week Activated ✅</h2><ul style='color:black;'>";
+  summary.forEach(item => {
+    html += `<li style="margin-bottom:10px;">${item.message}</li>`;
+  });
+  html += "</ul><button onclick='location.reload()'>View Updated Plan</button>";
+  document.querySelector("#checkin-modal div").innerHTML = html;
+}
 </script>
+  <!-- Weekly Check-In Modal -->
+<div id="checkin-modal" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+">
+
+  <div style="background:white; padding:30px; width:400px; border-radius:10px;">
+
+    <h2>Let’s Review Your Week</h2>
+
+    <label>Weight Change (lbs)</label>
+    <input id="weight-change" type="number" step="0.1" style="width:100%; margin-bottom:10px;" />
+
+    <label>Strength Trend</label>
+    <select id="strength-trend" style="width:100%; margin-bottom:10px;">
+      <option value="up">Improved</option>
+      <option value="same">Same</option>
+      <option value="down">Decreased</option>
+    </select>
+
+    <label>Energy (1–5)</label>
+    <input id="energy" type="number" min="1" max="5" style="width:100%; margin-bottom:10px;" />
+
+    <label>Adherence (%)</label>
+    <input id="adherence" type="number" min="0" max="100" style="width:100%; margin-bottom:10px;" />
+
+    <label>Sleep (1–5)</label>
+    <input id="sleep" type="number" min="1" max="5" style="width:100%; margin-bottom:20px;" />
+
+    <button id="submit-checkin">Submit & Generate Week</button>
+
+  </div>
+</div>
 
 </body>
 </html>
