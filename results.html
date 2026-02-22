@@ -508,6 +508,20 @@ localStorage.setItem(
   JSON.stringify(data)
 );
     localStorage.setItem("corehabit_last_plan", JSON.stringify(data));
+    // ✅ Save plan to Supabase so it survives logout/browser close
+try {
+  const supabase = window.supabaseClient;
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    await supabase
+      .from("profiles")
+      .update({ current_plan: data })
+      .eq("id", user.id);
+  }
+} catch (e) {
+  console.warn("Could not persist plan to Supabase:", e);
+}
     // ✅ Render base plan
     resultEl.style.display = "block";
     resultEl.innerHTML = `
