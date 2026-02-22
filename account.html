@@ -429,12 +429,10 @@ function showWeeklyNudge() {
 }
 
 // ===== WEEKLY MODAL + REGEN =====
-window.addEventListener("DOMContentLoaded", () => {
   // Open modal
   document.getElementById("start-next-week-btn")
     .addEventListener("click", () => {
       document.getElementById("checkin-modal").style.display = "flex";
-    });
 
   // Submit check-in & generate
   document.getElementById("submit-checkin")
