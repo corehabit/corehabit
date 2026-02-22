@@ -190,8 +190,8 @@ const userPrompt =
         },
         body: JSON.stringify({
   model: "gpt-4o-mini",
-  temperature: 0.4,
-  max_tokens: isPremium ? 1800 : 900,
+  temperature: 0.3,
+  max_tokens: isPremium ? 1000 : 700,
   messages: [
     { role: "system", content: systemPrompt },
     { role: "user", content: userPrompt }
