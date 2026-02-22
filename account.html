@@ -251,14 +251,35 @@ async function loadDashboard() {
     document.getElementById("premiumUpsell").style.display = "none";
   }
 
-  // ===== LOAD FULL PLAN =====
-const planRaw = localStorage.getItem("corehabit_last_plan");
+// ===== LOAD FULL PLAN (Supabase first, fallback localStorage) =====
+let plan = null;
 
-if (planRaw) {
-  try {
-    const plan = JSON.parse(planRaw);
+// 1️⃣ Try Supabase
+try {
+  const { data: profileWithPlan } = await supabase
+    .from("profiles")
+    .select("current_plan")
+    .eq("id", user.id)
+    .single();
 
-    document.getElementById("planSummary").innerHTML = `
+  if (profileWithPlan?.current_plan) {
+    plan = profileWithPlan.current_plan;
+  }
+} catch (e) {
+  console.warn("Supabase plan fetch failed:", e);
+}
+
+// 2️⃣ Fallback to localStorage
+if (!plan) {
+  const planRaw = localStorage.getItem("corehabit_last_plan");
+  if (planRaw) {
+    try { plan = JSON.parse(planRaw); } catch (e) {}
+  }
+}
+
+// 3️⃣ Render if exists
+if (plan) {
+  document.getElementById("planSummary").innerHTML = `
   <strong>Overview</strong><br>
   ${plan.overview || "-"}<br><br>
 
@@ -311,10 +332,7 @@ if (planRaw) {
         ${exercises.map(ex => `• ${ex}`).join("<br>")}
       `).join("<br>")}
   ` : ""}
-`;
-  } catch (e) {
-    console.warn("Plan parse failed", e);
-  }
+  `;
 }
 
 
