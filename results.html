@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
       .then(res => res.json())
       .then(async data => {
-  if (data.customerId) {
+  if (finalPlan.customerId) {
 
   const supabase = window.supabaseClient;
 
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (sessionData?.session?.user) {
 
-    const userId = sessionData.session.user.id;
+    const userId = sessionfinalPlan.session.user.id;
 
     await supabase
       .from("profiles")
@@ -428,6 +428,67 @@ backdrop-filter: blur(6px);
 if (urlParams2.get("premium") === "success") {
   localStorage.setItem("corehabit_premium", "true");
 }
+async function enrichPremiumPlan(onboarding, plan) {
+
+  if (!plan?.macro_targets) return plan; // not premium
+
+  // ========================
+  // 1️⃣ Generate Workout Week
+  // ========================
+  try {
+    const wRes = await fetch("/.netlify/functions/generateWorkoutWeek", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ onboarding })
+    });
+
+    if (wRes.ok) {
+      const workoutData = await wRes.json();
+      if (workoutfinalPlan.full_week_workout_plan) {
+        plan.full_week_workout_plan = workoutfinalPlan.full_week_workout_plan;
+      }
+    } else {
+      console.warn("Workout week failed");
+    }
+
+  } catch (e) {
+    console.warn("Workout enrichment error:", e);
+  }
+
+  // ========================
+  // 2️⃣ Generate Meal Week
+  // ========================
+  try {
+    const mRes = await fetch("/.netlify/functions/generateMealWeek", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        onboarding,
+        macro_targets: plan.macro_targets
+      })
+    });
+
+    if (mRes.ok) {
+      const mealData = await mRes.json();
+
+      if (mealfinalPlan.seven_day_meal_plan) {
+        plan.seven_day_meal_plan = mealfinalPlan.seven_day_meal_plan;
+      }
+
+      if (mealfinalPlan.grocery_list) {
+        plan.grocery_list = mealfinalPlan.grocery_list;
+      }
+
+    } else {
+      console.warn("Meal week failed");
+    }
+
+  } catch (e) {
+    console.warn("Meal enrichment error:", e);
+  }
+
+  return plan;
+}
 async function generatePlan() {
 
   const isRegenerating =
@@ -502,35 +563,45 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
-    // ✅ Persist latest plan for dashboard
+let finalPlan = data;
+
+// 🔥 If premium, enrich plan (workouts + meals)
+if (isPremium) {
+  statusEl.textContent = "Building your full Premium plan...";
+  finalPlan = await enrichPremiumPlan(
+    JSON.parse(onboardingRaw),
+    data
+  );
+}
+
+// ✅ Save FINAL plan locally
 localStorage.setItem(
   "corehabit_last_plan",
-  JSON.stringify(data)
+  JSON.stringify(finalPlan)
 );
-    localStorage.setItem("corehabit_last_plan", JSON.stringify(data));
-    // ✅ Save plan to Supabase so it survives logout/browser close
+
+// ✅ Save FINAL plan to Supabase
 try {
-  const supabase = window.supabaseClient;
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
     await supabase
       .from("profiles")
-      .update({ current_plan: data })
+      .update({ current_plan: finalPlan })
       .eq("id", user.id);
   }
 } catch (e) {
-  console.warn("Could not persist plan to Supabase:", e);
+  console.warn("Could not persist plan:", e);
 }
     // ✅ Render base plan
     resultEl.style.display = "block";
     resultEl.innerHTML = `
-      <section><h2>Your CoreHabit Plan</h2><p>${data.overview}</p></section>
-      <section><h3>Weekly Workout Split</h3><ul>${data.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
-      <section><h3>Sample Workout</h3><ul>${data.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Daily Nutrition Guidelines</h3><ul>${data.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Sample Day of Eating</h3><ul>${data.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
-      <section><h3>Weekly Focus Tip</h3><p>${data.weekly_focus_tip}</p></section>
+      <section><h2>Your CoreHabit Plan</h2><p>${finalPlan.overview}</p></section>
+      <section><h3>Weekly Workout Split</h3><ul>${finalPlan.weekly_workout_split.map(d=>`<li>${d}</li>`).join("")}</ul></section>
+      <section><h3>Sample Workout</h3><ul>${finalPlan.sample_workout.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Daily Nutrition Guidelines</h3><ul>${finalPlan.daily_nutrition_guidelines.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Sample Day of Eating</h3><ul>${finalPlan.sample_day_of_eating.map(i=>`<li>${i}</li>`).join("")}</ul></section>
+      <section><h3>Weekly Focus Tip</h3><p>${finalPlan.weekly_focus_tip}</p></section>
     `;
 
 
@@ -539,76 +610,76 @@ try {
 
       const premiumSections = document.getElementById("premium-sections");
 
-      if (data.macro_targets) {
+      if (finalPlan.macro_targets) {
         const macroHTML = `
           <div class="premium-card">
             <h3>Macro Targets</h3>
             <ul>
-              <li><strong>Calories:</strong> ${data.macro_targets.calories}</li>
-              <li><strong>Protein:</strong> ${data.macro_targets.protein}g</li>
-              <li><strong>Carbs:</strong> ${data.macro_targets.carbs}g</li>
-              <li><strong>Fats:</strong> ${data.macro_targets.fats}g</li>
+              <li><strong>Calories:</strong> ${finalPlan.macro_targets.calories}</li>
+              <li><strong>Protein:</strong> ${finalPlan.macro_targets.protein}g</li>
+              <li><strong>Carbs:</strong> ${finalPlan.macro_targets.carbs}g</li>
+              <li><strong>Fats:</strong> ${finalPlan.macro_targets.fats}g</li>
             </ul>
           </div>
         `;
         premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
       }
       // Fill 7-Day Meal Plan
-if (data.seven_day_meal_plan) {
+if (finalPlan.seven_day_meal_plan) {
   document.getElementById("seven-day-meal-plan").innerHTML =
-    data.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
+    finalPlan.seven_day_meal_plan.map(i => `<li>${i}</li>`).join("");
 }
 
 // Fill Grocery List
-if (data.grocery_list) {
+if (finalPlan.grocery_list) {
   document.getElementById("grocery-list").innerHTML =
-    data.grocery_list.map(i => `<li>${i}</li>`).join("");
+    finalPlan.grocery_list.map(i => `<li>${i}</li>`).join("");
 }
 
 // Fill Weekly Check-In
-if (data.weekly_check_in) {
+if (finalPlan.weekly_check_in) {
   document.getElementById("weekly-check-in").textContent =
-    data.weekly_check_in;
+    finalPlan.weekly_check_in;
 }
 
 // Fill Advanced Training Notes
-if (data.advanced_training_notes) {
+if (finalPlan.advanced_training_notes) {
   document.getElementById("advanced-training-notes").textContent =
-    data.advanced_training_notes;
+    finalPlan.advanced_training_notes;
 }
 
-      if (data.volume_targets) {
+      if (finalPlan.volume_targets) {
         premiumSections.insertAdjacentHTML("beforeend", `
           <div class="premium-card">
             <h3>Weekly Volume Targets</h3>
             <ul>
-              ${data.volume_targets.map(v => `<li>${v}</li>`).join("")}
+              ${finalPlan.volume_targets.map(v => `<li>${v}</li>`).join("")}
             </ul>
           </div>
         `);
       }
 
-      if (data.progression_strategy) {
+      if (finalPlan.progression_strategy) {
         premiumSections.insertAdjacentHTML("beforeend", `
           <div class="premium-card">
             <h3>Progression Strategy</h3>
-            <p>${data.progression_strategy}</p>
+            <p>${finalPlan.progression_strategy}</p>
           </div>
         `);
       }
 
-      if (data.full_week_workout_plan) {
+      if (finalPlan.full_week_workout_plan) {
 
   let workoutHTML = `
     <div class="premium-card">
       <h3>Full 7-Day Training Plan</h3>
   `;
 
-  for (const day in data.full_week_workout_plan) {
+  for (const day in finalPlan.full_week_workout_plan) {
     workoutHTML += `
       <h4 style="margin-top:16px;">${day}</h4>
       <ul>
-        ${data.full_week_workout_plan[day]
+        ${finalPlan.full_week_workout_plan[day]
           .map(ex => `<li>${ex}</li>`)
           .join("")}
       </ul>
@@ -677,7 +748,7 @@ if (sessionId) {
   .then(res => res.json())
   .then(async data => {
 
-    if (!data.customerId) return;
+    if (!finalPlan.customerId) return;
 
     const supabase = window.supabaseClient;
 
@@ -781,7 +852,7 @@ async function submitAuth() {
     return;
   }
 
-  const userId = data.user.id;
+  const userId = finalPlan.user.id;
 
   // 🔥 check premium status
   const { data: profile } = await supabase
