@@ -98,48 +98,46 @@ export async function handler(event) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+    const response = await fetch("https://api.openai.com/v1/responses", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: "gpt-4o-mini",
+    temperature: 0.4,
+    max_output_tokens: 600,
+    response_format: { type: "json_object" },
+    input: [
+      {
+        role: "system",
+        content: systemPrompt
       },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        temperature: 0.4,
-        max_tokens: 600,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ]
-      })
-    });
+      {
+        role: "user",
+        content: userPrompt
+      }
+    ]
+  })
+});
 
     clearTimeout(timeout);
 
     const data = await response.json();
-    if (!data.choices?.[0]?.message?.content) {
-      return { statusCode: 500, body: JSON.stringify({ error: "No AI content returned" }) };
-    }
 
-    const raw = data.choices[0].message.content;
-
-// Extract JSON safely
-const jsonMatch = raw.match(/\{[\s\S]*\}/);
-
-if (!jsonMatch) {
-  console.error("No JSON found:", raw);
-  throw new Error("No JSON returned from AI");
+if (!data.output_text) {
+  console.error("Invalid OpenAI response:", data);
+  throw new Error("Invalid AI response");
 }
 
 let plan;
 
 try {
-  plan = JSON.parse(jsonMatch[0]);
+  plan = JSON.parse(data.output_text);
 } catch (err) {
   console.error("JSON parse error:", err);
-  console.error("Raw content:", raw);
+  console.error("Raw output:", data.output_text);
   throw new Error("Malformed JSON");
 }
 
