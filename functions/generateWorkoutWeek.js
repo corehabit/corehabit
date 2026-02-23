@@ -4,6 +4,10 @@ export async function handler(event) {
       return { statusCode: 405, body: "Method Not Allowed" };
     }
 
+    // 🔒 Sanitize height to prevent JSON-breaking apostrophes
+if (onboarding?.height) {
+  onboarding.height = onboarding.height.replace(/'/g, " ft ");
+}
     const body = JSON.parse(event.body || "{}");
     const onboarding = body.onboarding;
     if (!onboarding) return { statusCode: 400, body: "Missing onboarding data" };
