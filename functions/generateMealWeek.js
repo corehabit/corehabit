@@ -6,6 +6,10 @@ export async function handler(event) {
 
     const body = JSON.parse(event.body || "{}");
     const onboarding = body.onboarding;
+    // 🔒 Sanitize height to prevent JSON-breaking apostrophes
+if (onboarding?.height) {
+  onboarding.height = onboarding.height.replace(/'/g, " ft ");
+}
     const macro_targets = body.macro_targets; // send deterministic macros from Phase 1
 
     if (!onboarding) return { statusCode: 400, body: "Missing onboarding data" };
