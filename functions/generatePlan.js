@@ -120,20 +120,25 @@ export async function handler(event) {
 });
     
 
-    const data = await response.json();
+   const data = await response.json();
 
-if (!data.output_text) {
+if (!data.output || !data.output[0] || !data.output[0].content) {
   console.error("Invalid OpenAI response:", data);
-  throw new Error("Invalid AI response");
+  throw new Error("Invalid AI response structure");
 }
+
+const rawText = data.output[0].content
+  .filter(item => item.type === "output_text")
+  .map(item => item.text)
+  .join("");
 
 let plan;
 
 try {
-  plan = JSON.parse(data.output_text);
+  plan = JSON.parse(rawText);
 } catch (err) {
   console.error("JSON parse error:", err);
-  console.error("Raw output:", data.output_text);
+  console.error("Raw text:", rawText);
   throw new Error("Malformed JSON");
 }
 
