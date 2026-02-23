@@ -81,6 +81,10 @@ export async function handler(event) {
       "You are CoreHabit, an evidence-based fitness and nutrition coach. " +
       "Return VALID JSON ONLY, no markdown, no extra text. Keep it concise and actionable.";
 
+   // Sanitize height to avoid JSON-breaking apostrophes
+if (onboarding.height) {
+  onboarding.height = onboarding.height.replace(/'/g, " ft ");
+}
     const userPrompt =
       `Using the onboarding data below, return a JSON object with these keys ONLY:\n` +
       `${Object.keys(coreSchema).join(", ")}\n\n` +
@@ -92,8 +96,7 @@ export async function handler(event) {
       `- progression_strategy should be 3–5 sentences.\n` +
       `- daily_nutrition_guidelines should be 6–10 bullets.\n` +
       `- weekly_check_in should be measurable.\n\n` +
-      `Onboarding:\n${JSON.stringify(onboarding, null, 2)}`;
-
+      `- Onboarding:\n${JSON.stringify(onboarding)}
 
     const response = await fetch("https://api.openai.com/v1/responses", {
   method: "POST",
