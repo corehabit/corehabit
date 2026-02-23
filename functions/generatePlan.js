@@ -94,9 +94,6 @@ export async function handler(event) {
       `- weekly_check_in should be measurable.\n\n` +
       `Onboarding:\n${JSON.stringify(onboarding, null, 2)}`;
 
-    // Hard timeout so Netlify never hangs
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
 
     const response = await fetch("https://api.openai.com/v1/responses", {
   method: "POST",
@@ -122,7 +119,7 @@ export async function handler(event) {
   })
 });
 
-    clearTimeout(timeout);
+    
 
     const data = await response.json();
 
