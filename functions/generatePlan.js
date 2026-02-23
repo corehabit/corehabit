@@ -86,17 +86,20 @@ if (onboarding.height) {
   onboarding.height = onboarding.height.replace(/'/g, " ft ");
 }
     const userPrompt =
-      `Using the onboarding data below, return a JSON object with these keys ONLY:\n` +
-      `${Object.keys(coreSchema).join(", ")}\n\n` +
-      `Rules:\n` +
-      `- Make it personalized to age, weight, height, goal, training days, and location.\n` +
-      `- weekly_workout_split must match training days.\n` +
-      `- volume_targets must be short bullets like "Chest: 12–16 sets/week".\n` +
-      `- sample_workout should be 6–8 lines max.\n` +
-      `- progression_strategy should be 3–5 sentences.\n` +
-      `- daily_nutrition_guidelines should be 6–10 bullets.\n` +
-      `- weekly_check_in should be measurable.\n\n` +
-      `- Onboarding:\n${JSON.stringify(onboarding)}
+  `Using the onboarding data below, return a JSON object with these keys ONLY:
+${Object.keys(coreSchema).join(", ")}
+
+Rules:
+- Make it personalized to age, weight, height, goal, training days, and location.
+- weekly_workout_split must match training days.
+- volume_targets must be short bullets like "Chest: 12–16 sets/week".
+- sample_workout should be 6–8 lines max.
+- progression_strategy should be 3–5 sentences.
+- daily_nutrition_guidelines should be 6–10 bullets.
+- weekly_check_in should be measurable.
+
+Onboarding:
+${JSON.stringify(onboarding)}`;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
   method: "POST",
