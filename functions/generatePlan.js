@@ -6,7 +6,10 @@ export async function handler(event) {
 
     const body = JSON.parse(event.body || "{}");
     const onboarding = body.onboarding;
-
+    // Sanitize height to avoid JSON-breaking apostrophes
+if (onboarding.height) {
+  onboarding.height = onboarding.height.replace(/'/g, " ft ");
+}
     if (!onboarding) {
       return { statusCode: 400, body: "Missing onboarding data" };
     }
@@ -81,12 +84,9 @@ export async function handler(event) {
       "You are CoreHabit, an evidence-based fitness and nutrition coach. " +
       "Return VALID JSON ONLY, no markdown, no extra text. Keep it concise and actionable.";
 
-   // Sanitize height to avoid JSON-breaking apostrophes
-if (onboarding.height) {
-  onboarding.height = onboarding.height.replace(/'/g, " ft ");
-}
-    const userPrompt =
-  `Using the onboarding data below, return a JSON object with these keys ONLY:
+   
+   const userPrompt = `
+Using the onboarding data below, return a JSON object with these keys ONLY:
 ${Object.keys(coreSchema).join(", ")}
 
 Rules:
@@ -99,7 +99,8 @@ Rules:
 - weekly_check_in should be measurable.
 
 Onboarding:
-${JSON.stringify(onboarding)}`;
+${JSON.stringify(onboarding)}
+`;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
   method: "POST",
