@@ -105,7 +105,7 @@ export async function handler(event) {
     model: "gpt-4o-mini",
     temperature: 0.4,
     max_output_tokens: 600,
-    response_format: { type: "json_object" },
+    text: { format: { type: "json_object" } },  // ✅ FIXED
     input: [
       {
         role: "system",
@@ -118,7 +118,6 @@ export async function handler(event) {
     ]
   })
 });
-
     
 
     const data = await response.json();
