@@ -54,9 +54,31 @@ if (onboarding?.height) {
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-    if (!content) return { statusCode: 500, body: JSON.stringify({ error: "No AI content" }) };
 
-    const parsed = JSON.parse(content);
+if (!content) {
+  console.error("No AI content:", data);
+  return { statusCode: 500, body: JSON.stringify({ error: "No AI content" }) };
+}
+
+// Extract JSON safely
+let jsonStart = content.indexOf("{");
+let jsonEnd = content.lastIndexOf("}") + 1;
+
+if (jsonStart === -1 || jsonEnd === -1) {
+  console.error("AI did not return JSON:", content);
+  return { statusCode: 500, body: JSON.stringify({ error: "AI returned invalid format" }) };
+}
+
+const safeJson = content.slice(jsonStart, jsonEnd);
+
+let parsed;
+
+try {
+  parsed = JSON.parse(safeJson);
+} catch (err) {
+  console.error("JSON parse failed:", safeJson);
+  return { statusCode: 500, body: JSON.stringify({ error: "Malformed JSON from AI" }) };
+}
 
     return {
       statusCode: 200,
