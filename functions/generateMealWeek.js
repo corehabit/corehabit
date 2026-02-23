@@ -30,12 +30,10 @@ if (onboarding?.height) {
       `macro_targets:\n${JSON.stringify(macro_targets, null, 2)}\n\n` +
       `onboarding:\n${JSON.stringify(onboarding, null, 2)}`;
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      signal: controller.signal,
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
@@ -52,7 +50,7 @@ if (onboarding?.height) {
       })
     });
 
-    clearTimeout(timeout);
+    
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
