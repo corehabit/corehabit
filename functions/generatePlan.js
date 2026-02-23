@@ -109,7 +109,6 @@ export async function handler(event) {
         model: "gpt-4o-mini",
         temperature: 0.4,
         max_tokens: 600,
-        response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -124,7 +123,25 @@ export async function handler(event) {
       return { statusCode: 500, body: JSON.stringify({ error: "No AI content returned" }) };
     }
 
-    let plan = JSON.parse(data.choices[0].message.content);
+    const raw = data.choices[0].message.content;
+
+// Extract JSON safely
+const jsonMatch = raw.match(/\{[\s\S]*\}/);
+
+if (!jsonMatch) {
+  console.error("No JSON found:", raw);
+  throw new Error("No JSON returned from AI");
+}
+
+let plan;
+
+try {
+  plan = JSON.parse(jsonMatch[0]);
+} catch (err) {
+  console.error("JSON parse error:", err);
+  console.error("Raw content:", raw);
+  throw new Error("Malformed JSON");
+}
 
     // Force macro_targets onto premium output (deterministic)
     if (isPremium && macros) {
