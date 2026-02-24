@@ -369,18 +369,14 @@ async function loadDashboard() {
     `;
   }
 
-  // ===== STATS =====
-  const checkins = Number(localStorage.getItem("corehabit_checkins") || 0);
-  document.getElementById("statCheckins").textContent = checkins;
+  // ===== STATS (Supabase Driven) =====
+const checkInHistory = profile?.check_in_history || [];
 
-  const lastCheckin = localStorage.getItem("corehabit_last_checkin");
-  if (lastCheckin) {
-    const daysSince = (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-    const streak = daysSince <= 2 ? checkins : 0;
-    document.getElementById("statStreak").textContent = streak;
-  } else {
-    document.getElementById("statStreak").textContent = 0;
-  }
+document.getElementById("statCheckins").textContent =
+  checkInHistory.length;
+
+document.getElementById("statStreak").textContent =
+  profile?.day_streak || 0;
 
   // ===== WEEKLY NUDGE =====
   if (lastCheckin) {
@@ -399,17 +395,48 @@ async function loadDashboard() {
 
 loadDashboard();
 
-// ===== CHECK-IN FUNCTION (your quick buttons) =====
-window.submitCheckin = function submitCheckin(status) {
-  console.log("Check-in:", status);
+window.submitCheckin = async function submitCheckin(status) {
 
-  localStorage.setItem("corehabit_last_checkin", Date.now());
+  const supabase = window.supabaseClient;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-  const current = Number(localStorage.getItem("corehabit_checkins") || 0);
-  localStorage.setItem("corehabit_checkins", current + 1);
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
-  document.getElementById("statCheckins").textContent = current + 1;
-  document.getElementById("statStreak").textContent = current + 1;
+  const newStreak = (profile.day_streak || 0) + 1;
+
+  const updatedHistory = [
+    ...(profile.check_in_history || []),
+    {
+      type: "quick_checkin",
+      status,
+      date: new Date().toISOString()
+    }
+  ];
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      day_streak: newStreak,
+      check_in_history: updatedHistory
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error(error);
+    alert("Check-in failed.");
+    return;
+  }
+
+  document.getElementById("statCheckins").textContent =
+    updatedHistory.length;
+
+  document.getElementById("statStreak").textContent =
+    newStreak;
 
   alert("Check-in saved ✔️");
 };
