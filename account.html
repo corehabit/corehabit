@@ -280,7 +280,7 @@ import {
   applyAdjustments,
   generateChangeSummary
 } from "/utils/weeklyProgression.js";
-import { applyWeeklyVariation } from "/utils/weeklyVariation.js";
+
 
 async function loadDashboard() {
   const supabase = window.supabaseClient;
@@ -602,12 +602,31 @@ const variedPlan = {
 };
 
 const summary = generateChangeSummary(adjustments);
-
-      if (error) {
-        console.error(error);
-        alert("Update failed.");
-        return;
+const { error } = await supabase
+  .from("profiles")
+  .update({
+    current_plan: variedPlan,
+    week_number: (profile.week_number || 1) + 1,
+    plan_history: [...(profile.plan_history || []), oldPlan],
+    check_in_history: [
+      ...(profile.check_in_history || []),
+      {
+        week: profile.week_number || 1,
+        checkInData,
+        adjustments,
+        summary
       }
+    ]
+  })
+  .eq("id", user.id);
+
+if (error) {
+  console.error(error);
+  alert("Update failed.");
+  return;
+}
+
+      
 
       showSummary(summary);
     };
