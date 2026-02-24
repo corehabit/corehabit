@@ -217,9 +217,26 @@
     🔁 Regenerate My Plan
   </button>
 
-  <button class="btn-secondary" onclick="confirmResetPlan()">
-    🧨 Reset Plan (Start Over)
-  </button>
+  <button
+  onclick="openResetModal()"
+  style="
+    width:100%;
+    padding:16px;
+    border-radius:999px;
+    border:1px solid rgba(255,99,132,0.4);
+    background:linear-gradient(135deg, rgba(255,99,132,0.15), rgba(255,0,60,0.08));
+    color:#ff9aa2;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:12px;
+    transition:all 0.2s ease;
+  "
+  onmouseover="this.style.transform='scale(1.03)'"
+  onmouseout="this.style.transform='scale(1)'"
+>
+  ⟲ Reset Plan Progression
+</button>
 </div>
 
   <!-- Premium Upsell -->
@@ -451,15 +468,37 @@ window.goToOnboarding = function goToOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
   window.location.href = "/onboarding.html";
 };
+window.openResetModal = function () {
+  document.getElementById("reset-modal").style.display = "flex";
+};
+
+window.closeResetModal = function () {
+  document.getElementById("reset-modal").style.display = "none";
+};
+
 window.confirmResetPlan = async function () {
 
-  const confirmed = confirm(
-    "Are you sure?\n\n" +
-    "This will reset:\n" +
-    "- Week number back to 1\n" +
-    "- Plan progression history\n\n" +
-    "Your streak and check-in history will NOT be affected."
-  );
+  const supabase = window.supabaseClient;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      week_number: 1,
+      plan_history: []
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error(error);
+    alert("Reset failed.");
+    return;
+  }
+
+  closeResetModal();
+  location.reload();
+};
 
   if (!confirmed) return;
 
@@ -778,5 +817,81 @@ function showSummary(summary) {
   </div>
 </div>
 
+<!-- RESET CONFIRM MODAL -->
+<div id="reset-modal" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+  <div style="
+    background:#111827;
+    padding:32px;
+    width:420px;
+    border-radius:20px;
+    border:1px solid rgba(255,99,132,0.3);
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    animation: fadeInScale 0.25s ease-out;
+    color:white;
+  ">
+
+    <div style="text-align:center; font-size:42px; margin-bottom:10px;">
+      ⚠️
+    </div>
+
+    <h2 style="text-align:center; font-weight:800; margin-bottom:14px;">
+      Reset Plan Progression?
+    </h2>
+
+    <p style="color:#cbd5e1; font-size:14px; line-height:1.6; margin-bottom:20px;">
+      This will reset your plan back to <strong>Week 1</strong> and clear your progression history.
+      <br><br>
+      Your streak and check-in history will remain unchanged.
+    </p>
+
+    <div style="display:flex; gap:12px;">
+
+      <button
+        onclick="closeResetModal()"
+        style="
+          flex:1;
+          padding:14px;
+          border-radius:999px;
+          border:1px solid rgba(255,255,255,0.2);
+          background:transparent;
+          color:#e5e7eb;
+          cursor:pointer;
+        "
+      >
+        Cancel
+      </button>
+
+      <button
+        onclick="confirmResetPlan()"
+        style="
+          flex:1;
+          padding:14px;
+          border-radius:999px;
+          border:none;
+          background:linear-gradient(135deg,#ff4d6d,#ff1f4b);
+          color:white;
+          font-weight:800;
+          cursor:pointer;
+          box-shadow:0 15px 35px rgba(255,50,80,0.4);
+        "
+      >
+        Yes, Reset
+      </button>
+
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
