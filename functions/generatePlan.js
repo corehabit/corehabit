@@ -206,8 +206,30 @@ export async function handler(event) {
       }
 
       const data = await response.json();
-      const jsonText = data.output_text;
-      return JSON.parse(jsonText);
+
+if (!data.output || !data.output.length) {
+  throw new Error("No output returned from OpenAI");
+}
+
+const firstOutput = data.output[0];
+
+if (!firstOutput.content || !firstOutput.content.length) {
+  throw new Error("No content returned from OpenAI");
+}
+
+const firstContent = firstOutput.content[0];
+
+// Structured outputs may return parsed JSON directly
+if (firstContent.json) {
+  return firstContent.json;
+}
+
+// Or as text that needs parsing
+if (firstContent.text) {
+  return JSON.parse(firstContent.text);
+}
+
+throw new Error("OpenAI did not return JSON content");
     }
 
     // One retry for resilience
