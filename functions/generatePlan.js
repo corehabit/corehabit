@@ -133,11 +133,27 @@ export async function handler(event) {
           sample_day_of_eating: { type: "array", items: { type: "string" } },
           weekly_focus_tip: { type: "string" },
           seven_day_meal_plan: {
-            type: "array",
-            items: { type: "string" },
-            minItems: 7,
-            maxItems: 7
-          },
+  type: "array",
+  minItems: 7,
+  maxItems: 7,
+  items: {
+    type: "object",
+    additionalProperties: false,
+    required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
+    properties: {
+      day: { type: "string" },
+      breakfast: { type: "string" },
+      lunch: { type: "string" },
+      dinner: { type: "string" },
+      extra_meals: {
+        type: "array",
+        minItems: onboarding.meals_per_day > 3 ? onboarding.meals_per_day - 3 : 0,
+        maxItems: onboarding.meals_per_day > 3 ? onboarding.meals_per_day - 3 : 0,
+        items: { type: "string" }
+      }
+    }
+  }
+},
           grocery_list: { type: "array", items: { type: "string" } },
           weekly_check_in: { type: "string" },
           advanced_training_notes: { type: "string" },
