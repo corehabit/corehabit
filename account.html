@@ -280,6 +280,7 @@ import {
   applyAdjustments,
   generateChangeSummary
 } from "/utils/weeklyProgression.js";
+  import { applyWeeklyVariation } from "/utils/weeklyVariation.js";
 
 async function loadDashboard() {
   const supabase = window.supabaseClient;
@@ -559,12 +560,18 @@ document.getElementById("start-next-week-btn")
 
       const adjustments = evaluateCheckIn(oldPlan, checkInData);
       const newPlan = applyAdjustments(oldPlan, adjustments);
+      import { applyWeeklyVariation } from "/utils/weeklyVariation.js";
+
+const variedPlan = applyWeeklyVariation(
+  newPlan,
+  (profile.week_number || 1) + 1
+);
       const summary = generateChangeSummary(adjustments);
 
       const { error } = await supabase
         .from("profiles")
         .update({
-          current_plan: newPlan,
+          current_plan: variedPlan,
           week_number: (profile.week_number || 1) + 1,
           plan_history: [...(profile.plan_history || []), oldPlan],
           check_in_history: [
