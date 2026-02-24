@@ -157,20 +157,50 @@ export async function handler(event) {
           grocery_list: { type: "array", items: { type: "string" } },
           weekly_check_in: { type: "string" },
           advanced_training_notes: { type: "string" },
-          full_week_workout_plan: {
-            type: "object",
-            additionalProperties: false,
-            required: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
-            properties: {
-              "Day 1": { type: "array", items: { type: "string" } },
-              "Day 2": { type: "array", items: { type: "string" } },
-              "Day 3": { type: "array", items: { type: "string" } },
-              "Day 4": { type: "array", items: { type: "string" } },
-              "Day 5": { type: "array", items: { type: "string" } },
-              "Day 6": { type: "array", items: { type: "string" } },
-              "Day 7": { type: "array", items: { type: "string" } }
-            }
-          }
+          properties: {
+  "Day 1": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 2": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 3": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 4": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 5": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 6": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  },
+  "Day 7": {
+    type: "array",
+    minItems: 6,
+    maxItems: 8,
+    items: { type: "string" }
+  }
+}
         }
       }
     };
@@ -196,14 +226,29 @@ export async function handler(event) {
                 "You are CoreHabit, an elite evidence-based fitness and nutrition engine. Be precise and structured."
             },
             {
-              role: "user",
-              content:
-                (isPremium
-                  ? `Use these macro targets EXACTLY: ${JSON.stringify(macros)}\n`
-                  : "") +
-                `Build a fully personalized plan using this onboarding data:\n` +
-                JSON.stringify(onboarding, null, 2)
-            }
+  role: "user",
+  content:
+    (isPremium
+      ? `Use these macro targets EXACTLY: ${JSON.stringify(macros)}\n`
+      : "") +
+    `Build a fully personalized, advanced plan.
+
+Workout requirements:
+- Each training day must include 6–8 exercises.
+- Include compound and accessory lifts.
+- Include sets, reps, and intensity guidance.
+- Include rest time between sets.
+- Rest days must include mobility, recovery, or light conditioning guidance.
+
+Nutrition requirements:
+- Each day must clearly include Breakfast, Lunch, Dinner, and extra meals if selected.
+- Meals must align with macro targets.
+- Distribute protein evenly across meals.
+
+Onboarding Data:
+` +
+    JSON.stringify(onboarding, null, 2)
+}
           ],
           text: {
             format: {
