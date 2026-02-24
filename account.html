@@ -210,12 +210,17 @@
   </div>
 
   <!-- Regenerate -->
-  <div class="card">
-    <h2>Update Your Plan</h2>
-    <button class="btn-gold" onclick="goToOnboarding()">
-  🔁 Regenerate My Plan
-</button>
-  </div>
+<div class="card">
+  <h2>Update Your Plan</h2>
+
+  <button class="btn-gold" onclick="goToOnboarding()">
+    🔁 Regenerate My Plan
+  </button>
+
+  <button class="btn-secondary" onclick="confirmResetPlan()">
+    🧨 Reset Plan (Start Over)
+  </button>
+</div>
 
   <!-- Premium Upsell -->
   <div id="premiumUpsell" class="card">
@@ -446,7 +451,53 @@ window.goToOnboarding = function goToOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
   window.location.href = "/onboarding.html";
 };
+window.confirmResetPlan = async function () {
 
+  const confirmed = confirm(
+    "Are you sure?\n\n" +
+    "This will reset:\n" +
+    "- Week number back to 1\n" +
+    "- Plan progression history\n\n" +
+    "Your streak and check-in history will NOT be affected."
+  );
+
+  if (!confirmed) return;
+
+  const supabase = window.supabaseClient;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile?.current_plan) {
+    alert("No plan found.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      week_number: 1,
+      plan_history: []
+      // DO NOT TOUCH:
+      // day_streak
+      // check_in_history
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error(error);
+    alert("Reset failed.");
+    return;
+  }
+
+  alert("Your plan progression has been reset to Week 1.");
+  location.reload();
+};
 // ===== WEEKLY NUDGE FUNCTION =====
 function showWeeklyNudge() {
   if (document.getElementById("weeklyNudgeCard")) return;
