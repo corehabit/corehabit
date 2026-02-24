@@ -2,68 +2,70 @@ export function applyWeeklyVariation(plan, weekNumber) {
 
   const newPlan = structuredClone(plan);
 
-  // Workout variation
-  if (newPlan.full_week_workout_plan) {
-    Object.keys(newPlan.full_week_workout_plan).forEach(day => {
-      newPlan.full_week_workout_plan[day] =
-        newPlan.full_week_workout_plan[day].map(ex => {
-          return varyExercise(ex, weekNumber);
-        });
-    });
-  }
-
-  // Meal variation
-  if (newPlan.seven_day_meal_plan) {
-    newPlan.seven_day_meal_plan =
-      newPlan.seven_day_meal_plan.map(meal =>
-        varyMeal(meal, weekNumber)
-      );
-  }
-
-  // Grocery refresh
-  if (newPlan.grocery_list) {
-    newPlan.grocery_list = regenerateGrocery(newPlan.seven_day_meal_plan);
-  }
+  rotateWorkouts(newPlan, weekNumber);
+  rotateMeals(newPlan, weekNumber);
+  regenerateGrocery(newPlan);
 
   return newPlan;
 }
 
 
-function varyExercise(exercise, week) {
-  if (week % 2 === 0) {
-    return exercise.replace("Barbell", "Dumbbell");
-  }
+function rotateWorkouts(plan, week) {
 
-  if (week % 3 === 0) {
-    return exercise.replace("Bench", "Incline Bench");
-  }
+  if (!plan.full_week_workout_plan) return;
 
-  return exercise;
+  const variants = [
+    "A",
+    "B",
+    "C"
+  ];
+
+  const variant = variants[(week - 1) % variants.length];
+
+  Object.keys(plan.full_week_workout_plan).forEach(day => {
+
+    plan.full_week_workout_plan[day] =
+      plan.full_week_workout_plan[day].map(ex => {
+
+        if (variant === "A") return ex;
+
+        if (variant === "B") return ex + " (tempo focus)";
+
+        if (variant === "C") return ex + " (paused reps)";
+
+      });
+
+  });
 }
 
 
-function varyMeal(meal, week) {
-  if (week % 2 === 0) {
-    return meal.replace("Chicken", "Turkey");
-  }
+function rotateMeals(plan, week) {
 
-  if (week % 3 === 0) {
-    return meal.replace("Rice", "Quinoa");
-  }
+  if (!plan.seven_day_meal_plan) return;
 
-  return meal;
+  const proteinRotation = ["Chicken", "Turkey", "Lean Beef", "Salmon"];
+
+  const protein =
+    proteinRotation[(week - 1) % proteinRotation.length];
+
+  plan.seven_day_meal_plan =
+    plan.seven_day_meal_plan.map(meal => {
+      return `${protein} variation of ${meal}`;
+    });
 }
 
 
-function regenerateGrocery(meals) {
+function regenerateGrocery(plan) {
+
+  if (!plan.seven_day_meal_plan) return;
+
   const items = [];
 
-  meals.forEach(meal => {
-    const words = meal.split(" ");
-    words.forEach(word => {
+  plan.seven_day_meal_plan.forEach(meal => {
+    meal.split(" ").forEach(word => {
       if (word.length > 4) items.push(word);
     });
   });
 
-  return [...new Set(items)];
+  plan.grocery_list = [...new Set(items)];
 }
