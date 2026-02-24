@@ -159,7 +159,12 @@
     opacity: 1;
     transform: scale(1);
   }
-}  </style>
+} 
+  @keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+  </style>
 </head>
 
 <body>
@@ -536,6 +541,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     submitBtn.onclick = async () => {
       console.log("SUBMIT CLICKED");
+      submitBtn.disabled = true;
+submitBtn.innerHTML = "⏳ Generating Your Next Week...";
+submitBtn.style.opacity = "0.7";
 
       const supabase = window.supabaseClient;
 
@@ -573,7 +581,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const macro_targets =
         adjustedPlan.macro_targets || oldPlan.macro_targets;
+const modalContent = document.querySelector("#checkin-modal > div");
 
+modalContent.innerHTML = `
+  <div style="text-align:center;padding:40px 20px;">
+
+    <div style="
+      width:60px;
+      height:60px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      border:6px solid rgba(124,92,255,0.2);
+      border-top:6px solid #7c5cff;
+      animation: spin 1s linear infinite;
+    "></div>
+
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:10px;">
+      Building Your Next Week
+    </h2>
+
+    <div style="color:#9ca3af;font-size:14px;">
+      Adjusting workouts, meals, and progression...
+    </div>
+
+  </div>
+`;
       const regenRes = await fetch("/.netlify/functions/generatePlan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
