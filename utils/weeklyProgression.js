@@ -1,87 +1,112 @@
 // ===============================
-// CoreHabit Weekly Progression Engine
-// Deterministic Rule-Based v1
+// CoreHabit Weekly Progression Engine v2
+// Built for AI Plan Structure
 // ===============================
 
-
-// -------------------------------
-// Public Entry Points
-// -------------------------------
-
-export function evaluateCheckIn(plan, checkIn) {
-  const goal = plan.goal;
-
+export function evaluateCheckIn(plan, data) {
   let adjustments = {
     calorieDelta: 0,
-    volumeChange: 0,
+    volumePercent: 0,
     addCompoundSet: false
   };
 
-  if (goal === "fat_loss") {
-    return fatLossRules(checkIn, adjustments);
-  }
+  const {
+    weight_change,
+    strength_trend,
+    energy,
+    adherence,
+    sleep
+  } = data;
 
-  if (goal === "muscle_gain") {
-    return muscleGainRules(checkIn, adjustments);
+  // FAT LOSS LOGIC (assume deficit if calories < maintenance-ish)
+  if (plan.macro_targets?.calories < 3200) {
+
+    if (
+      weight_change <= -0.5 &&
+      weight_change >= -1.2 &&
+      strength_trend !== "down" &&
+      energy >= 3
+    ) {
+      adjustments.volumePercent = 0.05;
+    }
+
+    if (weight_change > -0.3 && adherence >= 80) {
+      adjustments.calorieDelta = -150;
+    }
+
+    if (strength_trend === "down" && energy <= 2 && sleep <= 2) {
+      adjustments.calorieDelta = 100;
+      adjustments.volumePercent = -0.1;
+    }
+
+  } else {
+    // MUSCLE GAIN LOGIC
+
+    if (weight_change > 1.5) {
+      adjustments.calorieDelta = -150;
+    }
+
+    if (weight_change < 0.3) {
+      adjustments.calorieDelta = 200;
+    }
+
+    if (strength_trend === "up") {
+      adjustments.addCompoundSet = true;
+    }
   }
 
   return adjustments;
 }
 
 
-export function applyAdjustments(plan, adjustments) {
+export function applyAdjustments(plan, adj) {
   let newPlan = structuredClone(plan);
 
-  if (adjustments.calorieDelta !== 0) {
-    newPlan = adjustCalories(newPlan, adjustments.calorieDelta);
+  if (adj.calorieDelta !== 0) {
+    adjustCalories(newPlan, adj.calorieDelta);
   }
 
-  if (adjustments.volumeChange !== 0) {
-    newPlan = adjustVolume(newPlan, adjustments.volumeChange);
+  if (adj.volumePercent !== 0) {
+    adjustWorkoutVolume(newPlan, adj.volumePercent);
   }
 
-  if (adjustments.addCompoundSet) {
-    newPlan = addSetToCompounds(newPlan);
+  if (adj.addCompoundSet) {
+    addSetToCompoundMovements(newPlan);
   }
 
   return newPlan;
 }
 
 
-export function generateChangeSummary(adjustments) {
+export function generateChangeSummary(adj) {
   let summary = [];
 
-  if (adjustments.calorieDelta !== 0) {
+  if (adj.calorieDelta !== 0) {
     summary.push({
-      type: "nutrition",
-      message: `Calories ${adjustments.calorieDelta > 0 ? "increased" : "reduced"} by ${Math.abs(adjustments.calorieDelta)} to support your progress.`
+      message: `Calories ${adj.calorieDelta > 0 ? "increased" : "reduced"} by ${Math.abs(adj.calorieDelta)}.`
     });
   }
 
-  if (adjustments.volumeChange > 0) {
+  if (adj.volumePercent > 0) {
     summary.push({
-      type: "training",
-      message: "Training volume slightly increased for progressive overload."
+      message: "Training volume slightly increased."
     });
   }
 
-  if (adjustments.volumeChange < 0) {
+  if (adj.volumePercent < 0) {
     summary.push({
-      type: "training",
-      message: "Training volume slightly reduced to improve recovery."
+      message: "Training volume slightly reduced for recovery."
     });
   }
 
-  if (adjustments.addCompoundSet) {
+  if (adj.addCompoundSet) {
     summary.push({
-      type: "training",
-      message: "Added one set to major compound lifts based on strength improvements."
+      message: "Added one set to compound lifts."
     });
   }
 
   if (summary.length === 0) {
     summary.push({
-      type: "neutral",
       message: "Your plan remains the same — you're progressing perfectly."
     });
   }
@@ -91,134 +116,89 @@ export function generateChangeSummary(adjustments) {
 
 
 
-// -------------------------------
-// Fat Loss Rules
-// -------------------------------
-
-function fatLossRules(data, adj) {
-  const {
-    weight_change,
-    strength_trend,
-    energy,
-    adherence,
-    sleep
-  } = data;
-
-  // On track
-  if (
-    weight_change <= -0.5 &&
-    weight_change >= -1.2 &&
-    strength_trend !== "down" &&
-    energy >= 3
-  ) {
-    adj.volumeChange = 0.03;
-    return adj;
-  }
-
-  // Stalled
-  if (weight_change > -0.3 && adherence >= 80) {
-    adj.calorieDelta = -150;
-    return adj;
-  }
-
-  // Recovery issue
-  if (
-    strength_trend === "down" &&
-    energy <= 2 &&
-    sleep <= 2
-  ) {
-    adj.calorieDelta = 100;
-    adj.volumeChange = -0.1;
-    return adj;
-  }
-
-  return adj;
-}
-
-
-
-// -------------------------------
-// Muscle Gain Rules
-// -------------------------------
-
-function muscleGainRules(data, adj) {
-  const { weight_change, strength_trend } = data;
-
-  if (weight_change > 1.5) {
-    adj.calorieDelta = -150;
-  }
-
-  if (weight_change < 0.3) {
-    adj.calorieDelta = 200;
-  }
-
-  if (strength_trend === "up") {
-    adj.addCompoundSet = true;
-  }
-
-  return adj;
-}
-
-
-
-// -------------------------------
-// Plan Modifiers
-// -------------------------------
+// ===============================
+// CALORIE ADJUSTMENT
+// ===============================
 
 function adjustCalories(plan, delta) {
-  const newCalories = clamp(
-    plan.macros.calories + delta,
-    plan.macros.calories * 0.7,  // lower safety bound
-    plan.macros.calories * 1.3   // upper safety bound
-  );
 
-  const calorieChange = newCalories - plan.macros.calories;
+  const macros = plan.macro_targets;
+  if (!macros) return;
 
-  plan.macros.calories = newCalories;
+  const newCalories = macros.calories + delta;
+  macros.calories = newCalories;
 
-  // Adjust carbs and fats proportionally
-  plan.macros.carbs += Math.round((calorieChange * 0.6) / 4);
-  plan.macros.fat += Math.round((calorieChange * 0.4) / 9);
-
-  return plan;
+  // 60% carbs, 40% fats adjustment
+  macros.carbs += Math.round((delta * 0.6) / 4);
+  macros.fats += Math.round((delta * 0.4) / 9);
 }
 
 
-function adjustVolume(plan, percentChange) {
-  const safeChange = clamp(percentChange, -0.1, 0.1);
 
-  plan.workout_days.forEach(day => {
-    day.exercises.forEach(exercise => {
-      const newSets = Math.round(
-        exercise.sets * (1 + safeChange)
-      );
+// ===============================
+// VOLUME ADJUSTMENT
+// ===============================
 
-      exercise.sets = clamp(newSets, 2, 6);
+function adjustWorkoutVolume(plan, percent) {
+
+  const workout = plan.full_week_workout_plan;
+  if (!workout) return;
+
+  Object.keys(workout).forEach(day => {
+    workout[day] = workout[day].map(line => {
+      const match = line.match(/(\d+)x(\d+)/);
+      if (!match) return line;
+
+      const sets = parseInt(match[1]);
+      const reps = match[2];
+
+      const newSets = Math.max(2, Math.min(6,
+        Math.round(sets * (1 + percent))
+      ));
+
+      return line.replace(/\d+x\d+/, `${newSets}x${reps}`);
     });
   });
-
-  return plan;
 }
 
 
-function addSetToCompounds(plan) {
-  plan.workout_days.forEach(day => {
-    day.exercises.forEach(exercise => {
-      if (exercise.type === "compound") {
-        exercise.sets = clamp(exercise.sets + 1, 2, 6);
+
+// ===============================
+// ADD SET TO COMPOUNDS
+// ===============================
+
+function addSetToCompoundMovements(plan) {
+
+  const workout = plan.full_week_workout_plan;
+  if (!workout) return;
+
+  const compoundKeywords = [
+    "bench",
+    "squat",
+    "deadlift",
+    "press",
+    "row",
+    "pull"
+  ];
+
+  Object.keys(workout).forEach(day => {
+    workout[day] = workout[day].map(line => {
+
+      const lower = line.toLowerCase();
+
+      if (!compoundKeywords.some(k => lower.includes(k))) {
+        return line;
       }
+
+      const match = line.match(/(\d+)x(\d+)/);
+      if (!match) return line;
+
+      const sets = parseInt(match[1]);
+      const reps = match[2];
+
+      const newSets = Math.min(6, sets + 1);
+
+      return line.replace(/\d+x\d+/, `${newSets}x${reps}`);
     });
   });
-
-  return plan;
-}
-
-
-
-// -------------------------------
-// Utility
-// -------------------------------
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
 }
