@@ -217,9 +217,26 @@
     🔁 Regenerate My Plan
   </button>
 
-  <button class="btn-secondary" onclick="confirmResetPlan()">
-    🧨 Reset Plan (Start Over)
-  </button>
+  <button
+  onclick="openResetModal()"
+  style="
+    width:100%;
+    padding:16px;
+    border-radius:999px;
+    border:1px solid rgba(255,90,90,0.35);
+    background:linear-gradient(135deg, rgba(255,90,90,0.12), rgba(255,0,60,0.05));
+    color:#ff8f8f;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:12px;
+    transition:all 0.2s ease;
+  "
+  onmouseover="this.style.transform='scale(1.03)'"
+  onmouseout="this.style.transform='scale(1)'"
+>
+  ⟲ Reset Plan Progression
+</button>
 </div>
 
   <!-- Premium Upsell -->
@@ -383,19 +400,7 @@ document.getElementById("statCheckins").textContent =
 document.getElementById("statStreak").textContent =
   profile?.day_streak || 0;
 
-  // ===== WEEKLY NUDGE =====
-  if (lastCheckin) {
-    const daysSince = (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
-    if (daysSince >= 7) showWeeklyNudge();
-  } else {
-    const firstVisit = localStorage.getItem("corehabit_first_visit");
-    if (!firstVisit) {
-      localStorage.setItem("corehabit_first_visit", Date.now());
-    } else {
-      const daysSinceFirst = (Date.now() - Number(firstVisit)) / (1000 * 60 * 60 * 24);
-      if (daysSinceFirst >= 3) showWeeklyNudge();
-    }
-  }
+  
 }
 
 loadDashboard();
@@ -451,17 +456,18 @@ window.goToOnboarding = function goToOnboarding() {
   localStorage.setItem("corehabit_reonboarding", "true");
   window.location.href = "/onboarding.html";
 };
+
+window.openResetModal = function () {
+  document.getElementById("reset-modal").style.display = "flex";
+};
+
+window.closeResetModal = function () {
+  document.getElementById("reset-modal").style.display = "none";
+};
+
 window.confirmResetPlan = async function () {
 
-  const confirmed = confirm(
-    "Are you sure?\n\n" +
-    "This will reset:\n" +
-    "- Week number back to 1\n" +
-    "- Plan progression history\n\n" +
-    "Your streak and check-in history will NOT be affected."
-  );
-
-  if (!confirmed) return;
+  closeResetModal();
 
   const supabase = window.supabaseClient;
   const { data: { user } } = await supabase.auth.getUser();
@@ -483,21 +489,17 @@ window.confirmResetPlan = async function () {
     .update({
       week_number: 1,
       plan_history: []
-      // DO NOT TOUCH:
-      // day_streak
-      // check_in_history
     })
     .eq("id", user.id);
 
   if (error) {
-    console.error(error);
     alert("Reset failed.");
     return;
   }
 
-  alert("Your plan progression has been reset to Week 1.");
   location.reload();
 };
+  
 // ===== WEEKLY NUDGE FUNCTION =====
 function showWeeklyNudge() {
   if (document.getElementById("weeklyNudgeCard")) return;
@@ -778,5 +780,79 @@ function showSummary(summary) {
   </div>
 </div>
 
+<!-- RESET CONFIRM MODAL -->
+<div id="reset-modal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+
+  <div style="
+    background:#111827;
+    padding:32px;
+    width:420px;
+    border-radius:20px;
+    border:1px solid rgba(255,90,90,0.25);
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    animation: fadeInScale 0.25s ease-out;
+    color:white;
+  ">
+
+    <div style="text-align:center;font-size:44px;margin-bottom:10px;">
+      ⚠️
+    </div>
+
+    <h2 style="text-align:center;font-weight:800;margin-bottom:14px;">
+      Reset Plan Progression?
+    </h2>
+
+    <p style="color:#cbd5e1;font-size:14px;line-height:1.6;margin-bottom:22px;">
+      This will reset your plan back to <strong>Week 1</strong> and clear progression history.
+      <br><br>
+      Your streak and check-in history will remain unchanged.
+    </p>
+
+    <div style="display:flex;gap:12px;">
+
+      <button
+        onclick="closeResetModal()"
+        style="
+          flex:1;
+          padding:14px;
+          border-radius:999px;
+          border:1px solid rgba(255,255,255,0.2);
+          background:transparent;
+          color:#e5e7eb;
+          cursor:pointer;
+        "
+      >
+        Cancel
+      </button>
+
+      <button
+        onclick="confirmResetPlan()"
+        style="
+          flex:1;
+          padding:14px;
+          border-radius:999px;
+          border:none;
+          background:linear-gradient(135deg,#ff4d6d,#ff1f4b);
+          color:white;
+          font-weight:800;
+          cursor:pointer;
+          box-shadow:0 15px 35px rgba(255,50,80,0.4);
+        "
+      >
+        Yes, Reset
+      </button>
+
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
