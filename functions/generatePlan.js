@@ -232,6 +232,7 @@ if (isPremium) {
   if (macros) {
     plan.macro_targets = macros;
   }
+  plan.onboarding_snapshot = onboarding;
 
   plan.volume_targets = plan.volume_targets || [];
   plan.progression_strategy = plan.progression_strategy || "";
