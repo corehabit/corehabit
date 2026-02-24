@@ -400,8 +400,7 @@ document.getElementById("statCheckins").textContent =
 document.getElementById("statStreak").textContent =
   profile?.day_streak || 0;
 
-  // ===== WEEKLY NUDGE =====
-  if (lastCheckin) {
+  
     const daysSince = (Date.now() - Number(lastCheckin)) / (1000 * 60 * 60 * 24);
     if (daysSince >= 7) showWeeklyNudge();
   } else {
@@ -500,43 +499,7 @@ window.confirmResetPlan = async function () {
   location.reload();
 };
 
-  if (!confirmed) return;
-
-  const supabase = window.supabaseClient;
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile?.current_plan) {
-    alert("No plan found.");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      week_number: 1,
-      plan_history: []
-      // DO NOT TOUCH:
-      // day_streak
-      // check_in_history
-    })
-    .eq("id", user.id);
-
-  if (error) {
-    console.error(error);
-    alert("Reset failed.");
-    return;
-  }
-
-  alert("Your plan progression has been reset to Week 1.");
-  location.reload();
-};
+  
 // ===== WEEKLY NUDGE FUNCTION =====
 function showWeeklyNudge() {
   if (document.getElementById("weeklyNudgeCard")) return;
