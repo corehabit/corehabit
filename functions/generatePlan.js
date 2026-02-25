@@ -197,9 +197,9 @@ export async function handler(event) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: "gpt-4o",
           temperature: 0,
-          max_output_tokens: 900,
+          max_output_tokens: 2500,
           input: [
             {
               role: "system",
@@ -238,12 +238,13 @@ Onboarding Data:
             }
           ],
           text: {
-  format: {
-    type: "json_schema",
-    name: isPremium ? premiumSchema.name : baseSchema.name,
-    schema: isPremium ? premiumSchema.schema : baseSchema.schema
-  }
-}
+            format: {
+              type: "json_schema",
+              name: isPremium ? premiumSchema.name : baseSchema.name,
+              schema: isPremium ? premiumSchema.schema : baseSchema.schema,
+              strict: true
+            }
+          }
         })
       });
 
@@ -254,20 +255,12 @@ Onboarding Data:
       const data = await response.json();
 
       const content = data.output?.[0]?.content?.[0];
-if (!content) throw new Error("Invalid OpenAI response");
+      if (!content) throw new Error("Invalid OpenAI response");
 
-if (content.json) return content.json;
+      if (content.json) return content.json;
+      if (content.text) return JSON.parse(content.text);
 
-if (content.text) {
-  try {
-    return JSON.parse(content.text);
-  } catch (err) {
-    console.error("JSON parse error:", err);
-    throw new Error("Invalid JSON returned from model.");
-  }
-}
-
-throw new Error("No valid JSON returned");
+      throw new Error("No valid JSON returned");
     }
 
     let plan = await callOpenAI();
