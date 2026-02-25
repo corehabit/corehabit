@@ -679,9 +679,11 @@ if (sessionId) {
     if (!user) return;
 
     await supabase
-      .from("profiles")
-      .update({ premium_status: true })
-      .eq("id", user.id);
+  .from("profiles")
+  .upsert(
+    { id: user.id, premium_status: true },
+    { onConflict: "id" }
+  );
 
     window.location.href = "/results.html?upgraded=true";
 
