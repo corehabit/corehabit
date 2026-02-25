@@ -192,7 +192,7 @@ ${JSON.stringify(onboarding, null, 2)}`
                 full_week_workout_plan: fullWeekWorkoutSchema
               }
             },
-            strict: true
+            strict: false
           }
         }
       });
@@ -251,7 +251,7 @@ ${JSON.stringify(onboarding, null, 2)}`
                 weekly_check_in: { type: "string" }
               }
             },
-            strict: true
+            strict: false
           }
         }
       });
