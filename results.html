@@ -464,6 +464,7 @@ if (!response.ok) {
 
 const raw = await response.json();
 console.log("API RESPONSE:", raw);
+    alert(JSON.stringify(raw));
 
 if (!raw.plan) {
   console.error("No plan returned:", raw);
