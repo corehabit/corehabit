@@ -554,29 +554,25 @@ try {
         premiumSections.insertAdjacentHTML("afterbegin", macroHTML);
       }
       // Fill 7-Day Meal Plan
-if (plan.seven_day_meal_plan) {
-  const mealContainer = document.getElementById("sevenDayMealPlan");
+if (data.seven_day_meal_plan) {
+  const mealContainer = document.getElementById("seven-day-meal-plan");
   mealContainer.innerHTML = "";
 
-  plan.seven_day_meal_plan.forEach(day => {
-    const dayBlock = document.createElement("div");
-    dayBlock.classList.add("meal-day");
+  data.seven_day_meal_plan.forEach(day => {
+    const dayBlock = document.createElement("li");
 
     let mealsHTML = `
-      <h4>${day.day}</h4>
-      <ul>
-        <li><strong>Breakfast:</strong> ${day.breakfast}</li>
-        <li><strong>Lunch:</strong> ${day.lunch}</li>
-        <li><strong>Dinner:</strong> ${day.dinner}</li>
+      <strong>${day.day}</strong><br>
+      Breakfast: ${day.breakfast}<br>
+      Lunch: ${day.lunch}<br>
+      Dinner: ${day.dinner}<br>
     `;
 
     if (day.extra_meals && day.extra_meals.length > 0) {
       day.extra_meals.forEach((meal, index) => {
-        mealsHTML += `<li><strong>Snack ${index + 1}:</strong> ${meal}</li>`;
+        mealsHTML += `Snack ${index + 1}: ${meal}<br>`;
       });
     }
-
-    mealsHTML += `</ul>`;
 
     dayBlock.innerHTML = mealsHTML;
     mealContainer.appendChild(dayBlock);
