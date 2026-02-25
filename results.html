@@ -33,13 +33,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     .eq("id", user.id)
     .single();
 
-  if (profile?.premium_status === true) {
-    unlockPremiumUI();
-  }
   const urlParams = new URLSearchParams(window.location.search);
 
 if (urlParams.get("upgraded") === "true") {
-  generatePlan();
+
+  // Wait 500ms to allow DB update to finish
+  setTimeout(async () => {
+
+    const { data: refreshedProfile } = await supabase
+      .from("profiles")
+      .select("premium_status")
+      .eq("id", user.id)
+      .single();
+
+    if (refreshedProfile?.premium_status === true) {
+      unlockPremiumUI();
+      generatePlan();
+    }
+
+  }, 500);
 }
 
 });
