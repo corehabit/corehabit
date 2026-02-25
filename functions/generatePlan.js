@@ -199,7 +199,7 @@ export async function handler(event) {
         body: JSON.stringify({
           model: "gpt-4o-mini",
           temperature: 0,
-          max_output_tokens: 1600,
+          max_output_tokens: 900,
           input: [
             {
               role: "system",
