@@ -472,7 +472,7 @@ async function submitAuth() {
     password
   });
 
-  if (error) {
+    if (error) {
     const signupAttempt = await supabase.auth.signUp({
       email,
       password
@@ -483,7 +483,18 @@ async function submitAuth() {
       return;
     }
 
-    data = signupAttempt.data;
+    // ✅ CRITICAL: make sure they are actually signed in (session exists)
+    const signinAfterSignup = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (signinAfterSignup.error) {
+      alert("Account created — please sign in again.");
+      return;
+    }
+
+    data = signinAfterSignup.data;
   }
 
   const user = data?.user;
