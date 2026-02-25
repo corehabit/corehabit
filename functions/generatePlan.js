@@ -220,6 +220,12 @@ Workout requirements:
 - Include compound + accessory lifts.
 - Rest days must include recovery guidance.
 
+Workout formatting rules:
+- Do NOT repeat day labels inside exercise lists.
+- Do NOT write "Day 1", "Day 2", etc inside any array.
+- Only list exercises in each day array.
+- Each key already represents the day.
+
 Nutrition requirements:
 - User selected ${onboarding.meals_per_day || 3} meals per day.
 - Breakfast, Lunch, Dinner mandatory.
