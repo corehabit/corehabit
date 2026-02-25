@@ -377,9 +377,22 @@ async function loadDashboard() {
       ` : ""}
 
       ${plan.seven_day_meal_plan ? `
-        <strong>7-Day Meal Plan</strong><br>
-        ${plan.seven_day_meal_plan.map(m => `• ${m}`).join("<br>")}<br><br>
-      ` : ""}
+  <strong>7-Day Meal Plan</strong><br>
+  ${plan.seven_day_meal_plan.map(day => `
+    <br><em>${day.day}</em><br>
+    • Breakfast: ${day.breakfast}<br>
+    • Lunch: ${day.lunch}<br>
+    • Dinner: ${day.dinner}<br>
+    ${
+      day.extra_meals && day.extra_meals.length > 0
+        ? day.extra_meals.map((meal, i) =>
+            `• Snack ${i + 1}: ${meal}<br>`
+          ).join("")
+        : ""
+    }
+  `).join("<br>")}
+  <br><br>
+` : ""}
 
       ${plan.grocery_list ? `
         <strong>Grocery List</strong><br>
