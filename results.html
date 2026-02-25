@@ -36,16 +36,48 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (profile?.premium_status === true) {
     unlockPremiumUI();
   }
-  const urlParams = new URLSearchParams(window.location.search);
-
-if (urlParams.get("upgraded") === "true") {
-  generatePlan();
-}
 
 });
 </script>
   
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
 
+  if (sessionId) {
+    localStorage.setItem("corehabit_session_id", sessionId);
+
+    fetch("/.netlify/functions/getCustomerFromSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId })
+    })
+      .then(res => res.json())
+      .then(async data => {
+  if (data.customerId) {
+
+  const supabase = window.supabaseClient;
+
+  const { data: sessionData } = await supabase.auth.getSession();
+
+  if (sessionData?.session?.user) {
+
+    const userId = sessionData.session.user.id;
+
+    await supabase
+      .from("profiles")
+      .update({ premium_status: true })
+      .eq("id", userId);
+  }
+
+  window.location.href = "/results.html";
+        }
+  })
+  .catch(err => console.error(err));
+}
+
+     
+</script>
      
 
 
@@ -683,7 +715,7 @@ if (sessionId) {
       .update({ premium_status: true })
       .eq("id", user.id);
 
-    window.location.href = "/results.html?upgraded=true";
+    window.location.href = "/results.html";
 
   })
   .catch(err => console.error(err));
