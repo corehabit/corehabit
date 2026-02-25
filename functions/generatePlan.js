@@ -272,18 +272,21 @@ Onboarding:
     let plan;
 
     if (isPremium) {
-      const workout = await generateWorkoutPart();
-      const meals = await generateMealPart();
 
-      plan = {
-        ...workout,
-        ...meals,
-        macro_targets: macros
-      };
-    } else {
-      plan = await generateWorkoutPart();
-    }
+  const [workout, meals] = await Promise.all([
+    generateWorkoutPart(),
+    generateMealPart()
+  ]);
 
+  plan = {
+    ...workout,
+    ...meals,
+    macro_targets: macros
+  };
+
+} else {
+  plan = await generateWorkoutPart();
+}
     return {
       statusCode: 200,
       body: JSON.stringify({ isPremium, plan })
