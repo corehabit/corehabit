@@ -503,6 +503,8 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
+    // attach onboarding snapshot so weekly regen works
+data.onboarding_snapshot = JSON.parse(onboardingRaw);
     // ✅ Persist latest plan for dashboard
 localStorage.setItem(
   "corehabit_last_plan",
