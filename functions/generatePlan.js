@@ -238,13 +238,12 @@ Onboarding Data:
             }
           ],
           text: {
-            format: {
-              type: "json_schema",
-              name: isPremium ? premiumSchema.name : baseSchema.name,
-              schema: isPremium ? premiumSchema.schema : baseSchema.schema,
-              strict: true
-            }
-          }
+  format: {
+    type: "json_schema",
+    name: isPremium ? premiumSchema.name : baseSchema.name,
+    schema: isPremium ? premiumSchema.schema : baseSchema.schema
+  }
+}
         })
       });
 
@@ -255,16 +254,20 @@ Onboarding Data:
       const data = await response.json();
 
       const content = data.output?.[0]?.content?.[0];
-      if (!content) throw new Error("Invalid OpenAI response");
+if (!content) throw new Error("Invalid OpenAI response");
 
-      if (content.json) return content.json;
+if (content.json) return content.json;
 
-// DO NOT manually JSON.parse text.
-// The Responses API already enforces schema.
-// If json is missing, throw.
-throw new Error("Model did not return structured JSON.");
+if (content.text) {
+  try {
+    return JSON.parse(content.text);
+  } catch (err) {
+    console.error("JSON parse error:", err);
+    throw new Error("Invalid JSON returned from model.");
+  }
+}
 
-      throw new Error("No valid JSON returned");
+throw new Error("No valid JSON returned");
     }
 
     let plan = await callOpenAI();
