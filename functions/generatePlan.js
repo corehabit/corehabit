@@ -12,9 +12,10 @@ export async function handler(event) {
       return { statusCode: 400, body: "Missing onboarding data" };
     }
 
-    // ===============================
+    // =====================================
     // Deterministic Macro Calculator
-    // ===============================
+    // =====================================
+
     function calculateMacros(data) {
       const weightLbs = parseFloat(data.weight);
       const age = parseInt(data.age);
@@ -62,134 +63,59 @@ export async function handler(event) {
 
     const macros = isPremium ? calculateMacros(onboarding) : null;
 
-    // ===============================
-    // Schemas
-    // ===============================
+    // =====================================
+    // WORKOUT SCHEMA (shared)
+    // =====================================
 
-    const baseSchema = {
-      name: "base_plan",
-      schema: {
-        type: "object",
-        additionalProperties: false,
-        required: [
-          "overview",
-          "weekly_workout_split",
-          "sample_workout",
-          "daily_nutrition_guidelines",
-          "sample_day_of_eating",
-          "weekly_focus_tip"
-        ],
-        properties: {
-          overview: { type: "string" },
-          weekly_workout_split: { type: "array", items: { type: "string" } },
-          sample_workout: { type: "array", items: { type: "string" } },
-          daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
-          sample_day_of_eating: { type: "array", items: { type: "string" } },
-          weekly_focus_tip: { type: "string" }
-        }
+    const fullWeekWorkoutSchema = {
+      type: "object",
+      additionalProperties: false,
+      required: [
+        "Day 1",
+        "Day 2",
+        "Day 3",
+        "Day 4",
+        "Day 5",
+        "Day 6",
+        "Day 7"
+      ],
+      properties: {
+        "Day 1": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 2": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 3": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 4": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 5": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 6": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+        "Day 7": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } }
       }
     };
 
-    const premiumSchema = {
-      name: "premium_plan",
-      schema: {
+    const sevenDayMealSchema = {
+      type: "array",
+      minItems: 7,
+      maxItems: 7,
+      items: {
         type: "object",
         additionalProperties: false,
-        required: [
-          "overview",
-          "macro_targets",
-          "weekly_workout_split",
-          "volume_targets",
-          "sample_workout",
-          "progression_strategy",
-          "daily_nutrition_guidelines",
-          "sample_day_of_eating",
-          "weekly_focus_tip",
-          "seven_day_meal_plan",
-          "grocery_list",
-          "weekly_check_in",
-          "advanced_training_notes",
-          "full_week_workout_plan"
-        ],
+        required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
         properties: {
-          overview: { type: "string" },
-
-          macro_targets: {
-            type: "object",
-            additionalProperties: false,
-            required: ["calories", "protein", "carbs", "fats"],
-            properties: {
-              calories: { type: "number" },
-              protein: { type: "number" },
-              carbs: { type: "number" },
-              fats: { type: "number" }
-            }
-          },
-
-          weekly_workout_split: { type: "array", items: { type: "string" } },
-          volume_targets: { type: "array", items: { type: "string" } },
-          sample_workout: { type: "array", items: { type: "string" } },
-          progression_strategy: { type: "string" },
-          daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
-          sample_day_of_eating: { type: "array", items: { type: "string" } },
-          weekly_focus_tip: { type: "string" },
-
-          seven_day_meal_plan: {
+          day: { type: "string" },
+          breakfast: { type: "string" },
+          lunch: { type: "string" },
+          dinner: { type: "string" },
+          extra_meals: {
             type: "array",
-            minItems: 7,
-            maxItems: 7,
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
-              properties: {
-                day: { type: "string" },
-                breakfast: { type: "string" },
-                lunch: { type: "string" },
-                dinner: { type: "string" },
-                extra_meals: {
-                  type: "array",
-                  items: { type: "string" }
-                }
-              }
-            }
-          },
-
-          grocery_list: { type: "array", items: { type: "string" } },
-          weekly_check_in: { type: "string" },
-          advanced_training_notes: { type: "string" },
-
-          full_week_workout_plan: {
-            type: "object",
-            additionalProperties: false,
-            required: [
-              "Day 1",
-              "Day 2",
-              "Day 3",
-              "Day 4",
-              "Day 5",
-              "Day 6",
-              "Day 7"
-            ],
-            properties: {
-              "Day 1": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 2": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 3": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 4": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 5": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 6": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 7": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } }
-            }
+            items: { type: "string" }
           }
         }
       }
     };
 
-    // ===============================
-    // OpenAI Call
-    // ===============================
+    // =====================================
+    // CALL 1: WORKOUT GENERATION
+    // =====================================
 
-    async function callOpenAI() {
+    async function generateWorkoutPart() {
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
@@ -199,40 +125,33 @@ export async function handler(event) {
         body: JSON.stringify({
           model: "gpt-4o",
           temperature: 0,
-          max_output_tokens: 2500,
+          max_output_tokens: 1400,
           input: [
             {
               role: "system",
               content:
-                "You are CoreHabit, an elite evidence-based fitness and nutrition engine. Be structured and precise."
+                "You are CoreHabit, an elite evidence-based fitness engine. Be structured and precise."
             },
             {
               role: "user",
               content:
-                (isPremium
-                  ? `Use these macro targets EXACTLY: ${JSON.stringify(macros)}\n`
-                  : "") +
-                `Build a fully personalized advanced plan.
+                `Build ONLY the training portion of a premium plan.
 
-Workout requirements:
-- 6–8 exercises per training day.
-- Include sets, reps, rest time.
-- Include compound + accessory lifts.
-- Rest days must include recovery guidance.
+Return:
+- overview
+- weekly_workout_split
+- volume_targets
+- sample_workout
+- progression_strategy
+- advanced_training_notes
+- full_week_workout_plan
 
-Workout formatting rules:
-- Do NOT repeat day labels inside exercise lists.
-- Do NOT write "Day 1", "Day 2", etc inside any array.
-- Only list exercises in each day array.
-- Each key already represents the day.
+Rules:
+- 6–8 exercises per day
+- Include sets, reps, rest
+- Do NOT repeat day labels inside arrays
 
-Nutrition requirements:
-- User selected ${onboarding.meals_per_day || 3} meals per day.
-- Breakfast, Lunch, Dinner mandatory.
-- Additional meals go inside extra_meals array.
-- Align meals with macro targets.
-
-Onboarding Data:
+Onboarding:
 ` +
                 JSON.stringify(onboarding, null, 2)
             }
@@ -240,33 +159,128 @@ Onboarding Data:
           text: {
             format: {
               type: "json_schema",
-              name: isPremium ? premiumSchema.name : baseSchema.name,
-              schema: isPremium ? premiumSchema.schema : baseSchema.schema,
+              name: "workout_plan",
+              schema: {
+                type: "object",
+                additionalProperties: false,
+                required: [
+                  "overview",
+                  "weekly_workout_split",
+                  "volume_targets",
+                  "sample_workout",
+                  "progression_strategy",
+                  "advanced_training_notes",
+                  "full_week_workout_plan"
+                ],
+                properties: {
+                  overview: { type: "string" },
+                  weekly_workout_split: { type: "array", items: { type: "string" } },
+                  volume_targets: { type: "array", items: { type: "string" } },
+                  sample_workout: { type: "array", items: { type: "string" } },
+                  progression_strategy: { type: "string" },
+                  advanced_training_notes: { type: "string" },
+                  full_week_workout_plan: fullWeekWorkoutSchema
+                }
+              },
               strict: true
             }
           }
         })
       });
 
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
       const data = await response.json();
-
-      const content = data.output?.[0]?.content?.[0];
-      if (!content) throw new Error("Invalid OpenAI response");
-
-      if (content.json) return content.json;
-      if (content.text) return JSON.parse(content.text);
-
-      throw new Error("No valid JSON returned");
+      return data.output[0].content[0].json;
     }
 
-    let plan = await callOpenAI();
+    // =====================================
+    // CALL 2: MEAL GENERATION
+    // =====================================
 
-    if (isPremium && macros) {
-      plan.macro_targets = macros;
+    async function generateMealPart() {
+      const response = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          temperature: 0,
+          max_output_tokens: 1200,
+          input: [
+            {
+              role: "system",
+              content:
+                "You are CoreHabit, an elite evidence-based nutrition engine. Be structured and precise."
+            },
+            {
+              role: "user",
+              content:
+                `Build ONLY the nutrition portion.
+
+Return:
+- daily_nutrition_guidelines
+- sample_day_of_eating
+- seven_day_meal_plan
+- grocery_list
+- weekly_check_in
+
+User selected ${onboarding.meals_per_day || 3} meals per day.
+
+Onboarding:
+` +
+                JSON.stringify(onboarding, null, 2)
+            }
+          ],
+          text: {
+            format: {
+              type: "json_schema",
+              name: "meal_plan",
+              schema: {
+                type: "object",
+                additionalProperties: false,
+                required: [
+                  "daily_nutrition_guidelines",
+                  "sample_day_of_eating",
+                  "seven_day_meal_plan",
+                  "grocery_list",
+                  "weekly_check_in"
+                ],
+                properties: {
+                  daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
+                  sample_day_of_eating: { type: "array", items: { type: "string" } },
+                  seven_day_meal_plan: sevenDayMealSchema,
+                  grocery_list: { type: "array", items: { type: "string" } },
+                  weekly_check_in: { type: "string" }
+                }
+              },
+              strict: true
+            }
+          }
+        })
+      });
+
+      const data = await response.json();
+      return data.output[0].content[0].json;
+    }
+
+    // =====================================
+    // MERGE
+    // =====================================
+
+    let plan;
+
+    if (isPremium) {
+      const workout = await generateWorkoutPart();
+      const meals = await generateMealPart();
+
+      plan = {
+        ...workout,
+        ...meals,
+        macro_targets: macros
+      };
+    } else {
+      plan = await generateWorkoutPart();
     }
 
     return {
