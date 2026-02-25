@@ -197,9 +197,8 @@ export async function handler(event) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-4o-mini",
           temperature: 0,
-          max_output_tokens: 2500,
           input: [
             {
               role: "system",
@@ -219,12 +218,6 @@ Workout requirements:
 - Include sets, reps, rest time.
 - Include compound + accessory lifts.
 - Rest days must include recovery guidance.
-
-Workout formatting rules:
-- Do NOT repeat day labels inside exercise lists.
-- Do NOT write "Day 1", "Day 2", etc inside any array.
-- Only list exercises in each day array.
-- Each key already represents the day.
 
 Nutrition requirements:
 - User selected ${onboarding.meals_per_day || 3} meals per day.
