@@ -197,9 +197,9 @@ export async function handler(event) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-4o-mini",
           temperature: 0,
-          max_output_tokens: 2500,
+          max_output_tokens: 1600,
           input: [
             {
               role: "system",
