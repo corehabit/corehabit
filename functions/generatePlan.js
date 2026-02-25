@@ -64,21 +64,13 @@ export async function handler(event) {
     const macros = isPremium ? calculateMacros(onboarding) : null;
 
     // =====================================
-    // WORKOUT SCHEMA (shared)
+    // SCHEMAS
     // =====================================
 
     const fullWeekWorkoutSchema = {
       type: "object",
       additionalProperties: false,
-      required: [
-        "Day 1",
-        "Day 2",
-        "Day 3",
-        "Day 4",
-        "Day 5",
-        "Day 6",
-        "Day 7"
-      ],
+      required: ["Day 1","Day 2","Day 3","Day 4","Day 5","Day 6","Day 7"],
       properties: {
         "Day 1": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
         "Day 2": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
@@ -97,45 +89,64 @@ export async function handler(event) {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
+        required: ["day","breakfast","lunch","dinner","extra_meals"],
         properties: {
           day: { type: "string" },
           breakfast: { type: "string" },
           lunch: { type: "string" },
           dinner: { type: "string" },
-          extra_meals: {
-            type: "array",
-            items: { type: "string" }
-          }
+          extra_meals: { type: "array", items: { type: "string" } }
         }
       }
     };
 
     // =====================================
-    // CALL 1: WORKOUT GENERATION
+    // SAFE OPENAI CALL HELPER
     // =====================================
 
-    async function generateWorkoutPart() {
+    async function safeOpenAIRequest(payload) {
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          temperature: 0,
-          max_output_tokens: 750,
-          input: [
-            {
-              role: "system",
-              content:
-                "You are CoreHabit, an elite evidence-based fitness engine. Be structured and precise."
-            },
-            {
-              role: "user",
-              content:
-                `Build ONLY the training portion of a premium plan.
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`OpenAI error: ${text}`);
+      }
+
+      const data = await response.json();
+      const content = data.output?.[0]?.content?.[0];
+
+      if (!content || !content.json) {
+        console.error("Invalid OpenAI response:", data);
+        return null;
+      }
+
+      return content.json;
+    }
+
+    // =====================================
+    // WORKOUT GENERATION
+    // =====================================
+
+    async function generateWorkoutPart() {
+      return safeOpenAIRequest({
+        model: "gpt-4o",
+        temperature: 0,
+        max_output_tokens: 750,
+        input: [
+          {
+            role: "system",
+            content: "You are CoreHabit, an elite evidence-based fitness engine."
+          },
+          {
+            role: "user",
+            content: `Build ONLY the training portion.
 
 Return:
 - overview
@@ -149,75 +160,61 @@ Return:
 Rules:
 - 5-6 exercises per day
 - Include sets, reps, rest
-- Do NOT repeat day labels inside arrays
+- Do NOT repeat day labels
 
 Onboarding:
-` +
-                JSON.stringify(onboarding, null, 2)
-            }
-          ],
-          text: {
-            format: {
-              type: "json_schema",
-              name: "workout_plan",
-              schema: {
-                type: "object",
-                additionalProperties: false,
-                required: [
-                  "overview",
-                  "weekly_workout_split",
-                  "volume_targets",
-                  "sample_workout",
-                  "progression_strategy",
-                  "advanced_training_notes",
-                  "full_week_workout_plan"
-                ],
-                properties: {
-                  overview: { type: "string" },
-                  weekly_workout_split: { type: "array", items: { type: "string" } },
-                  volume_targets: { type: "array", items: { type: "string" } },
-                  sample_workout: { type: "array", items: { type: "string" } },
-                  progression_strategy: { type: "string" },
-                  advanced_training_notes: { type: "string" },
-                  full_week_workout_plan: fullWeekWorkoutSchema
-                }
-              },
-              strict: true
-            }
+${JSON.stringify(onboarding, null, 2)}`
           }
-        })
+        ],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "workout_plan",
+            schema: {
+              type: "object",
+              additionalProperties: false,
+              required: [
+                "overview",
+                "weekly_workout_split",
+                "volume_targets",
+                "sample_workout",
+                "progression_strategy",
+                "advanced_training_notes",
+                "full_week_workout_plan"
+              ],
+              properties: {
+                overview: { type: "string" },
+                weekly_workout_split: { type: "array", items: { type: "string" } },
+                volume_targets: { type: "array", items: { type: "string" } },
+                sample_workout: { type: "array", items: { type: "string" } },
+                progression_strategy: { type: "string" },
+                advanced_training_notes: { type: "string" },
+                full_week_workout_plan: fullWeekWorkoutSchema
+              }
+            },
+            strict: true
+          }
+        }
       });
-
-      const data = await response.json();
-      return data.output[0].content[0].json;
     }
 
     // =====================================
-    // CALL 2: MEAL GENERATION
+    // MEAL GENERATION
     // =====================================
 
     async function generateMealPart() {
-      const response = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          temperature: 0,
-          max_output_tokens: 700,
-          input: [
-            {
-              role: "system",
-              content:
-                "You are CoreHabit, an elite evidence-based nutrition engine. Be structured and precise."
-            },
-            {
-              role: "user",
-              content:
-                `Build ONLY the nutrition portion.
-                 meal descriptions concise and under 1–2 sentences.
+      return safeOpenAIRequest({
+        model: "gpt-4o",
+        temperature: 0,
+        max_output_tokens: 700,
+        input: [
+          {
+            role: "system",
+            content: "You are CoreHabit, an elite evidence-based nutrition engine."
+          },
+          {
+            role: "user",
+            content: `Build ONLY the nutrition portion.
 
 Return:
 - daily_nutrition_guidelines
@@ -229,40 +226,35 @@ Return:
 User selected ${onboarding.meals_per_day || 3} meals per day.
 
 Onboarding:
-` +
-                JSON.stringify(onboarding, null, 2)
-            }
-          ],
-          text: {
-            format: {
-              type: "json_schema",
-              name: "meal_plan",
-              schema: {
-                type: "object",
-                additionalProperties: false,
-                required: [
-                  "daily_nutrition_guidelines",
-                  "sample_day_of_eating",
-                  "seven_day_meal_plan",
-                  "grocery_list",
-                  "weekly_check_in"
-                ],
-                properties: {
-                  daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
-                  sample_day_of_eating: { type: "array", items: { type: "string" } },
-                  seven_day_meal_plan: sevenDayMealSchema,
-                  grocery_list: { type: "array", items: { type: "string" } },
-                  weekly_check_in: { type: "string" }
-                }
-              },
-              strict: true
-            }
+${JSON.stringify(onboarding, null, 2)}`
           }
-        })
+        ],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "meal_plan",
+            schema: {
+              type: "object",
+              additionalProperties: false,
+              required: [
+                "daily_nutrition_guidelines",
+                "sample_day_of_eating",
+                "seven_day_meal_plan",
+                "grocery_list",
+                "weekly_check_in"
+              ],
+              properties: {
+                daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
+                sample_day_of_eating: { type: "array", items: { type: "string" } },
+                seven_day_meal_plan: sevenDayMealSchema,
+                grocery_list: { type: "array", items: { type: "string" } },
+                weekly_check_in: { type: "string" }
+              }
+            },
+            strict: true
+          }
+        }
       });
-
-      const data = await response.json();
-      return data.output[0].content[0].json;
     }
 
     // =====================================
@@ -272,21 +264,28 @@ Onboarding:
     let plan;
 
     if (isPremium) {
+      const [workout, meals] = await Promise.all([
+        generateWorkoutPart(),
+        generateMealPart()
+      ]);
 
-  const [workout, meals] = await Promise.all([
-    generateWorkoutPart(),
-    generateMealPart()
-  ]);
+      if (!workout || !meals) {
+        throw new Error("Workout or meal generation failed");
+      }
 
-  plan = {
-    ...workout,
-    ...meals,
-    macro_targets: macros
-  };
+      plan = {
+        ...workout,
+        ...meals,
+        macro_targets: macros
+      };
+    } else {
+      const workout = await generateWorkoutPart();
+      if (!workout) {
+        throw new Error("Workout generation failed");
+      }
+      plan = workout;
+    }
 
-} else {
-  plan = await generateWorkoutPart();
-}
     return {
       statusCode: 200,
       body: JSON.stringify({ isPremium, plan })
