@@ -258,7 +258,11 @@ Onboarding Data:
       if (!content) throw new Error("Invalid OpenAI response");
 
       if (content.json) return content.json;
-      if (content.text) return JSON.parse(content.text);
+
+// DO NOT manually JSON.parse text.
+// The Responses API already enforces schema.
+// If json is missing, throw.
+throw new Error("Model did not return structured JSON.");
 
       throw new Error("No valid JSON returned");
     }
