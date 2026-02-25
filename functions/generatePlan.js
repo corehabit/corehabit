@@ -80,13 +80,13 @@ export async function handler(event) {
         "Day 7"
       ],
       properties: {
-        "Day 1": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 2": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 3": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 4": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 5": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 6": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-        "Day 7": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } }
+        "Day 1": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 2": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 3": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 4": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 5": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 6": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } },
+        "Day 7": { type: "array", minItems: 5, maxItems: 6, items: { type: "string" } }
       }
     };
 
@@ -125,7 +125,7 @@ export async function handler(event) {
         body: JSON.stringify({
           model: "gpt-4o",
           temperature: 0,
-          max_output_tokens: 1400,
+          max_output_tokens: 750,
           input: [
             {
               role: "system",
@@ -147,7 +147,7 @@ Return:
 - full_week_workout_plan
 
 Rules:
-- 6–8 exercises per day
+- 5-6 exercises per day
 - Include sets, reps, rest
 - Do NOT repeat day labels inside arrays
 
@@ -206,7 +206,7 @@ Onboarding:
         body: JSON.stringify({
           model: "gpt-4o",
           temperature: 0,
-          max_output_tokens: 1200,
+          max_output_tokens: 700,
           input: [
             {
               role: "system",
@@ -217,6 +217,7 @@ Onboarding:
               role: "user",
               content:
                 `Build ONLY the nutrition portion.
+                 meal descriptions concise and under 1–2 sentences.
 
 Return:
 - daily_nutrition_guidelines
