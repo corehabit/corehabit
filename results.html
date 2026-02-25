@@ -195,7 +195,7 @@ backdrop-filter: blur(6px);
   </div>
 
   <div class="premium-card">
-    <h3>Daily Check-In</h3>
+    <h3>Weekly Check-In</h3>
     <p id="weekly-check-in"></p>
   </div>
 
@@ -464,7 +464,6 @@ if (!response.ok) {
 
 const raw = await response.json();
 console.log("API RESPONSE:", raw);
-    alert(JSON.stringify(raw));
 
 if (!raw.plan) {
   console.error("No plan returned:", raw);
@@ -472,10 +471,6 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
-
-// ✅ CLEAR old error text on success
-statusEl.textContent = "";
-    statusEl.textContent = "Plan generated ✅";
     // attach onboarding snapshot so weekly regen works
 data.onboarding_snapshot = JSON.parse(onboardingRaw);
     // ✅ Persist latest plan for dashboard
