@@ -429,7 +429,6 @@ if (urlParams2.get("premium") === "success") {
   localStorage.setItem("corehabit_premium", "true");
 }
 async function generatePlan() {
-  document.getElementById("plan-loading-overlay").style.display = "flex";
 
   const isRegenerating =
   document.activeElement &&
@@ -503,8 +502,6 @@ if (!raw.plan) {
 }
 
 const data = raw.plan;
-    // attach onboarding snapshot so weekly regen works
-data.onboarding_snapshot = JSON.parse(onboardingRaw);
     // ✅ Persist latest plan for dashboard
 localStorage.setItem(
   "corehabit_last_plan",
@@ -672,11 +669,9 @@ dashboardBtn.innerHTML = `
 `;
 
 premiumRoot.appendChild(dashboardBtn);
-    document.getElementById("plan-loading-overlay").style.display = "none";
   } catch (err) {
     console.error(err);
     statusEl.textContent = "Something went wrong generating your plan.";
-    document.getElementById("plan-loading-overlay").style.display = "none";
   }
 
   if (generateBtn) generateBtn.disabled = false;
@@ -839,43 +834,5 @@ function openLoginModal() {
   if (modal) modal.style.display = "flex";
 }
 </script>
-  <div id="plan-loading-overlay" style="
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(6px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-">
-  <div style="
-    background:#111827;
-    padding:40px;
-    border-radius:20px;
-    text-align:center;
-    color:white;
-    width:300px;
-  ">
-    <div style="
-      width:50px;
-      height:50px;
-      border:4px solid rgba(124,92,255,0.3);
-      border-top:4px solid #7c5cff;
-      border-radius:50%;
-      margin:0 auto 20px auto;
-      animation: spin 1s linear infinite;
-    "></div>
-    <p style="font-weight:600;">
-      Building your personalized plan...
-    </p>
-  </div>
-</div>
-
-<style>
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-</style>
 </body>
 </html>
