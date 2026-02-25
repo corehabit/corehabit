@@ -13,50 +13,49 @@ export async function handler(event) {
     }
 
     // ===============================
-    // 🔒 Deterministic Macro Calculator
+    // Deterministic Macro Calculator
     // ===============================
-    function calculateMacros(onboarding) {
-      const weightLbs = parseFloat(onboarding.weight);
-      const age = parseInt(onboarding.age);
-      const sex = onboarding.sex;
-      const goal = onboarding.goal || "";
+    function calculateMacros(data) {
+      const weightLbs = parseFloat(data.weight);
+      const age = parseInt(data.age);
+      const sex = data.sex;
+      const goal = data.goal || "";
 
       if (!weightLbs || !age) return null;
 
-      // Clean height safely (handles 6'0, 6'0", 6' 0)
       let heightInches = 70;
-      if (onboarding.height) {
-        const numbers = onboarding.height.match(/\d+/g);
-        if (numbers && numbers.length >= 2) {
-          heightInches = parseInt(numbers[0]) * 12 + parseInt(numbers[1]);
+      if (data.height) {
+        const nums = data.height.match(/\d+/g);
+        if (nums && nums.length >= 2) {
+          heightInches = parseInt(nums[0]) * 12 + parseInt(nums[1]);
         }
       }
 
       const weightKg = weightLbs * 0.4536;
       const heightCm = heightInches * 2.54;
 
-      let bmr =
+      const bmr =
         sex === "Male"
           ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
           : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
 
-      const activityMultiplier = 1.55;
-      let tdee = bmr * activityMultiplier;
+      const tdee = bmr * 1.55;
 
-      if (goal.includes("Lose")) tdee -= 400;
-      if (goal.includes("Build")) tdee += 350;
+      let calories = tdee;
+      if (goal.includes("Lose")) calories -= 400;
+      if (goal.includes("Build")) calories += 350;
 
-      const calories = Math.round(tdee);
+      calories = Math.round(calories);
 
-      const proteinPerLb = goal.includes("Build") ? 1.0 : 0.9;
-      const protein = Math.round(weightLbs * proteinPerLb);
+      const protein = Math.round(
+        weightLbs * (goal.includes("Build") ? 1.0 : 0.9)
+      );
 
-      const fatCalories = calories * 0.25;
-      const fats = Math.round(fatCalories / 9);
+      const fats = Math.round((calories * 0.25) / 9);
 
-      const proteinCalories = protein * 4;
-      const remainingCalories = calories - proteinCalories - fats * 9;
-      const carbs = Math.round(remainingCalories / 4);
+      const carbs = Math.round(
+        (calories - protein * 4 - fats * 9) / 4
+      );
 
       return { calories, protein, carbs, fats };
     }
@@ -64,7 +63,7 @@ export async function handler(event) {
     const macros = isPremium ? calculateMacros(onboarding) : null;
 
     // ===============================
-    // 🔒 JSON Schemas (Strict)
+    // Schemas
     // ===============================
 
     const baseSchema = {
@@ -114,6 +113,7 @@ export async function handler(event) {
         ],
         properties: {
           overview: { type: "string" },
+
           macro_targets: {
             type: "object",
             additionalProperties: false,
@@ -125,6 +125,7 @@ export async function handler(event) {
               fats: { type: "number" }
             }
           },
+
           weekly_workout_split: { type: "array", items: { type: "string" } },
           volume_targets: { type: "array", items: { type: "string" } },
           sample_workout: { type: "array", items: { type: "string" } },
@@ -132,81 +133,60 @@ export async function handler(event) {
           daily_nutrition_guidelines: { type: "array", items: { type: "string" } },
           sample_day_of_eating: { type: "array", items: { type: "string" } },
           weekly_focus_tip: { type: "string" },
+
           seven_day_meal_plan: {
-  type: "array",
-  minItems: 7,
-  maxItems: 7,
-  items: {
-    type: "object",
-    additionalProperties: false,
-    required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
-    properties: {
-      day: { type: "string" },
-      breakfast: { type: "string" },
-      lunch: { type: "string" },
-      dinner: { type: "string" },
-      extra_meals: {
-        type: "array",
-        minItems: onboarding.meals_per_day > 3 ? onboarding.meals_per_day - 3 : 0,
-        maxItems: onboarding.meals_per_day > 3 ? onboarding.meals_per_day - 3 : 0,
-        items: { type: "string" }
-      }
-    }
-  }
-},
+            type: "array",
+            minItems: 7,
+            maxItems: 7,
+            items: {
+              type: "object",
+              additionalProperties: false,
+              required: ["day", "breakfast", "lunch", "dinner", "extra_meals"],
+              properties: {
+                day: { type: "string" },
+                breakfast: { type: "string" },
+                lunch: { type: "string" },
+                dinner: { type: "string" },
+                extra_meals: {
+                  type: "array",
+                  items: { type: "string" }
+                }
+              }
+            }
+          },
+
           grocery_list: { type: "array", items: { type: "string" } },
           weekly_check_in: { type: "string" },
           advanced_training_notes: { type: "string" },
-          properties: {
-  "Day 1": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 2": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 3": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 4": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 5": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 6": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  },
-  "Day 7": {
-    type: "array",
-    minItems: 6,
-    maxItems: 8,
-    items: { type: "string" }
-  }
-}
+
+          full_week_workout_plan: {
+            type: "object",
+            additionalProperties: false,
+            required: [
+              "Day 1",
+              "Day 2",
+              "Day 3",
+              "Day 4",
+              "Day 5",
+              "Day 6",
+              "Day 7"
+            ],
+            properties: {
+              "Day 1": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 2": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 3": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 4": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 5": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 6": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
+              "Day 7": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } }
+            }
+          }
         }
       }
     };
 
     // ===============================
-    // 🔒 Structured OpenAI Call
+    // OpenAI Call
     // ===============================
 
     async function callOpenAI() {
@@ -223,32 +203,32 @@ export async function handler(event) {
             {
               role: "system",
               content:
-                "You are CoreHabit, an elite evidence-based fitness and nutrition engine. Be precise and structured."
+                "You are CoreHabit, an elite evidence-based fitness and nutrition engine. Be structured and precise."
             },
             {
-  role: "user",
-  content:
-    (isPremium
-      ? `Use these macro targets EXACTLY: ${JSON.stringify(macros)}\n`
-      : "") +
-    `Build a fully personalized, advanced plan.
+              role: "user",
+              content:
+                (isPremium
+                  ? `Use these macro targets EXACTLY: ${JSON.stringify(macros)}\n`
+                  : "") +
+                `Build a fully personalized advanced plan.
 
 Workout requirements:
-- Each training day must include 6–8 exercises.
-- Include compound and accessory lifts.
-- Include sets, reps, and intensity guidance.
-- Include rest time between sets.
-- Rest days must include mobility, recovery, or light conditioning guidance.
+- 6–8 exercises per training day.
+- Include sets, reps, rest time.
+- Include compound + accessory lifts.
+- Rest days must include recovery guidance.
 
 Nutrition requirements:
-- Each day must clearly include Breakfast, Lunch, Dinner, and extra meals if selected.
-- Meals must align with macro targets.
-- Distribute protein evenly across meals.
+- User selected ${onboarding.meals_per_day || 3} meals per day.
+- Breakfast, Lunch, Dinner mandatory.
+- Additional meals go inside extra_meals array.
+- Align meals with macro targets.
 
 Onboarding Data:
 ` +
-    JSON.stringify(onboarding, null, 2)
-}
+                JSON.stringify(onboarding, null, 2)
+            }
           ],
           text: {
             format: {
@@ -262,45 +242,21 @@ Onboarding Data:
       });
 
       if (!response.ok) {
-        const err = await response.text();
-        throw new Error(err);
+        throw new Error(await response.text());
       }
 
       const data = await response.json();
 
-if (!data.output || !data.output.length) {
-  throw new Error("No output returned from OpenAI");
-}
+      const content = data.output?.[0]?.content?.[0];
+      if (!content) throw new Error("Invalid OpenAI response");
 
-const firstOutput = data.output[0];
+      if (content.json) return content.json;
+      if (content.text) return JSON.parse(content.text);
 
-if (!firstOutput.content || !firstOutput.content.length) {
-  throw new Error("No content returned from OpenAI");
-}
-
-const firstContent = firstOutput.content[0];
-
-// Structured outputs may return parsed JSON directly
-if (firstContent.json) {
-  return firstContent.json;
-}
-
-// Or as text that needs parsing
-if (firstContent.text) {
-  return JSON.parse(firstContent.text);
-}
-
-throw new Error("OpenAI did not return JSON content");
+      throw new Error("No valid JSON returned");
     }
 
-    // One retry for resilience
-    let plan;
-    try {
-      plan = await callOpenAI();
-    } catch (err) {
-      console.error("Retrying OpenAI call...");
-      plan = await callOpenAI();
-    }
+    let plan = await callOpenAI();
 
     if (isPremium && macros) {
       plan.macro_targets = macros;
