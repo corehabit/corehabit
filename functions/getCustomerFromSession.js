@@ -1,12 +1,6 @@
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
 
 export async function handler(event) {
   try {
@@ -17,32 +11,21 @@ export async function handler(event) {
       };
     }
 
-    const { sessionId, userId } = JSON.parse(event.body || "{}");
+    const { sessionId } = JSON.parse(event.body || "{}");
 
-    if (!sessionId || !userId) {
+    if (!sessionId) {
       return {
         statusCode: 400,
-        body: "Missing sessionId or userId"
+        body: "Missing sessionId"
       };
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    const customerId = session.customer;
-
-    // ✅ Save premium + stripe_customer_id
-    await supabase
-      .from("profiles")
-      .update({
-        premium_status: true,
-        stripe_customer_id: customerId
-      })
-      .eq("id", userId);
-
     return {
       statusCode: 200,
       body: JSON.stringify({
-        success: true
+        customerId: session.customer
       })
     };
 
