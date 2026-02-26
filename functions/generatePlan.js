@@ -136,8 +136,6 @@ export async function handler(event) {
 
           seven_day_meal_plan: {
             type: "array",
-            minItems: 7,
-            maxItems: 7,
             items: {
               type: "object",
               additionalProperties: false,
@@ -172,13 +170,13 @@ export async function handler(event) {
               "Day 7"
             ],
             properties: {
-              "Day 1": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 2": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 3": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 4": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 5": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 6": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } },
-              "Day 7": { type: "array", minItems: 6, maxItems: 8, items: { type: "string" } }
+              "Day 1": { type: "array", items: { type: "string" } },
+              "Day 2": { type: "array", items: { type: "string" } },
+              "Day 3": { type: "array", items: { type: "string" } },
+              "Day 4": { type: "array", items: { type: "string" } },
+              "Day 5": { type: "array", items: { type: "string" } },
+              "Day 6": { type: "array", items: { type: "string" } },
+              "Day 7": { type: "array", items: { type: "string" } }
             }
           }
         }
@@ -254,15 +252,26 @@ Onboarding Data:
       }
 
       const data = await response.json();
-      const content = data.output?.[0]?.content?.[0];
+const content = data.output?.[0]?.content?.[0];
 
-      if (!content) throw new Error("Invalid OpenAI response");
+if (!content) throw new Error("Invalid OpenAI response");
 
-      if (content.json) return content.json;
+// 1️⃣ Preferred structured JSON
+if (content.json) {
+  return content.json;
+}
 
-      if (content.text) return JSON.parse(content.text);
+// 2️⃣ Fallback: try parsing text manually
+if (content.text) {
+  try {
+    return JSON.parse(content.text);
+  } catch (e) {
+    console.warn("Manual JSON parse failed");
+  }
+}
 
-      throw new Error("No valid JSON returned");
+// 3️⃣ Force retry
+throw new Error("No valid JSON returned");
 
     } catch (err) {
 
