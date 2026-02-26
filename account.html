@@ -754,11 +754,10 @@ function showSummary(summary) {
   `;
 }
   // ===== MANAGE SUBSCRIPTION BUTTON =====
-document.addEventListener("DOMContentLoaded", () => {
 
-  const cancelBtn = document.getElementById("cancel-subscription-btn");
-  if (!cancelBtn) return;
+const cancelBtn = document.getElementById("cancel-subscription-btn");
 
+if (cancelBtn) {
   cancelBtn.addEventListener("click", async () => {
 
     const supabase = window.supabaseClient;
@@ -793,8 +792,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   });
-
-});
+}
 </script>
   <!-- Weekly Check-In Modal -->
 <div id="checkin-modal" style="
