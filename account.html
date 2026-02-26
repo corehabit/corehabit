@@ -254,16 +254,6 @@
       Go Premium
     </button>
   </div>
-  <div class="card">
-  <h2>Subscription</h2>
-
-  <button 
-    onclick="manageSubscription()" 
-    class="btn-primary"
-  >
-    Manage Subscription
-  </button>
-</div>
   <!-- Weekly Progress Section -->
 <div id="weekly-progress-section" style="margin-top:40px; padding:20px; border-top:1px solid #eee;">
   <h3 id="week-status-text">Loading week...</h3>
@@ -953,51 +943,10 @@ function showSummary(summary) {
       >
         Yes, Reset
       </button>
-     
 
     </div>
 
   </div>
 </div>
-  <script>
-async function manageSubscription() {
-
-  const supabase = window.supabaseClient;
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    alert("Please log in first.");
-    return;
-  }
-
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("stripe_customer_id")
-    .eq("id", user.id)
-    .single();
-
-  if (error || !profile?.stripe_customer_id) {
-    alert("No active subscription found.");
-    return;
-  }
-
-  const res = await fetch("/.netlify/functions/createPortalSession", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      customerId: profile.stripe_customer_id
-    })
-  });
-
-  const data = await res.json();
-
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    alert("Could not open subscription portal.");
-  }
-}
-</script>
 </body>
 </html>
