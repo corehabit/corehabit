@@ -185,11 +185,12 @@ export async function handler(event) {
       }
     };
 
-    // ===============================
-    // OpenAI Call
-    // ===============================
+  async function callOpenAI(attempts = 2) {
 
-    async function callOpenAI() {
+  for (let i = 0; i < attempts; i++) {
+
+    try {
+
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         headers: {
@@ -242,7 +243,7 @@ Onboarding Data:
               type: "json_schema",
               name: isPremium ? premiumSchema.name : baseSchema.name,
               schema: isPremium ? premiumSchema.schema : baseSchema.schema,
-              strict: true
+              strict: false
             }
           }
         })
@@ -253,15 +254,29 @@ Onboarding Data:
       }
 
       const data = await response.json();
-
       const content = data.output?.[0]?.content?.[0];
+
       if (!content) throw new Error("Invalid OpenAI response");
 
       if (content.json) return content.json;
+
       if (content.text) return JSON.parse(content.text);
 
       throw new Error("No valid JSON returned");
+
+    } catch (err) {
+
+      console.error(`OpenAI attempt ${i + 1} failed`, err);
+
+      if (i === attempts - 1) {
+        throw err;
+      }
+
     }
+
+  }
+
+}
 
     let plan = await callOpenAI();
 
