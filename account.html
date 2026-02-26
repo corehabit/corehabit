@@ -243,7 +243,14 @@
   ⟲ Reset Plan Progression
 </button>
 </div>
+<!-- Manage Subscription (Premium Only) -->
+<div id="manageSubscriptionCard" class="card" style="display:none;">
+  <h2>Subscription</h2>
 
+  <button id="cancel-subscription-btn" class="btn-secondary">
+    Manage / Cancel Subscription
+  </button>
+</div>
   <!-- Premium Upsell -->
   <div id="premiumUpsell" class="card">
     <h2>Unlock Premium</h2>
@@ -321,6 +328,7 @@ async function loadDashboard() {
   if (profile && profile.premium_status === true) {
     document.getElementById("premiumBadge").style.display = "inline-block";
     document.getElementById("premiumUpsell").style.display = "none";
+    document.getElementById("manageSubscriptionCard").style.display = "block";
   }
 
   // ===== LOAD FULL PLAN (Supabase first, fallback localStorage) =====
@@ -745,6 +753,48 @@ function showSummary(summary) {
     </div>
   `;
 }
+  // ===== MANAGE SUBSCRIPTION BUTTON =====
+document.addEventListener("DOMContentLoaded", () => {
+
+  const cancelBtn = document.getElementById("cancel-subscription-btn");
+  if (!cancelBtn) return;
+
+  cancelBtn.addEventListener("click", async () => {
+
+    const supabase = window.supabaseClient;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("stripe_customer_id")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !data?.stripe_customer_id) {
+      alert("No active subscription found.");
+      return;
+    }
+
+    const res = await fetch("/.netlify/functions/createPortalSession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customerId: data.stripe_customer_id
+      })
+    });
+
+    const portal = await res.json();
+
+    if (portal.url) {
+      window.location.href = portal.url;
+    } else {
+      alert("Unable to open subscription portal.");
+    }
+
+  });
+
+});
 </script>
   <!-- Weekly Check-In Modal -->
 <div id="checkin-modal" style="
