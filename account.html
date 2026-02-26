@@ -753,11 +753,12 @@ function showSummary(summary) {
     </div>
   `;
 }
-// ===== MANAGE SUBSCRIPTION BUTTON =====
+  // ===== MANAGE SUBSCRIPTION BUTTON =====
+document.addEventListener("DOMContentLoaded", () => {
 
-const cancelBtn = document.getElementById("cancel-subscription-btn");
+  const cancelBtn = document.getElementById("cancel-subscription-btn");
+  if (!cancelBtn) return;
 
-if (cancelBtn) {
   cancelBtn.addEventListener("click", async () => {
 
     const supabase = window.supabaseClient;
@@ -792,7 +793,6 @@ if (cancelBtn) {
     }
 
   });
-}
 
 });
 </script>
