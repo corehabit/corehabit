@@ -9,13 +9,16 @@
   gtag('js', new Date());
   gtag('config', 'AW-17987873650');
 </script>
-  <script>
+<script>
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get('session_id');
 
   if (sessionId) {
     gtag('event', 'conversion', {
-      'send_to': 'AW-17987873650/XXXXXXXXXXXX'
+      'send_to': 'AW-17987873650/wkBJCM3u3IEcEPLWpIFD',
+      'value': 1.0,
+      'currency': 'USD',
+      'transaction_id': sessionId
     });
   }
 </script>
