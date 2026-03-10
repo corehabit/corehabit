@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "stripe": "^20.3.0"
-  },
+  "stripe": "^20.3.0",
+  "@supabase/supabase-js": "^2.39.7"
+},
   "name": "corehabit",
   "version": "1.0.0",
   "description": "<!-- **corehabit/corehabit** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
