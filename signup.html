@@ -1,77 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Create Your CoreHabit Account</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
+:root{
+--bg:#0b0f14;
+--panel:#111827;
+--text:#e9eef5;
+--muted:#9ca3af;
+--purple:#7c5cff;
+--purple2:#9b87ff;
+--border:rgba(255,255,255,.08);
+}
+
 body{
-font-family: Arial, sans-serif;
-background:#0e0e11;
-color:white;
+margin:0;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:
+radial-gradient(800px 400px at 15% -10%, rgba(124,92,255,0.22), transparent 60%),
+var(--bg);
+color:var(--text);
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
 .container{
-background:#1a1a1f;
-padding:40px;
-border-radius:12px;
-width:360px;
+background:var(--panel);
+padding:42px;
+border-radius:18px;
+width:380px;
 text-align:center;
-box-shadow:0 0 30px rgba(0,0,0,.4);
+border:1px solid var(--border);
+box-shadow:
+0 25px 60px rgba(0,0,0,.55),
+inset 0 0 0 1px rgba(255,255,255,.03);
 }
 
 h1{
-margin-bottom:10px;
+margin-bottom:8px;
+font-size:28px;
+letter-spacing:-.3px;
 }
 
 .subtitle{
-opacity:.7;
-margin-bottom:25px;
+color:var(--muted);
 font-size:14px;
+margin-bottom:25px;
+}
+
+.plan-reminder{
+background:rgba(124,92,255,.12);
+border:1px solid rgba(124,92,255,.35);
+padding:10px;
+border-radius:10px;
+font-size:13px;
+margin-bottom:20px;
 }
 
 input{
 width:100%;
-padding:12px;
+padding:14px;
 margin-bottom:12px;
-border-radius:6px;
+border-radius:8px;
 border:none;
+background:#1f2937;
+color:white;
 font-size:14px;
+}
+
+input:focus{
+outline:2px solid var(--purple);
 }
 
 button{
 width:100%;
-padding:14px;
-background:#7c3aed;
-color:white;
+padding:16px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 font-size:16px;
+font-weight:700;
 cursor:pointer;
+background:linear-gradient(135deg,var(--purple),var(--purple2));
+color:white;
+transition:all .2s;
 }
 
 button:hover{
-opacity:.9;
+transform:translateY(-1px);
+box-shadow:0 10px 30px rgba(124,92,255,.35);
 }
 
 .login-link{
-margin-top:15px;
-font-size:14px;
-opacity:.7;
+margin-top:16px;
+font-size:13px;
+color:var(--muted);
 }
 
-.security{
-margin-top:20px;
+.login-link a{
+color:var(--purple2);
+text-decoration:none;
+}
+
+.trust{
+margin-top:18px;
 font-size:12px;
-opacity:.6;
+color:var(--muted);
+}
+
+.features{
+margin-top:20px;
+font-size:13px;
+color:var(--muted);
+text-align:left;
+line-height:1.6;
 }
 
 </style>
@@ -83,20 +134,37 @@ opacity:.6;
 <div class="container">
 
 <h1>CoreHabit</h1>
-<p class="subtitle">Create your account to unlock your personalized fitness plan</p>
+
+<p class="subtitle">
+Create your account to unlock your personalized fitness plan
+</p>
+
+<div id="planReminder" class="plan-reminder">
+Loading plan...
+</div>
 
 <input id="email" type="email" placeholder="Email">
 
-<input id="password" type="password" placeholder="Password">
+<input id="password" type="password" placeholder="Password (min 6 characters)">
 
 <button onclick="signup()">Create Account</button>
+
+<div class="features">
+✓ Personalized workout plan  
+<br>
+✓ Custom calorie & macro targets  
+<br>
+✓ Weekly grocery list  
+<br>
+✓ Adaptive training progression
+</div>
 
 <p class="login-link">
 Already have an account? <a href="login.html">Log in</a>
 </p>
 
-<p class="security">
-🔒 Secure account powered by Supabase
+<p class="trust">
+🔒 Secure account & payments powered by Stripe
 </p>
 
 </div>
@@ -104,40 +172,54 @@ Already have an account? <a href="login.html">Log in</a>
 <script>
 
 const supabase = window.supabase.createClient(
-"https://wonbwlvnojtgydvpllmk.supabase.co"
+"https://wonbwlvnojtgydvpllmk.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
-)
+);
 
-async function signup() {
+const params = new URLSearchParams(window.location.search);
+const plan = params.get("plan");
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const reminder = document.getElementById("planReminder");
 
-  if (!email || !password) {
-    alert("Please enter email and password");
-    return;
-  }
+if(plan === "annual"){
+reminder.innerHTML = "⭐ You're upgrading to <b>CoreHabit Premium — Annual</b>";
+}else{
+reminder.innerHTML = "⭐ You're upgrading to <b>CoreHabit Premium — Monthly</b>";
+}
 
-  const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password
-  });
+async function signup(){
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  const params = new URLSearchParams(window.location.search);
-  const plan = params.get("plan");
+if(!email || !password){
+alert("Please enter email and password");
+return;
+}
 
-  if (plan === "annual") {
-    window.location.href = "premium.html?plan=annual";
-  } else {
-    window.location.href = "premium.html?plan=monthly";
-  }
+if(password.length < 6){
+alert("Password must be at least 6 characters");
+return;
+}
+
+const { data, error } = await supabase.auth.signUp({
+email: email,
+password: password
+});
+
+if(error){
+alert(error.message);
+return;
+}
+
+if(plan === "annual"){
+window.location.href = "premium.html?plan=annual";
+}else{
+window.location.href = "premium.html?plan=monthly";
+}
 
 }
+
 </script>
 
 </body>
