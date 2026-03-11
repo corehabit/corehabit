@@ -462,8 +462,11 @@ window.supabaseClient = window.supabase.createClient(
 let selectedPlan = null;
 
 function startPremiumFlow(planType) {
-  selectedPlan = planType;
-  document.getElementById("authModal").style.display = "flex";
+  if (planType === "monthly") {
+    window.location.href = "signup.html?plan=monthly";
+  } else {
+    window.location.href = "signup.html?plan=annual";
+  }
 }
 
 async function submitAuth() {
