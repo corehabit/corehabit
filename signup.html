@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Your CoreHabit Account</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#0e0e11;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:#1a1a1f;
+padding:40px;
+border-radius:12px;
+width:360px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,0,0,.4);
+}
+
+h1{
+margin-bottom:10px;
+}
+
+.subtitle{
+opacity:.7;
+margin-bottom:25px;
+font-size:14px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border-radius:6px;
+border:none;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#7c3aed;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.login-link{
+margin-top:15px;
+font-size:14px;
+opacity:.7;
+}
+
+.security{
+margin-top:20px;
+font-size:12px;
+opacity:.6;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>CoreHabit</h1>
+<p class="subtitle">Create your account to unlock your personalized fitness plan</p>
+
+<input id="email" type="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Create Account</button>
+
+<p class="login-link">
+Already have an account? <a href="login.html">Log in</a>
+</p>
+
+<p class="security">
+🔒 Secure account powered by Supabase
+</p>
+
+</div>
+
+<script>
+
+const supabase = window.supabase.createClient(
+"https://wonbwlvnojtgydvpllmk.supabase.co"
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
+)
+
+async function signup(){
+
+const email = document.getElementById("email").value
+const password = document.getElementById("password").value
+
+const { data, error } = await supabase.auth.signUp({
+email: email,
+password: password
+})
+
+if(error){
+alert(error.message)
+return
+}
+
+alert("Account created! Continue to upgrade.")
+
+window.location.href = "premium.html"
+
+}
+
+</script>
+
+</body>
+</html>
