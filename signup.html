@@ -125,7 +125,14 @@ return
 
 alert("Account created! Continue to upgrade.")
 
-window.location.href = "premium.html"
+const params = new URLSearchParams(window.location.search)
+const plan = params.get("plan")
+
+if(plan === "annual"){
+  window.location.href = "premium.html?plan=annual"
+}else{
+  window.location.href = "premium.html?plan=monthly"
+}
 
 }
 
