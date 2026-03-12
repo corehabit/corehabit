@@ -150,12 +150,9 @@ Loading plan...
 <button onclick="signup()">Create Account</button>
 
 <div class="features">
-✓ Personalized workout plan  
-<br>
-✓ Custom calorie & macro targets  
-<br>
-✓ Weekly grocery list  
-<br>
+✓ Personalized workout plan<br>
+✓ Custom calorie & macro targets<br>
+✓ Weekly grocery list<br>
 ✓ Adaptive training progression
 </div>
 
@@ -171,7 +168,9 @@ Already have an account? <a href="login.html">Log in</a>
 
 <script>
 
-const supabase = window.supabase.createClient(
+const { createClient } = supabase;
+
+const supabaseClient = createClient(
 "https://wonbwlvnojtgydvpllmk.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
 );
@@ -202,7 +201,7 @@ alert("Password must be at least 6 characters");
 return;
 }
 
-const { data, error } = await supabase.auth.signUp({
+const { data, error } = await supabaseClient.auth.signUp({
 email: email,
 password: password
 });
