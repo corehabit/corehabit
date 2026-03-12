@@ -94,10 +94,13 @@
     .password-wrapper{
 position:relative;
 }
+    .password-wrapper input{
+padding-right:60px;
+}
 
 .toggle-pass{
 position:absolute;
-right:10px;
+right:14px;
 top:50%;
 transform:translateY(-50%);
 background:none;
@@ -158,6 +161,11 @@ pointer-events:none;
 </div>
 
 <script>
+  supabaseClient.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    window.location.href = "/account.html";
+  }
+});
 const { createClient } = supabase;
 
 const supabaseClient = createClient(
