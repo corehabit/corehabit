@@ -91,6 +91,26 @@
   margin-bottom: 4px;
   display: block;
 }
+    .password-wrapper{
+position:relative;
+}
+
+.toggle-pass{
+position:absolute;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+background:none;
+border:none;
+color:#9ca3af;
+cursor:pointer;
+font-size:12px;
+}
+
+button.loading{
+opacity:.7;
+pointer-events:none;
+}
 </style>
 </head>
 
@@ -112,8 +132,11 @@
 <input id="loginEmail" type="email" placeholder="you@example.com" />
 
 <label class="auth-label">Password</label>
+<div class="password-wrapper">
 <input id="loginPassword" type="password" placeholder="Enter your password" />
-    <button onclick="handleLogin()">Login</button>
+<button type="button" class="toggle-pass" onclick="toggleLoginPass()">Show</button>
+</div>
+    <button id="loginBtn" onclick="handleLogin()">Login</button>
 
     <p id="error"></p>
 
@@ -143,29 +166,44 @@ const supabaseClient = createClient(
 );
 
 async function handleLogin(event) {
-  if (event) event.preventDefault();
+if (event) event.preventDefault();
 
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+const btn = document.getElementById("loginBtn");
+btn.classList.add("loading");
+btn.innerText = "Logging in...";
 
-  if (!email || !password) {
-    alert("Enter email and password");
-    return;
-  }
+const email = document.getElementById("loginEmail").value.trim();
+const password = document.getElementById("loginPassword").value.trim();
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  // ✅ SUCCESS → go to dashboard
-  window.location.href = "/account.html";
+if (!email || !password) {
+alert("Enter email and password");
+btn.classList.remove("loading");
+btn.innerText="Login";
+return;
 }
+
+const { data, error } = await supabaseClient.auth.signInWithPassword({
+email,
+password
+});
+
+if (error) {
+alert(error.message);
+btn.classList.remove("loading");
+btn.innerText="Login";
+return;
+}
+
+window.location.href = "/account.html";
+}
+  function toggleLoginPass(){
+const pass = document.getElementById("loginPassword");
+pass.type = pass.type === "password" ? "text" : "password";
+}
+
+document.getElementById("loginPassword").addEventListener("keypress",function(e){
+if(e.key==="Enter") handleLogin();
+});
 </script>
 
 </body>
