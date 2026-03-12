@@ -132,12 +132,23 @@ outline:none;
 }
 
 .toggle-pass{
-background:none;
+position:absolute;
+right:14px;
+top:50%;
+transform:translateY(-50%);
+background:none !important;
 border:none;
 color:#9ca3af;
-padding:0 14px;
 cursor:pointer;
 font-size:12px;
+padding:0;
+width:auto;
+height:auto;
+font-weight:500;
+box-shadow:none;
+}
+  .password-wrapper button{
+background:none;
 }
 
 button.loading{
@@ -210,7 +221,7 @@ Loading plan...
 
 <div class="password-wrapper">
 <input id="password" type="password" placeholder="Password (min 6 characters)">
-<button type="button" class="toggle-pass" onclick="togglePass()">Show</button>
+<button type="button" class="toggle-pass" onclick="togglePass()">👁</button>
 </div>
 
 <button id="signupBtn" onclick="signup()">Create Account</button>
