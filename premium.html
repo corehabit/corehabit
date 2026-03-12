@@ -54,10 +54,11 @@
     }
 
     h2 {
-      font-size: 32px;
-      margin-bottom: 16px;
-      letter-spacing: -0.3px;
-    }
+font-size: 36px;
+margin-bottom: 20px;
+letter-spacing: -0.3px;
+font-weight:700;
+}
 
     h3 {
       font-size: 20px;
@@ -73,7 +74,20 @@
       margin-bottom: 96px;
     }
 
-    .top-cta-row {
+    .top-cta-row 
+    .trust-bar{
+text-align:center;
+margin-top:22px;
+padding:14px 22px;
+border-radius:12px;
+background:rgba(124,92,255,0.12);
+border:1px solid rgba(124,92,255,0.35);
+display:inline-block;
+font-size:15px;
+color:#e9eef5;
+line-height:1.8;
+}
+    {
   display: flex;
   gap: 20px;
   margin-top: 30px;
@@ -142,6 +156,26 @@
     }
 
     .premium-card {
+      transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.premium-card:hover{
+transform:translateY(-4px);
+box-shadow:0 18px 42px rgba(124,92,255,.35);
+}
+    .macro{
+display:flex;
+justify-content:space-between;
+font-size:15px;
+margin:6px 0;
+}
+
+.macro span{
+font-size:20px;
+font-weight:700;
+color:#d4af37;
+}
+    {
       background:
         linear-gradient(180deg, rgba(124,92,255,0.14), rgba(124,92,255,0.04)),
         var(--panel);
@@ -182,7 +216,7 @@
       border: 1px solid rgba(212,175,55,0.55);
       border-radius: 24px;
       padding: 48px;
-      box-shadow: 0 24px 48px rgba(124,92,255,0.35);
+      box-shadow: 0 30px 70px rgba(124,92,255,0.45);
     }
 
     .savings-text {
@@ -302,7 +336,7 @@ window.supabaseClient = window.supabase.createClient(
       <h1>Upgrade to CoreHabit Premium</h1>
       <p>Built for people who want real results, not generic plans.</p>
 
-      <div style="text-align:center;margin-top:20px;color:#a9b6c6;font-size:14px;line-height:1.7;">
+      <div class="trust-bar">
 
 ✓ Secure checkout powered by Stripe<br>
 ✓ Cancel anytime<br>
@@ -359,10 +393,10 @@ window.supabaseClient = window.supabase.createClient(
 
 <div class="premium-card">
 <h3>Daily Nutrition Target</h3>
-<p>Calories: 2,150</p>
-<p>Protein: 165g</p>
-<p>Carbs: 210g</p>
-<p>Fat: 70g</p>
+<p class="macro">Calories <span>2,150</span></p>
+<p class="macro">Protein <span>165g</span></p>
+<p class="macro">Carbs <span>210g</span></p>
+<p class="macro">Fat <span>70g</span></p>
 </div>
 
 <div class="premium-card">
@@ -442,7 +476,7 @@ Unlock your full personalized plan after upgrading.
 <div class="premium-grid">
 
 <div class="premium-card">
-★★★★★
+<div style="color:#d4af37;font-size:18px;margin-bottom:8px;">★★★★★</div>
 <p>"Finally a fitness plan that actually fits my schedule."</p>
 <p style="opacity:.7;">— Alex, 26</p>
 </div>
