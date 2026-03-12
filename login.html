@@ -94,22 +94,24 @@
     .password-wrapper{
 position:relative;
 }
-    .password-wrapper input{
-padding-right:60px;
+
+.password-wrapper input{
+padding-right:70px;
+width:100%;
+box-sizing:border-box;
 }
 
 .toggle-pass{
 position:absolute;
-right:14px;
-top:50%;
-transform:translateY(-50%);
+right:16px;
+top:13px;
 background:none;
 border:none;
 color:#9ca3af;
 cursor:pointer;
 font-size:12px;
 }
-
+    
 button.loading{
 opacity:.7;
 pointer-events:none;
@@ -161,17 +163,19 @@ pointer-events:none;
 </div>
 
 <script>
-  supabaseClient.auth.getSession().then(({ data }) => {
-  if (data.session) {
-    window.location.href = "/account.html";
-  }
-});
-const { createClient } = supabase;
+  const { createClient } = supabase;
 
 const supabaseClient = createClient(
   "https://wonbwlvnojtgydvpllmk.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvbmJ3bHZub2p0Z3lkdnBsbG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjExNjgsImV4cCI6MjA4NjIzNzE2OH0.AmWxx4I8t6MF2yo8FEv4CtMDlooASeg9Cy17fm_tslo"
 );
+
+// Redirect if already logged in
+supabaseClient.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    window.location.href = "/account.html";
+  }
+});
 
 async function handleLogin(event) {
 if (event) event.preventDefault();
