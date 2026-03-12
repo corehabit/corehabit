@@ -28,9 +28,16 @@
 .login-card {
   width: 420px;
   padding: 40px;
-  background: #111827;
+  background: linear-gradient(
+    180deg,
+    rgba(124,92,255,0.08),
+    #111827
+  );
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  border: 1px solid rgba(124,92,255,0.18);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.65),
+    inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .login-card h2 {
@@ -90,6 +97,12 @@
 <body style="background:#0b0f14;color:white;font-family:system-ui;">
 
 <div class="login-wrapper">
+  <div style="position:absolute;top:60px;text-align:center;width:100%;">
+  <div style="font-size:28px;font-weight:800;">CoreHabit</div>
+  <div style="color:#9ca3af;font-size:14px;margin-top:6px;">
+    Habits first. Results follow.
+  </div>
+</div>
   <div class="login-card">
 
     <h2>Welcome Back</h2>
@@ -103,6 +116,20 @@
     <button onclick="handleLogin()">Login</button>
 
     <p id="error"></p>
+
+<div style="margin-top:20px;text-align:center;font-size:14px;color:#9ca3af;">
+  <a href="/signup.html" style="color:#a78bfa;text-decoration:none;">
+    Create account
+  </a>
+  <span style="margin:0 8px;">•</span>
+  <a href="/reset-password.html" style="color:#a78bfa;text-decoration:none;">
+    Forgot password
+  </a>
+</div>
+
+<div style="margin-top:16px;font-size:12px;color:#6b7280;text-align:center;">
+  🔒 Secure login powered by Supabase
+</div>
 
   </div>
 </div>
