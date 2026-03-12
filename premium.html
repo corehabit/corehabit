@@ -513,5 +513,19 @@ async function submitAuth() {
 }
 
 </script>
+  <script>
+
+const params = new URLSearchParams(window.location.search);
+const plan = params.get("plan");
+
+if(plan === "monthly"){
+  window.location.href = "https://buy.stripe.com/eVq14obafgWT4isbWu0kE02";
+}
+
+if(plan === "annual"){
+  window.location.href = "https://buy.stripe.com/fZufZiguzeOL4is6Ca0kE03";
+}
+
+</script>
 </body>
 </html>
