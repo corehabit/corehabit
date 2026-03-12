@@ -273,6 +273,42 @@ body::before {
 h1 {
   letter-spacing: -0.02em;
 }
+    .site-footer {
+  margin-top: 80px;
+  padding: 40px 20px;
+  background: #0b0f14;
+  border-top: 1px solid #1f2937;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  color: white;
+}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -542,5 +578,25 @@ async function updateAccountButton() {
 
 updateAccountButton();
 </script>
+  <footer class="site-footer">
+
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+      <strong>CoreHabit</strong>
+      <p>Build habits first. Results follow.</p>
+    </div>
+
+    <div class="footer-links">
+      <a href="/login.html">Login</a>
+      <a href="/signup.html">Sign Up</a>
+      <a href="mailto:support@corehabit.fit">Contact</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms</a>
+    </div>
+
+  </div>
+
+</footer>
 </body>
 </html>
