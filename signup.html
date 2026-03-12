@@ -114,8 +114,9 @@ outline:2px solid var(--purple);
 display:flex;
 align-items:center;
 background:#1f2937;
-border-radius:8px;
-margin-bottom:12px;
+border-radius:12px;
+margin-bottom:16px;
+padding-right:10px;
 }
 
 .password-wrapper input{
@@ -125,6 +126,7 @@ background:transparent;
 padding:14px;
 color:white;
 font-size:14px;
+margin:0;
 }
 
 .password-wrapper input:focus{
@@ -132,25 +134,14 @@ outline:none;
 }
 
 .toggle-pass{
-position:absolute;
-right:14px;
-top:50%;
-transform:translateY(-50%);
-background:none !important;
+background:none;
 border:none;
 color:#9ca3af;
 cursor:pointer;
-font-size:12px;
-padding:0;
+font-size:16px;
+padding:0 6px;
 width:auto;
-height:auto;
-font-weight:500;
-box-shadow:none;
 }
-  .password-wrapper button{
-background:none;
-}
-
 button.loading{
 opacity:.7;
 pointer-events:none;
