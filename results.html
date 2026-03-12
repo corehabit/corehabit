@@ -60,6 +60,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
 
 if (urlParams.get("upgraded") === "true") {
+
+  fbq('track', 'Subscribe', {
+    value: 19.99,
+    currency: 'USD'
+  });
+
   unlockPremiumUI();
 }
 
