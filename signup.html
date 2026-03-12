@@ -107,6 +107,26 @@ font-size:14px;
 input:focus{
 outline:2px solid var(--purple);
 }
+  .password-wrapper{
+position:relative;
+}
+
+.toggle-pass{
+position:absolute;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+background:none;
+border:none;
+color:#9ca3af;
+cursor:pointer;
+font-size:12px;
+}
+
+button.loading{
+opacity:.7;
+pointer-events:none;
+}
 
 button{
 width:100%;
@@ -171,9 +191,12 @@ Loading plan...
 
 <input id="email" type="email" placeholder="Email">
 
+<div class="password-wrapper">
 <input id="password" type="password" placeholder="Password (min 6 characters)">
+<button type="button" class="toggle-pass" onclick="togglePass()">Show</button>
+</div>
 
-<button onclick="signup()">Create Account</button>
+<button id="signupBtn" onclick="signup()">Create Account</button>
 
 <div class="features">
 ✓ Personalized workout plan<br>
@@ -214,26 +237,36 @@ reminder.innerHTML = "⭐ You're upgrading to <b>CoreHabit Premium — Monthly</
 
 async function signup(){
 
+const btn = document.getElementById("signupBtn");
+btn.classList.add("loading");
+btn.innerText = "Creating account...";
+
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
 if(!email || !password){
 alert("Please enter email and password");
+btn.classList.remove("loading");
+btn.innerText="Create Account";
 return;
 }
 
 if(password.length < 6){
 alert("Password must be at least 6 characters");
+btn.classList.remove("loading");
+btn.innerText="Create Account";
 return;
 }
 
 const { data, error } = await supabaseClient.auth.signUp({
-email: email,
-password: password
+email,
+password
 });
 
 if(error){
 alert(error.message);
+btn.classList.remove("loading");
+btn.innerText="Create Account";
 return;
 }
 
@@ -244,7 +277,14 @@ window.location.href = "premium.html?plan=monthly";
 }
 
 }
+function togglePass(){
+const pass = document.getElementById("password");
+pass.type = pass.type === "password" ? "text" : "password";
+}
 
+document.getElementById("password").addEventListener("keypress",function(e){
+if(e.key==="Enter") signup();
+});
 </script>
 
 </body>
