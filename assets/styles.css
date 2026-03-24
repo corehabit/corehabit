@@ -229,7 +229,13 @@ body * {
 /* Mobile adjustments */
 @media (max-width: 600px) {
   .global-premium-tab {
-    top: 14p
+    top: 14px;
+    right: 14px;
+    padding: 7px 14px;
+    font-size: 11px;
+  }
+}
+
 /* HARD OVERRIDE: Global Premium Bubble */
 a.global-premium-tab,
 a.global-premium-tab:visited,
@@ -239,6 +245,7 @@ a.global-premium-tab:active {
   color: #1a1a1a !important;
   text-decoration: none !important;
 }
+
 /* ============================
    Premium Tab – Context Aware
    ============================ */
@@ -264,6 +271,7 @@ a.global-premium-tab:active {
   align-items: center;
   gap: 12px;
 }
+
 /* ============================
    Premium Gating (Results Page)
    ============================ */
